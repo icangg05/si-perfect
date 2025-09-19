@@ -1,0 +1,65 @@
+/* Your Custom CSS Goes here */
+
+.app-header {
+  background-color: #1D3D62 !important;
+}
+
+.app-container {
+  background-color: #E7ECF8;
+}
+
+.size-icon-nav {
+  font-size: 1rem !important;
+  transform: translateY(2px);
+}
+
+.swal2-container,
+.modal {
+  z-index: 99999 !important;
+}
+
+.modal-backdrop {
+  z-index: 99998 !important;
+}
+
+.my-scrollbar {
+  overflow-y: auto;
+  /* aktifkan scroll vertikal */
+  scrollbar-width: thin;
+  /* untuk Firefox */
+  scrollbar-color: #bababa #f5f5f5;
+}
+
+/* Chrome, Edge, Safari */
+.my-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.my-scrollbar::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.my-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4e73df, #1cc88a);
+  border-radius: 10px;
+  border: 2px solid #f5f5f5;
+  transition: background 0.3s ease;
+}
+
+.my-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #375ac2, #17a673);
+}
+
+/* Mode gelap */
+@media (prefers-color-scheme: dark) {
+  .my-scrollbar::-webkit-scrollbar-track {
+    background: #2c2c2c;
+  }
+
+  .my-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6a5acd, #20c997);
+    border: 2px solid #2c2c2c;
+  }
+}
