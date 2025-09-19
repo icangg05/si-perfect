@@ -79,4 +79,27 @@ class LaporanRealisasiController extends Controller
 
     return redirect()->back();
   }
+
+
+  /**
+   * Handle show view item laporan
+   */
+  public function buatLaporanItem($id)
+  {
+    $skpd_anggaran = SKPDAnggaran::with('laporan.sub_kategori_laporan.kategori_laporan')->findOrFail($id);
+
+    // Group laporan berdasarkan kategori_laporan
+    $grouped = $skpd_anggaran->laporan
+      ->groupBy(function ($laporan) {
+        return $laporan->sub_kategori_laporan->kategori_laporan->nama ?? 'Tanpa Kategori';
+      })
+      ->map(function ($laporans) {
+        return $laporans->groupBy(function ($laporan) {
+          return $laporan->sub_kategori_laporan->nama ?? 'Tanpa Sub Kategori';
+        });
+      });
+    // return mdd($grouped);
+
+    return view('dashboard.laporan-realisasi-item', compact('skpd_anggaran', 'grouped'));
+  }
 }

@@ -10,4 +10,12 @@ class KategoriLaporan extends Model
   protected $guarded = [];
 
   public $timestamps = false;
+
+  /**
+   * Set relation table
+   */
+  public function sub_kategori_laporan()
+  {
+    return $this->hasMany(SubKategoriLaporan::class, 'kategori_laporan_id');
+  }
 }

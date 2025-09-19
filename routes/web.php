@@ -27,4 +27,6 @@ Route::middleware('auth')->group(function () {
 
   Route::get('/laporan-realisasi', [LaporanRealisasiController::class, 'index'])->name('dashboard.laporan-realisasi');
   Route::post('/laporan-realisasi', [LaporanRealisasiController::class, 'buatLaporan'])->name('dashboard.laporan-realisasi.store');
+  Route::get('/laporan-realisasi/{id}', [LaporanRealisasiController::class, 'buatLaporanItem'])->name('dashboard.laporan-realisasi-item');
+
 });

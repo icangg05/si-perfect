@@ -16,4 +16,14 @@ class SKPDAnggaran extends Model
   {
     return $this->belongsTo(SKPD::class, 'skpd_id');
   }
+
+  public function laporan()
+  {
+    return $this->hasMany(Laporan::class, 'skpd_anggaran_id');
+  }
+
+  public function sub_kategori_laporan()
+  {
+    return $this->belongsTo(SubKategoriLaporan::class ,'sub_kategori_laporan_id');
+  }
 }

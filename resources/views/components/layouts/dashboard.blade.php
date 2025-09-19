@@ -238,7 +238,7 @@
 								<i class="material-icons size-icon-nav">settings</i> Pengaturan</a>
 						</li>
 
-						{{-- @if (auth()->user()->role == 'admin') --}}
+						@if (auth()->user()->role == 'admin')
 							<li>
 								<a href="#">
 									<i class="material-icons size-icon-nav">dataset</i> Master Data<i
@@ -258,7 +258,7 @@
 									</li>
 								</ul>
 							</li>
-						{{-- @endif --}}
+						@endif
 					</ul>
 				</div>
 			</div>
