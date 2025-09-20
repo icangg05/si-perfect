@@ -2318,12 +2318,12 @@ h6 {
 }
 
 .table * {
-  border-color: #e1e7ed !important;
+  border-color: #ccd1d6 !important;
 }
 
 .table th,
 .table td {
-  padding: 15px 20px !important;
+  padding: 10px 15px !important;
 }
 
 .table tbody tr:last-child td,

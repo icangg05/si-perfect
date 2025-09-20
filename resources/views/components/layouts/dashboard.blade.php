@@ -26,6 +26,11 @@
 	<link href="{{ asset('') }}/assets/plugins/perfectscroll/perfect-scrollbar.css" rel="stylesheet">
 	<link href="{{ asset('') }}/assets/plugins/pace/pace.css" rel="stylesheet">
 
+	{{-- Custon fonts --}}
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap"
+		rel="stylesheet">
 
 	<!-- Theme Styles -->
 	<link href="{{ asset('') }}/assets/css/main.css" rel="stylesheet">

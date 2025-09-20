@@ -171,7 +171,7 @@
 												</a>
 
 												<a href="{{ route('export') }}"
-													class="btn btn-sm btn-success text-nowrap">
+													class="btn btn-sm btn-success text-nowrap {{ $item->laporan_count == 0 ? 'disabled' : '' }}">
 													<span class="material-icons" style="font-size: 18px; vertical-align: middle;">description</span>
 													Export
 												</a>

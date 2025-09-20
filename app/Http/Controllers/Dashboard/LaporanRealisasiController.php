@@ -14,7 +14,8 @@ class LaporanRealisasiController extends Controller
    */
   public function index(Request $request)
   {
-    $query = SKPDAnggaran::with('skpd');
+    $query = SKPDAnggaran::with('skpd')
+      ->withCount('laporan');
 
     // Pencarian umum
     if ($request->filled('search')) {
@@ -39,7 +40,7 @@ class LaporanRealisasiController extends Controller
       $query->where('bulan_anggaran', $request->bulan);
     }
 
-    // 📊 Pagination dengan query string supaya filter tidak hilang
+    // Pagination dengan query string supaya filter tidak hilang
     $skpd_anggaran = $query->paginate(10)->withQueryString();
 
     return view('dashboard.laporan-realisasi', compact('skpd_anggaran'));

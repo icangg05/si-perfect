@@ -1,4 +1,23 @@
 /* Your Custom CSS Goes here */
+.font-arimo {
+  font-family: "Arimo", sans-serif;
+}
+
+.my-table th,
+.my-table td {
+  padding: 2px 9px !important;
+  font-size: .94rem;
+}
+
+.my-table th {
+  font-weight: 700;
+  color: #474a4e !important;
+}
+
+.my-table .col-total th,
+.my-table .col-total td {
+  padding: 9px 9px !important;
+}
 
 body {
   background-color: #E7ECF8 !important;

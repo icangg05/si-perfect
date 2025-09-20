@@ -53,7 +53,7 @@
 								<div class="tab-pane fade active show" id="pills-home" role="tabpanel"
 									aria-labelledby="pills-home-tab">
 									<div class="mt-4 table-responsive my-scrollbar">
-										<table class="table table-bordered table-hover">
+										<table class="table table-sm table-bordered table-hover my-table font-arimo">
 											<thead class="text-center align-middle">
 												<tr>
 													<th scope="col" rowspan="3">Urut DPA</th>
@@ -102,14 +102,16 @@
 													<tr>
 														<th></th>
 														<th></th>
-														<th class="text-nowrap">{{ $no_kategori . '. ' . $kategori }}</th>
+														<th class="text-nowrap">
+															{{ $no_kategori . '. ' }}&nbsp;&nbsp;&nbsp;{{ $kategori }}
+														</th>
 														@for ($i = 0; $i < 20; $i++)
 															<th></th>
 														@endfor
 													</tr>
 
 													@php
-														$no_sub_kategori = 1;
+														$no_sub_kategori                      = 1;
 														$total_realisasi_anggaran_perkategori = 0;
 													@endphp
 
@@ -117,7 +119,7 @@
 														<tr>
 															<th></th>
 															<th></th>
-															<th class="text-nowrap">{{ $no_kategori . '.' . $no_sub_kategori . ' ' . $subKategori }}</th>
+															<th class="text-nowrap">{{ $no_kategori . '.' . $no_sub_kategori . '. ' . $subKategori }}</th>
 															@for ($i = 0; $i < 20; $i++)
 																<th></th>
 															@endfor
@@ -125,27 +127,27 @@
 
 														@php
 															// hitung total untuk sub kategori
-															$total_pagu = $items->sum('pagu');
-															$total_nilai_kontrak_tender = $items->sum('nilai_kontrak_tender');
-															$total_realisasi_tender = $items->sum('realisasi_tender');
+															$total_pagu                               = $items->sum('pagu');
+															$total_nilai_kontrak_tender               = $items->sum('nilai_kontrak_tender');
+															$total_realisasi_tender                   = $items->sum('realisasi_tender');
 															$total_nilai_kontrak_penunjukkan_langsung = $items->sum('nilai_kontrak_penunjukkan_langsung');
-															$total_realisasi_penunjukkan_langsung = $items->sum('realisasi_penunjukkan_langsung');
-															$total_nilai_kontrak_swakelola = $items->sum('nilai_kontrak_swakelola');
-															$total_realisasi_swakelola = $items->sum('realisasi_swakelola');
-															$total_nilai_kontrak_epurchasing = $items->sum('nilai_kontrak_epurchasing');
-															$total_realisasi_epurchasing = $items->sum('realisasi_epurchasing');
-															$total_nilai_kontrak_pengadaan_langsung = $items->sum('nilai_kontrak_pengadaan_langsung');
-															$total_realisasi_pengadaan_langsung = $items->sum('realisasi_pengadaan_langsung');
+															$total_realisasi_penunjukkan_langsung     = $items->sum('realisasi_penunjukkan_langsung');
+															$total_nilai_kontrak_swakelola            = $items->sum('nilai_kontrak_swakelola');
+															$total_realisasi_swakelola                = $items->sum('realisasi_swakelola');
+															$total_nilai_kontrak_epurchasing          = $items->sum('nilai_kontrak_epurchasing');
+															$total_realisasi_epurchasing              = $items->sum('realisasi_epurchasing');
+															$total_nilai_kontrak_pengadaan_langsung   = $items->sum('nilai_kontrak_pengadaan_langsung');
+															$total_realisasi_pengadaan_langsung       = $items->sum('realisasi_pengadaan_langsung');
 														@endphp
 
 														@foreach ($items as $index => $item)
 															@php
 																$total_realisasi_anggaran =
-																    $item->realisasi_tender +
-																    $item->realisasi_penunjukkan_langsung +
-																    $item->realisasi_swakelola +
-																    $item->realisasi_epurchasing +
-																    $item->realisasi_pengadaan_langsung;
+                                  $item->realisasi_tender +
+                                  $item->realisasi_penunjukkan_langsung +
+                                  $item->realisasi_swakelola +
+                                  $item->realisasi_epurchasing +
+                                  $item->realisasi_pengadaan_langsung;
 
 																// tambahkan ke total per kategori
 																$total_realisasi_anggaran_perkategori += $total_realisasi_anggaran;
@@ -177,7 +179,7 @@
 																<td class="text-center">{{ $item->sumber_dana ?? '-' }}</td>
 																<td class="text-center">{{ $item->keterangan ?? '-' }}</td>
 																<td>
-																	<a href="{{ route('dashboard.laporan-realisasi-item', $item->id) }}"
+																	<a style="scale: .85" href="{{ route('dashboard.laporan-realisasi-item', $item->id) }}"
 																		class="btn btn-sm btn-warning text-nowrap">
 																		<span class="material-icons" style="font-size: 18px; vertical-align: middle;">edit_square</span>
 																	</a>
@@ -186,7 +188,7 @@
 														@endforeach
 
 														{{-- Jumlah per sub kategori --}}
-														<tr>
+														<tr class="col-total">
 															<th></th>
 															<th colspan="2" class="text-center">JUMLAH</th>
 															<th class="text-end">{{ format_ribuan($total_pagu) ?? 0 }}</th>
@@ -204,8 +206,8 @@
 															<th class="text-end">{{ format_ribuan($total_nilai_kontrak_pengadaan_langsung) ?? 0 }}</th>
 															<th class="text-end">{{ format_ribuan($total_realisasi_pengadaan_langsung) ?? 0 }}</th>
 															<th class="text-end">{{ format_ribuan($total_realisasi_anggaran_perkategori) ?? 0 }}</th>
-															<th class="text-center">{{ floor(0.99 * 1000) / 10 }}%</th>
-															<th class="text-center">{{ floor(0.99 * 1000) / 10 }}%</th>
+															<th class="text-center">{{ format_persen($total_realisasi_anggaran_perkategori / $total_pagu) }}%</th>
+															<th class="text-center">{{ format_persen($items->sum('presentasi_realisasi_fisik') / count($items)) }}%</th>
 															<th></th>
 															<th></th>
 															<th></th>
@@ -222,198 +224,30 @@
 												@endforeach
 
 												{{-- Total jumlah keseluruhan --}}
-												<tr>
+												<tr class="col-total">
 													<th></th>
 													<th colspan="2" class="text-center">TOTAL RUPIAH</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('pagu')) ?? 0 }}</th>
 													<th></th>
 													<th></th>
 													<th></th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan(0) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_tender')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_tender')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_penunjukkan_langsung')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_penunjukkan_langsung')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_swakelola')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_swakelola')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_epurchasing')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_epurchasing')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('pagu')) ?? 0 }}</th>
 													<th class="text-center">{{ floor(0 * 1000) / 10 }}%</th>
-													<th class="text-center">{{ floor(0 * 1000) / 10 }}%</th>
+													<th class="text-center">{{ format_persen($skpd_anggaran->laporan->sum('presentasi_realisasi_fisik') / count($skpd_anggaran->laporan)) }}%</th>
 													<th></th>
 													<th></th>
 													<th></th>
 												</tr>
-												{{-- @php
-													$no_kategori = 1;
-												@endphp
-												@foreach ($grouped as $key => $item)
-													<tr>
-														<th></th>
-														<th></th>
-														<th class="text-nowrap">{{ "$no_kategori. $key" }}</th>
-														@for ($i = 0; $i < 20; $i++)
-															<th></th>
-														@endfor
-													</tr>
-													@php
-														$no_sub_kategori = 1;
-													@endphp
-													@foreach ($item as $key2 => $item2)
-														<tr>
-															<th></th>
-															<th></th>
-															<th class="text-nowrap">{{ "$no_kategori.$no_sub_kategori $key2" }}</th>
-															@for ($i = 0; $i < 20; $i++)
-																<th></th>
-															@endfor
-														</tr>
-                            @php
-                                $total_realisasi_anggaran_perkategori = 0;
-                            @endphp
-														@foreach ($item2 as $key3 => $item3)
-															<tr>
-																<td class="text-center">{{ $key3 + 1 }}</td>
-																<td class="text-center">{{ $item3->no }}</td>
-																<td>{{ $item3->nama_pekerjaan }}</td>
-																<td class="text-end">{{ format_ribuan($item3->pagu) }}</td>
-																<td>{{ $item3->no_kontrak }}</td>
-																<td>{{ $item3->tanggal_mulai_kontrak }}</td>
-																<td>{{ $item3->tanggal_berakhir_kontrak }}</td>
-																<td class="text-end">{{ format_ribuan($item3->nilai_kontrak_tender) }}</td>
-																<td class="text-end">{{ format_ribuan($item3->realisasi_tender) }}</td>
-																<td class="text-end">{{ format_ribuan($item3->nilai_kontrak_penunjukkan_langsung) }}</td>
-																<td class="text-end">{{ format_ribuan($item3->realisasi_penunjukkan_langsung) }}</td>
-																<td class="text-end">{{ format_ribuan($item3->nilai_kontrak_swakelola) }}</td>
-																<td class="text-end">{{ format_ribuan($item3->realisasi_swakelola) }}</td>
-																<td class="text-end">{{ format_ribuan($item3->nilai_kontrak_epurchasing) }}</td>
-																<td class="text-end">{{ format_ribuan($item3->realisasi_epurchasing) }}</td>
-																<td class="text-end">{{ format_ribuan($item3->nilai_kontrak_pengadaan_langsung) }}</td>
-																<td class="text-end">{{ format_ribuan($item3->realisasi_pengadaan_langsung) }}</td>
-																@php
-																	$total_realisasi_anggaran =
-                                    $item3->realisasi_tender +
-                                    $item3->realisasi_penunjukkan_langsung +
-                                    $item3->nilai_kontrak_swakelola +
-                                    $item3->realisasi_epurchasing +
-                                    $item3->realisasi_pengadaan_langsung;
-                                  // $total_realisasi_anggaran = 123;
-                                  $total_realisasi_anggaran_perkategori += $total_realisasi_anggaran;
-
-																	$total_pagu                               = $item2->sum('pagu');
-																	$total_nilai_kontrak_tender               = $item2->sum('nilai_kontrak_tender');
-																	$total_realisasi_tender                   = $item2->sum('realisasi_tender');
-																	$total_nilai_kontrak_penunjukkan_langsung = $item2->sum('nilai_kontrak_penunjukkan_langsung');
-																	$total_realisasi_penunjukkan_langsung     = $item2->sum('realisasi_penunjukkan_langsung');
-																	$total_nilai_kontrak_swakelola            = $item2->sum('nilai_kontrak_swakelola');
-																	$total_realisasi_swakelola                = $item2->sum('realisasi_swakelola');
-																	$total_nilai_kontrak_epurchasing          = $item2->sum('nilai_kontrak_epurchasing');
-																	$total_realisasi_epurchasing              = $item2->sum('realisasi_epurchasing');
-																	$total_nilai_kontrak_pengadaan_langsung   = $item2->sum('nilai_kontrak_pengadaan_langsung');
-																	$total_realisasi_pengadaan_langsung       = $item2->sum('realisasi_pengadaan_langsung');
-																@endphp
-																<td class="text-end">{{ format_ribuan($total_realisasi_anggaran) }}</td>
-																<td class="text-center">{{ floor(($total_realisasi_anggaran / $item3->pagu) * 100 * 10) / 10 }}%</td>
-																<td class="text-center">{{ floor($item3->presentasi_realisasi_fisik * 100 * 10) / 10 }}%</td>
-																<td class="text-center">{{ $item3->sumber_dana ?? '-' }}</td>
-																<td class="text-center">{{ $item3->keterangan ?? '-' }}</td>
-																<td>
-																	<a href="{{ route('dashboard.laporan-realisasi-item', $item3->id) }}"
-																		class="btn btn-sm btn-warning text-nowrap">
-																		<span class="material-icons" style="font-size: 18px; vertical-align: middle;">edit_square</span>
-																	</a>
-																</td>
-															</tr>
-															@if ($key3 + 1 == count($item2))
-																<tr>
-																	<th></th>
-																	<th colspan="2" class="text-center">JUMLAH</th>
-																	<th class="text-end">{{ format_ribuan($total_pagu) }}</th>
-                                  <th></th><th></th><th></th>
-																	<th class="text-end">{{ format_ribuan($total_nilai_kontrak_tender) ?? 0 }}</th>
-																	<th class="text-end">{{ format_ribuan($total_realisasi_tender) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_nilai_kontrak_penunjukkan_langsung) ?? 0 }}</th>
-																	<th class="text-end">{{ format_ribuan($total_realisasi_penunjukkan_langsung) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_nilai_kontrak_swakelola) ?? 0 }}</th>
-																	<th class="text-end">{{ format_ribuan($total_realisasi_swakelola) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_nilai_kontrak_epurchasing) ?? 0 }}</th>
-																	<th class="text-end">{{ format_ribuan($total_realisasi_epurchasing) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_nilai_kontrak_pengadaan_langsung) ?? 0 }}</th>
-																	<th class="text-end">{{ format_ribuan($total_realisasi_pengadaan_langsung) ?? 0 }}</th>
-																	<th class="text-end">{{ format_ribuan($total_realisasi_anggaran_perkategori) ?? 0 }}</th>
-																</tr>
-															@endif
-														@endforeach
-														@php
-															$no_sub_kategori;
-														@endphp
-													@endforeach
-													@php
-														$no_kategori++;
-													@endphp
-												@endforeach --}}
-												{{-- <tr>
-                          <th></th>
-                          <th></th>
-													<th class="text-nowrap">1. Paket Penyedia</th>
-													@for ($i = 0; $i < 20; $i++)
-														<th></th>
-													@endfor
-												</tr>
-												<tr>
-                          <th></th>
-                          <th></th>
-													<th class="text-nowrap">1.1 Paket Penyedia Tambahan</th>
-													@for ($i = 0; $i < 20; $i++)
-														<th></th>
-													@endfor
-												</tr>
-												@forelse ($skpd_anggaran->laporan as $item)
-													<tr>
-														<th scope="row" class="text-center">{{ $loop->iteration }}</th>
-														<td class="text-center">{{ $item->no }}</td>
-														<td>{{ $item->nama_pekerjaan }}</td>
-														<td class="text-end">{{ format_ribuan($item->pagu) }}</td>
-														<td>{{ $item->no_kontrak }}</td>
-														<td>{{ $item->tanggal_mulai_kontrak }}</td>
-														<td>{{ $item->tanggal_berakhir_kontrak }}</td>
-														<td class="text-end">{{ format_ribuan($item->nilai_kontrak_tender) }}</td>
-														<td class="text-end">{{ format_ribuan($item->realisasi_tender) }}</td>
-														<td class="text-end">{{ format_ribuan($item->nilai_kontrak_penunjukkan_langsung) }}</td>
-														<td class="text-end">{{ format_ribuan($item->realisasi_penunjukkan_langsung) }}</td>
-														<td class="text-end">{{ format_ribuan($item->nilai_kontrak_swakelola) }}</td>
-														<td class="text-end">{{ format_ribuan($item->realisasi_swakelola) }}</td>
-														<td class="text-end">{{ format_ribuan($item->nilai_kontrak_epurchasing) }}</td>
-														<td class="text-end">{{ format_ribuan($item->realisasi_epurchasing) }}</td>
-														<td class="text-end">{{ format_ribuan($item->nilai_kontrak_pengadaan_langsung) }}</td>
-														<td class="text-end">{{ format_ribuan($item->realisasi_pengadaan_langsung) }}</td>
-														@php
-															$total_realisasi_anggaran =
-                                $item->realisasi_tender +
-                                $item->realisasi_penunjukkan_langsung +
-                                $item->nilai_kontrak_swakelola +
-                                $item->realisasi_epurchasing +
-                                $item->realisasi_pengadaan_langsung;
-														@endphp
-														<td class="text-end">{{ format_ribuan($total_realisasi_anggaran) }}</td>
-														<td class="text-center">{{ floor(($total_realisasi_anggaran / $item->pagu) * 100 * 10) / 10 }}%</td>
-														<td class="text-center">{{ floor($item->presentasi_realisasi_fisik * 100 * 10) / 10 }}%</td>
-                            <td class="text-center">{{ $item->sumber_dana ?? '-' }}</td>
-                            <td class="text-center">{{ $item->keterangan ?? '-' }}</td>
-														<td>
-															<a href="{{ route('dashboard.laporan-realisasi-item', $item->id) }}"
-																class="btn btn-sm btn-warning text-nowrap">
-																<span class="material-icons" style="font-size: 18px; vertical-align: middle;">edit_square</span>
-															</a>
-														</td>
-													</tr>
-												@empty
-													<tr>
-														<td colspan="6" class="text-center text-muted">Tidak ada data ditemukan.</td>
-													</tr>
-												@endforelse --}}
 											</tbody>
 										</table>
 									</div>
