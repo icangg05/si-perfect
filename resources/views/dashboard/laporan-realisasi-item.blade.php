@@ -95,7 +95,9 @@
 											</thead>
 											<tbody>
 												@php
-													$no_kategori = 1;
+                          $no_kategori                               = 1;
+                          $presentasi_realisasi_keuangan_keseluruhan = 0;
+                          $presentasi_realisasi_fisik_keseluruhan    = 0;
 												@endphp
 
 												@foreach ($grouped as $kategori => $subKategoris)
@@ -111,8 +113,8 @@
 													</tr>
 
 													@php
-														$no_sub_kategori                      = 1;
-														$total_realisasi_anggaran_perkategori = 0;
+                            $no_sub_kategori                        = 1;
+                            $total_realisasi_anggaran_perkategori   = 0;
 													@endphp
 
 													@foreach ($subKategoris as $subKategori => $items)
@@ -138,6 +140,8 @@
 															$total_realisasi_epurchasing              = $items->sum('realisasi_epurchasing');
 															$total_nilai_kontrak_pengadaan_langsung   = $items->sum('nilai_kontrak_pengadaan_langsung');
 															$total_realisasi_pengadaan_langsung       = $items->sum('realisasi_pengadaan_langsung');
+                                // tambahkan ke presentasi realisasi fisik keseluruhan
+                              $presentasi_realisasi_fisik_keseluruhan    += $items->sum('presentasi_realisasi_fisik') / count($items);
 														@endphp
 
 														@foreach ($items as $index => $item)
@@ -186,6 +190,11 @@
 																</td>
 															</tr>
 														@endforeach
+
+                            @php
+                              // tambahkan ke presentasi realisasi fisik keseluruhan
+                              $presentasi_realisasi_keuangan_keseluruhan += $total_realisasi_anggaran_perkategori / $total_pagu;
+                            @endphp
 
 														{{-- Jumlah per sub kategori --}}
 														<tr class="col-total">
@@ -242,8 +251,8 @@
 													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung')) ?? 0 }}</th>
 													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung')) ?? 0 }}</th>
 													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('pagu')) ?? 0 }}</th>
-													<th class="text-center">{{ floor(0 * 1000) / 10 }}%</th>
-													<th class="text-center">{{ format_persen($skpd_anggaran->laporan->sum('presentasi_realisasi_fisik') / count($skpd_anggaran->laporan)) }}%</th>
+													<th class="text-center">{{ format_persen($presentasi_realisasi_keuangan_keseluruhan / count($grouped)) }}%</th>
+													<th class="text-center">{{ format_persen($presentasi_realisasi_fisik_keseluruhan / count($grouped)) }}%</th>
 													<th></th>
 													<th></th>
 													<th></th>
