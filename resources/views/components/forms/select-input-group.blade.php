@@ -4,7 +4,7 @@
 		<select id="{{ $key }}" class="form-select" name="{{ $key }}">
 			<option selected="">{{ $placeholder ?? 'Pilih' }}...</option>
 			@foreach ($data as $item)
-				<option @selected($value == $item['value']) value="{{ $item['value'] }}">{{ $item['label'] }}</option>
+				<option @selected($value ?? '' == $item['value']) value="{{ $item['value'] }}">{{ $item['label'] }}</option>
 			@endforeach
 		</select>
 		@error($key)

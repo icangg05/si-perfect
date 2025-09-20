@@ -71,6 +71,37 @@ body {
   background: linear-gradient(180deg, #375ac2, #17a673);
 }
 
+.forms-input {
+  /* text-align: right; */
+  padding: .25rem .5rem;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  background-color: #f6f6f6;
+}
+
+.forms-input:focus {
+  outline: none;
+}
+
+.forms-input.no {
+  width: 8ch;
+}
+.forms-input.text {
+  width: 34ch;
+}
+.forms-input.no-kontrak {
+  width: 16ch;
+}
+.forms-input.dana {
+  width: 10ch;
+}
+.forms-input.rupiah {
+  width: 14.5ch;
+}
+.forms-input.tanggal {
+  width: 14ch;
+}
+
 /* Mode gelap */
 @media (prefers-color-scheme: dark) {
   .my-scrollbar::-webkit-scrollbar-track {

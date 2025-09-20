@@ -1,4 +1,112 @@
 <x-layouts.dashboard>
+  {{-- <div class="modal fade" id="modalCreate" tabindex="-1" aria-labelledby="modalCreateItem"
+		aria-hidden="true">
+		<div class="modal-dialog modal-xl modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalCreateItem">Edit Item Anggaran</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<form action="{{ route('dashboard.laporan-realisasi.store') }}" method="POST">
+					@csrf
+					<div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="kategori_laporan_id" class="form-label">Kategori</label>
+                  <select class="form-select" id="kategori_laporan_id" required>
+                    <option value="">-- Pilih kategori --</option>
+                    <option value="1">1. Paket Penyedia</option>
+                    <option value="2">2. Paket Swakelola</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="sub_kategori_laporan_id" class="form-label">Sub Kategori</label>
+                  <select class="form-select" id="sub_kategori_laporan_id" name="sub_kategori_laporan_id" required>
+                    <option value="">-- Pilih sub kategori --</option>
+                    <option value="1">1.1 Paket Penyedia Terumumkan</option>
+                    <option value="2">2.2 Paket Swakelola</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="mb-2">
+                  <label for="no" class="form-label">No.</label>
+                  <input type="text" class="form-control" id="no" name="no"
+                    placeholder="Masukkan no. kegiatan..." required>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="mb-3">
+                  <label for="nama_pekerjaan" class="form-label">Nama Pekerjaan</label>
+                  <input type="text" class="form-control" id="nama_pekerjaan" name="nama_pekerjaan"
+                    placeholder="Masukkan nama pekerjaan..." required>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="pagu" class="form-label">Pagu (Rp)</label>
+                  <input type="number" class="form-control" id="pagu" name="pagu"
+                    placeholder="Masukkan jumlah pagu..." min="0" required>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="mb-4">
+                  <label for="no_kontrak" class="form-label">No. Kontrak</label>
+                  <input type="text" class="form-control" id="no_kontrak" name="no_kontrak"
+                    placeholder="Masukkan no. kontrak..." required>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-4">
+                  <label for="tgl_mulai_kontrak" class="form-label">Tanggal Kontrak (Mulai)</label>
+                  <input type="date" class="form-control" id="tgl_mulai_kontrak" name="tgl_mulai_kontrak"
+                    placeholder="Masukkan tanggal mulai kontrak..." required>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-4">
+                  <label for="tgl_berakhir_kontrak" class="form-label">Tanggal Kontrak (Berakhir)</label>
+                  <input type="date" class="form-control" id="tgl_berakhir_kontrak" name="tgl_berakhir_kontrak"
+                    placeholder="Masukkan tanggal berakhir kontrak..." required>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="mb-4">
+                  <label for="nilai_kontrak_tender" class="form-label">Nilai Kontrak - Tender (Rp)</label>
+                  <input type="number" class="form-control" id="nilai_kontrak_tender" name="nilai_kontrak_tender"
+                    placeholder="Masukkan nilai kontrak..." required>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-4">
+                  <label for="realisasi_tender" class="form-label">Realisasi - Tender (Rp)</label>
+                  <input type="number" class="form-control" id="realisasi_tender" name="realisasi_tender"
+                    placeholder="Masukkan realisasi..." required>
+                </div>
+              </div>
+            </div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+							Kembali
+						</button>
+						<button type="submit" class="btn btn-primary">
+							<i class="material-icons">save_alt</i> Simpan
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div> --}}
+
 	<div class="row">
 		<div class="col">
 			<div class="page-description d-flex align-items-start">
@@ -155,38 +263,236 @@
 
 																// tambahkan ke total per kategori
 																$total_realisasi_anggaran_perkategori += $total_realisasi_anggaran;
+                                $no_asc  = $index + 1;
+                                $no_edit = 3;
 															@endphp
 
 															<tr>
-																<td class="text-center">{{ $index + 1 }}</td>
-																<td class="text-center">{{ $item->no }}</td>
-																<td>{{ $item->nama_pekerjaan }}</td>
-																<td class="text-end">{{ format_ribuan($item->pagu) }}</td>
-																<td>{{ $item->no_kontrak }}</td>
-																<td>{{ $item->tanggal_mulai_kontrak }}</td>
-																<td>{{ $item->tanggal_berakhir_kontrak }}</td>
-																<td class="text-end">{{ format_ribuan($item->nilai_kontrak_tender) }}</td>
-																<td class="text-end">{{ format_ribuan($item->realisasi_tender) }}</td>
-																<td class="text-end">{{ format_ribuan($item->nilai_kontrak_penunjukkan_langsung) }}</td>
-																<td class="text-end">{{ format_ribuan($item->realisasi_penunjukkan_langsung) }}</td>
-																<td class="text-end">{{ format_ribuan($item->nilai_kontrak_swakelola) }}</td>
-																<td class="text-end">{{ format_ribuan($item->realisasi_swakelola) }}</td>
-																<td class="text-end">{{ format_ribuan($item->nilai_kontrak_epurchasing) }}</td>
-																<td class="text-end">{{ format_ribuan($item->realisasi_epurchasing) }}</td>
-																<td class="text-end">{{ format_ribuan($item->nilai_kontrak_pengadaan_langsung) }}</td>
-																<td class="text-end">{{ format_ribuan($item->realisasi_pengadaan_langsung) }}</td>
+																<td class="text-center">{{ $no_asc }}</td>
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->no }}"
+                                      min="1"
+                                      class="forms-input no text-end">
+                                  </td>
+                                @else
+                                  <td class="text-center">{{ $item->no }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td>
+                                    <input
+                                      type="text"
+                                      value="{{ $item->nama_pekerjaan }}"
+                                      class="forms-input text">
+                                  </td>
+                                @else
+                                  <td>{{ $item->nama_pekerjaan }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->pagu }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->pagu) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td>
+                                    <input
+                                      type="text"
+                                      value="{{ $item->no_kontrak }}"
+                                      class="forms-input no-kontrak">
+                                  </td>
+                                @else
+                                  <td>{{ $item->no_kontrak }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td>
+                                    <input
+                                      type="date"
+                                      value="{{ $item->tgl_mulai_kontrak }}"
+                                      class="forms-input tanggal">
+                                  </td>
+                                @else
+                                  <td class="text-nowrap">{{ $item->tgl_mulai_kontrak }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td>
+                                    <input
+                                      type="date"
+                                      value="{{ $item->tgl_berakhir_kontrak }}"
+                                      class="forms-input tanggal">
+                                  </td>
+                                @else
+                                  <td class="text-nowrap">{{ $item->tgl_berakhir_kontrak }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                    type="number"
+                                    value="{{ $item->nilai_kontrak_tender ?: '' }}"
+                                    class="forms-input rupiah text-end"
+                                    min="500"
+                                    step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_tender) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->realisasi_tender ?: '' }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->realisasi_tender) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->nilai_kontrak_penunjukkan_langsung ?: '' }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_penunjukkan_langsung) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->realisasi_penunjukkan_langsung ?: '' }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->realisasi_penunjukkan_langsung) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->nilai_kontrak_swakelola ?: '' }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_swakelola) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->realisasi_swakelola ?: '' }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->realisasi_swakelola) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->nilai_kontrak_epurchasing ?: '' }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_epurchasing) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->realisasi_epurchasing ?: '' }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->realisasi_epurchasing) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->nilai_kontrak_pengadaan_langsung ?: '' }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_pengadaan_langsung) }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->realisasi_pengadaan_langsung ?: '' }}"
+                                      class="forms-input rupiah text-end"
+                                      min="500"
+                                      step="500">
+                                  </td>
+                                @else
+                                  <td class="text-end">{{ format_ribuan($item->realisasi_pengadaan_langsung) }}</td>
+                                @endif
 																<td class="text-end">{{ format_ribuan($total_realisasi_anggaran) }}</td>
 																<td class="text-center">
-																	{{ $item->pagu > 0 ? floor(($total_realisasi_anggaran / $item->pagu) * 1000) / 10 . '%' : '0%' }}
+																	{{ format_persen($total_realisasi_anggaran / max($item->pagu, 1)) ?? 0 }}%
 																</td>
-																<td class="text-center">{{ floor($item->presentasi_realisasi_fisik * 1000) / 10 }}%</td>
-																<td class="text-center">{{ $item->sumber_dana ?? '-' }}</td>
-																<td class="text-center">{{ $item->keterangan ?? '-' }}</td>
+                                @if ($no_edit == $no_asc)
+                                  <td class="text-end">
+                                    <input
+                                      type="number"
+                                      value="{{ $item->presentasi_realisasi_fisik * 100 }}"
+                                      min="0"
+                                      step="0.1"
+                                      class="forms-input no text-end">
+                                  </td>
+                                @else
+                                  <td class="text-center">{{ format_persen($item->presentasi_realisasi_fisik) ?? 0 }}%</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td>
+                                    <input
+                                      type="text"
+                                      value="{{ $item->sumber_dana }}"
+                                      class="forms-input dana">
+                                  </td>
+                                @else
+                                  <td class="text-center">{{ $item->sumber_dana ?? '-' }}</td>
+                                @endif
+                                @if ($no_edit == $no_asc)
+                                  <td>
+                                    <input
+                                      type="text"
+                                      value="{{ $item->keterangan }}"
+                                      class="forms-input no-kontrak">
+                                  </td>
+                                @else
+                                  <td class="text-center">{{ $item->keterangan ?? '-' }}</td>
+                                @endif
 																<td>
-																	<a style="scale: .85" href="{{ route('dashboard.laporan-realisasi-item', $item->id) }}"
-																		class="btn btn-sm btn-warning text-nowrap">
+																	<button type="button" style="scale: .85"
+																		class="btn btn-sm btn-warning text-nowrap" data-bs-toggle="modal" data-bs-target="#modalCreate">
 																		<span class="material-icons" style="font-size: 18px; vertical-align: middle;">edit_square</span>
-																	</a>
+																	</button>
 																</td>
 															</tr>
 														@endforeach
@@ -251,8 +557,8 @@
 													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung')) ?? 0 }}</th>
 													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung')) ?? 0 }}</th>
 													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('pagu')) ?? 0 }}</th>
-													<th class="text-center">{{ format_persen($presentasi_realisasi_keuangan_keseluruhan / count($grouped)) }}%</th>
-													<th class="text-center">{{ format_persen($presentasi_realisasi_fisik_keseluruhan / count($grouped)) }}%</th>
+													<th class="text-center">{{ format_persen($presentasi_realisasi_keuangan_keseluruhan / max(count($grouped), 1)) ?? 0 }}%</th>
+													<th class="text-center">{{ format_persen($presentasi_realisasi_fisik_keseluruhan / max(count($grouped), 1)) ?? 0 }}%</th>
 													<th></th>
 													<th></th>
 													<th></th>
