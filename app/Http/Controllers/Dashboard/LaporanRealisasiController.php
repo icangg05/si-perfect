@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Laporan;
 use App\Models\SKPDAnggaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class LaporanRealisasiController extends Controller
 {
@@ -99,8 +101,110 @@ class LaporanRealisasiController extends Controller
           return $laporan->sub_kategori_laporan->nama ?? 'Tanpa Sub Kategori';
         });
       });
-    // return mdd($grouped);
+
+    $title = 'Hapus data!';
+    $text  = "Hapus item anggaran?";
+    confirmDelete($title, $text);
 
     return view('dashboard.laporan-realisasi-item', compact('skpd_anggaran', 'grouped'));
+  }
+
+
+  /**
+   * Handle update main data laporan
+   */
+  public function updateDataLaporan(Request $request, $id)
+  {
+    $request->validate([
+      'jenis_pengadaan' => ['required'],
+      'bulan_anggaran'  => ['required', 'numeric', 'between:1,12'],
+      'tahun_anggaran'  => ['required', 'numeric', 'digits:4'],
+    ], [
+      'jenis_pengadaan.required' => 'Jenis pengadaan wajib diisi.',
+      'bulan_anggaran.required'  => 'Bulan wajib diisi.',
+      'bulan_anggaran.numeric'   => 'Bulan harus angka.',
+      'bulan_anggaran.between'   => 'Bulan harus antara 1 - 12.',
+      'tahun_anggaran.required'  => 'Tahun wajib diisi.',
+      'tahun_anggaran.numeric'   => 'Tahun harus angka.',
+      'tahun_anggaran.digits'    => 'Tahun harus terdiri dari 4 digit.',
+    ]);
+
+    $skpd_anggaran = SKPDAnggaran::findOrFail($id);
+    $skpd_anggaran->update($request->all());
+
+
+    alert()->success('Sukses!', 'Data utama anggaran berhasil diperbarui.')
+      ->showConfirmButton('Ok', '#1D3D62');
+
+    return redirect()->back()->with('active_tab', 'data-utama');
+  }
+
+  /**
+   * Handle update item anggaran
+   */
+  public function updateLaporanItem(Request $request, $id)
+  {
+    $validator = Validator::make($request->all(), [
+      'no'                   => ['required', 'numeric', 'min:1'],
+      'nama_pekerjaan'       => ['required', 'max:100'],
+      'no_kontrak'           => ['nullable', 'max:100'],
+      'tgl_mulai_kontrak'    => ['nullable', 'date', 'before_or_equal:tgl_berakhir_kontrak'],
+      'tgl_berakhir_kontrak' => ['nullable', 'date', 'after_or_equal:tgl_mulai_kontrak'],
+      'sumber_dana'          => ['nullable', 'max:50'],
+      'keterangan'           => ['nullable', 'max:191'],
+      'pagu'                 => ['required', 'numeric', 'min:500'],
+    ], [
+      'no.required'                         => 'No. wajib diisi.',
+      'no.min'                              => 'No. minimal 1.',
+      'nama_pekerjaan.required'             => 'Nama pekerjaan wajib diisi.',
+      'nama_pekerjaan.max'                  => 'Nama pekerjaan maksimal 255 karakter.',
+      'tgl_mulai_kontrak.before_or_equal'   => 'Tanggal mulai kontrak harus sebelum atau sama dengan tanggal berakhir.',
+      'tgl_berakhir_kontrak.after_or_equal' => 'Tanggal berakhir kontrak harus setelah atau sama dengan tanggal mulai.',
+    ]);
+
+    $validator->after(function ($validator) use ($request) {
+      if ((
+        $request->nilai_kontrak_tender + $request->realisasi_tender +
+        $request->nilai_kontrak_penunjukkan_langsung + $request->realisasi_penunjukkan_langsung +
+        $request->nilai_kontrak_swakelola + $request->realisasi_swakelola +
+        $request->nilai_kontrak_epuchasing + $request->realisasi_epuchasing +
+        $request->nilai_kontrak_pengadaan_langsung + $request->realisasi_pengadaan_langsung
+      ) > $request->pagu) {
+        $validator->errors()->add('pagu', 'Jumlah nilai kontrak dan realisasi tidak boleh melebihi pagu.');
+      }
+    });
+
+    if ($validator->fails()) {
+      return back()->withErrors($validator)->withInput()->with('row_id', $id);
+    }
+
+
+    // Update item anggaran
+    $item_anggaran = Laporan::findOrFail($id);
+    $data          = $request->all();
+
+    $data['presentasi_realisasi_fisik'] = $request->presentasi_realisasi_fisik / 100;
+    $item_anggaran->update($data);
+
+
+    alert()->success('Sukses!', 'Item anggaran berhasil diperbarui.')
+      ->showConfirmButton('Ok', '#1D3D62');
+
+    return redirect()->back();
+  }
+
+
+  /**
+   * Handle delete item angggaran
+   */
+  public function deleteLaporanItem($id)
+  {
+    $item_anggaran = Laporan::findOrFail($id);
+    $item_anggaran->delete();
+
+    alert()->success('Sukses!', 'Item anggaran berhasil dihapus.')
+      ->showConfirmButton('Ok', '#1D3D62');
+
+    return redirect()->back();
   }
 }

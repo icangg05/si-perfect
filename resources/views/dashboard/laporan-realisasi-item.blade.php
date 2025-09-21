@@ -1,112 +1,4 @@
 <x-layouts.dashboard>
-  {{-- <div class="modal fade" id="modalCreate" tabindex="-1" aria-labelledby="modalCreateItem"
-		aria-hidden="true">
-		<div class="modal-dialog modal-xl modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="modalCreateItem">Edit Item Anggaran</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-
-				<form action="{{ route('dashboard.laporan-realisasi.store') }}" method="POST">
-					@csrf
-					<div class="modal-body">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="kategori_laporan_id" class="form-label">Kategori</label>
-                  <select class="form-select" id="kategori_laporan_id" required>
-                    <option value="">-- Pilih kategori --</option>
-                    <option value="1">1. Paket Penyedia</option>
-                    <option value="2">2. Paket Swakelola</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="sub_kategori_laporan_id" class="form-label">Sub Kategori</label>
-                  <select class="form-select" id="sub_kategori_laporan_id" name="sub_kategori_laporan_id" required>
-                    <option value="">-- Pilih sub kategori --</option>
-                    <option value="1">1.1 Paket Penyedia Terumumkan</option>
-                    <option value="2">2.2 Paket Swakelola</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <div class="mb-2">
-                  <label for="no" class="form-label">No.</label>
-                  <input type="text" class="form-control" id="no" name="no"
-                    placeholder="Masukkan no. kegiatan..." required>
-                </div>
-              </div>
-              <div class="col-md-5">
-                <div class="mb-3">
-                  <label for="nama_pekerjaan" class="form-label">Nama Pekerjaan</label>
-                  <input type="text" class="form-control" id="nama_pekerjaan" name="nama_pekerjaan"
-                    placeholder="Masukkan nama pekerjaan..." required>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label for="pagu" class="form-label">Pagu (Rp)</label>
-                  <input type="number" class="form-control" id="pagu" name="pagu"
-                    placeholder="Masukkan jumlah pagu..." min="0" required>
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="mb-4">
-                  <label for="no_kontrak" class="form-label">No. Kontrak</label>
-                  <input type="text" class="form-control" id="no_kontrak" name="no_kontrak"
-                    placeholder="Masukkan no. kontrak..." required>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="mb-4">
-                  <label for="tgl_mulai_kontrak" class="form-label">Tanggal Kontrak (Mulai)</label>
-                  <input type="date" class="form-control" id="tgl_mulai_kontrak" name="tgl_mulai_kontrak"
-                    placeholder="Masukkan tanggal mulai kontrak..." required>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="mb-4">
-                  <label for="tgl_berakhir_kontrak" class="form-label">Tanggal Kontrak (Berakhir)</label>
-                  <input type="date" class="form-control" id="tgl_berakhir_kontrak" name="tgl_berakhir_kontrak"
-                    placeholder="Masukkan tanggal berakhir kontrak..." required>
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <div class="mb-4">
-                  <label for="nilai_kontrak_tender" class="form-label">Nilai Kontrak - Tender (Rp)</label>
-                  <input type="number" class="form-control" id="nilai_kontrak_tender" name="nilai_kontrak_tender"
-                    placeholder="Masukkan nilai kontrak..." required>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="mb-4">
-                  <label for="realisasi_tender" class="form-label">Realisasi - Tender (Rp)</label>
-                  <input type="number" class="form-control" id="realisasi_tender" name="realisasi_tender"
-                    placeholder="Masukkan realisasi..." required>
-                </div>
-              </div>
-            </div>
-					</div>
-
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-							Kembali
-						</button>
-						<button type="submit" class="btn btn-primary">
-							<i class="material-icons">save_alt</i> Simpan
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div> --}}
-
 	<div class="row">
 		<div class="col">
 			<div class="page-description d-flex align-items-start">
@@ -129,6 +21,21 @@
 		</div>
 	</div>
 	<div class="row">
+    @if ($errors->any())
+      <div class="col-md-12">
+        <div class="alert alert-custom" role="alert">
+          <div class="custom-alert-icon icon-danger"><i class="material-icons-outlined h1">error</i></div>
+          <div class="alert-content">
+            <span class="alert-title">Terjadi kesalahan</span>
+            <ul class="alert-text">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        </div>
+      </div>
+    @endif
 		<div class="col">
 			<div class="card">
 				<div class="card-header">
@@ -145,20 +52,25 @@
 					</p>
 					<div class="example-container">
 						<div class="example-content">
+              @php
+                $activeTab =
+                  session('active_tab') ??
+                  ($errors->hasAny(['jenis_pengadaan', 'bulan_anggaran', 'tahun_anggaran']) ? 'data-utama' : 'item-anggaran');
+              @endphp
 							<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 								<li class="nav-item" role="presentation">
-									<button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
-										data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+									<button class="nav-link {{ $activeTab === 'item-anggaran' ? 'active' : '' }}" id="pills-home-tab" data-bs-toggle="pill"
+										data-bs-target="#item-anggaran" type="button" role="tab" aria-controls="pills-home"
 										aria-selected="true">Item Anggaran</button>
 								</li>
 								<li class="nav-item" role="presentation">
-									<button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
-										data-bs-target="#pills-profile" type="button" role="tab"
+									<button class="nav-link {{ $activeTab === 'data-utama' ? 'active' : '' }}" id="pills-profile-tab" data-bs-toggle="pill"
+										data-bs-target="#data-utama" type="button" role="tab"
 										aria-controls="pills-profile" aria-selected="false">Data Utama</button>
 								</li>
 							</ul>
 							<div class="tab-content" id="pills-tabContent">
-								<div class="tab-pane fade active show" id="pills-home" role="tabpanel"
+								<div class="tab-pane fade {{ $activeTab === 'item-anggaran' ? 'active show' : '' }}" id="item-anggaran" role="tabpanel"
 									aria-labelledby="pills-home-tab">
 									<div class="mt-4 table-responsive my-scrollbar">
 										<table class="table table-sm table-bordered table-hover my-table font-arimo">
@@ -262,239 +174,175 @@
                                   $item->realisasi_pengadaan_langsung;
 
 																// tambahkan ke total per kategori
-																$total_realisasi_anggaran_perkategori += $total_realisasi_anggaran;
-                                $no_asc  = $index + 1;
-                                $no_edit = 3;
+                                $total_realisasi_anggaran_perkategori += $total_realisasi_anggaran;
+                                $no_asc                                = $index + 1;
 															@endphp
 
-															<tr>
-																<td class="text-center">{{ $no_asc }}</td>
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->no }}"
-                                      min="1"
-                                      class="forms-input no text-end">
+															<tr data-id="{{ $item->id }}">
+                                @php
+                                  $rowError = session('row_id') == $item->id;
+                                @endphp
+                                <form action="{{ route('dashboard.update-item-anggaran', $item->id) }}" method="post">
+                                  @csrf
+                                  <!-- Kolom urut dpa -->
+                                  <td class="text-center">{{ $no_asc }}</td>
+
+                                  <!-- Kolom no -->
+                                  <td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
+                                    {{ $item->no }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="no" value="{{ old('no', $item->no) }}" min="1" class="forms-input no text-end">
                                   </td>
-                                @else
-                                  <td class="text-center">{{ $item->no }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td>
-                                    <input
-                                      type="text"
-                                      value="{{ $item->nama_pekerjaan }}"
-                                      class="forms-input text">
+
+                                  <!-- Kolom nama pekerjaan -->
+                                  <td class="view-mode {{ $rowError ? 'd-none' : '' }}">
+                                    {{ $item->nama_pekerjaan }}</td>
+                                  <td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="text" name="nama_pekerjaan" value="{{ old('nama_pekerjaan', $item->nama_pekerjaan) }}" maxlength="100" class="forms-input text">
                                   </td>
-                                @else
-                                  <td>{{ $item->nama_pekerjaan }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->pagu }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom pagu -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->pagu) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="pagu" value="{{ old('pagu', $item->pagu) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->pagu) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td>
-                                    <input
-                                      type="text"
-                                      value="{{ $item->no_kontrak }}"
-                                      class="forms-input no-kontrak">
+
+                                  <!-- Kolom no kontrak -->
+                                  <td class="view-mode {{ $rowError ? 'd-none' : '' }}">
+                                    {{ $item->no_kontrak }}</td>
+                                  <td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="text" name="no_kontrak" value="{{ old('no_kontrak', $item->no_kontrak) }}" class="forms-input no-kontrak">
                                   </td>
-                                @else
-                                  <td>{{ $item->no_kontrak }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td>
-                                    <input
-                                      type="date"
-                                      value="{{ $item->tgl_mulai_kontrak }}"
-                                      class="forms-input tanggal">
+
+                                  <!-- Kolom tgl mulai kontrak -->
+                                  <td class="view-mode text-nowrap {{ $rowError ? 'd-none' : '' }}">
+                                    {{ $item->tgl_mulai_kontrak ? Carbon\Carbon::create($item->tgl_mulai_kontrak)->translatedFormat('d-m-Y') : null }}</td>
+                                  <td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="date" name="tgl_mulai_kontrak" value="{{ old('tgl_mulai_kontrak', $item->tgl_mulai_kontrak) }}" class="forms-input tanggal">
                                   </td>
-                                @else
-                                  <td class="text-nowrap">{{ $item->tgl_mulai_kontrak }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td>
-                                    <input
-                                      type="date"
-                                      value="{{ $item->tgl_berakhir_kontrak }}"
-                                      class="forms-input tanggal">
+
+                                  <!-- Kolom tgl berakhir kontrak -->
+                                  <td class="view-mode text-nowrap {{ $rowError ? 'd-none' : '' }}">
+                                    {{ $item->tgl_berakhir_kontrak ? Carbon\Carbon::create($item->tgl_berakhir_kontrak)->translatedFormat('d-m-Y') : null }}</td>
+                                  <td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="date" name="tgl_berakhir_kontrak" value="{{ old('tgl_berakhir_kontrak', $item->tgl_berakhir_kontrak) }}" class="forms-input tanggal">
                                   </td>
-                                @else
-                                  <td class="text-nowrap">{{ $item->tgl_berakhir_kontrak }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                    type="number"
-                                    value="{{ $item->nilai_kontrak_tender ?: '' }}"
-                                    class="forms-input rupiah text-end"
-                                    min="500"
-                                    step="500">
+
+                                  <!-- Kolom nilai kontrak tender -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->nilai_kontrak_tender) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="nilai_kontrak_tender" value="{{ old('nilai_kontrak_tender', $item->nilai_kontrak_tender) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_tender) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->realisasi_tender ?: '' }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom realisasi tender -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->realisasi_tender) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="realisasi_tender" value="{{ old('realisasi_tender', $item->realisasi_tender) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->realisasi_tender) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->nilai_kontrak_penunjukkan_langsung ?: '' }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom nilai kontrak penunjukkan langsung -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->nilai_kontrak_penunjukkan_langsung) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="nilai_kontrak_penunjukkan_langsung" value="{{ old('nilai_kontrak_penunjukkan_langsung', $item->nilai_kontrak_penunjukkan_langsung) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_penunjukkan_langsung) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->realisasi_penunjukkan_langsung ?: '' }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom realisasi penunjukkan langsung -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->realisasi_penunjukkan_langsung) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="realisasi_penunjukkan_langsung" value="{{ old('realisasi_penunjukkan_langsung', $item->realisasi_penunjukkan_langsung) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->realisasi_penunjukkan_langsung) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->nilai_kontrak_swakelola ?: '' }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom nilai kontrak swakelola -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->nilai_kontrak_swakelola) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="nilai_kontrak_swakelola" value="{{ old('nilai_kontrak_swakelola', $item->nilai_kontrak_swakelola) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_swakelola) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->realisasi_swakelola ?: '' }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom realisasi swakelola -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->realisasi_swakelola) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="realisasi_swakelola" value="{{ old('realisasi_swakelola', $item->realisasi_swakelola) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->realisasi_swakelola) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->nilai_kontrak_epurchasing ?: '' }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom nilai kontrak epurchasing -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->nilai_kontrak_epurchasing) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="nilai_kontrak_epurchasing" value="{{ old('nilai_kontrak_epurchasing', $item->nilai_kontrak_epurchasing) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_epurchasing) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->realisasi_epurchasing ?: '' }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom realisasi epurchasing -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->realisasi_epurchasing) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="realisasi_epurchasing" value="{{ old('realisasi_epurchasing', $item->realisasi_epurchasing) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->realisasi_epurchasing) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->nilai_kontrak_pengadaan_langsung ?: '' }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom nilai kontrak pengadaan langsung -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->nilai_kontrak_pengadaan_langsung) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="nilai_kontrak_pengadaan_langsung" value="{{ old('nilai_kontrak_pengadaan_langsung', $item->nilai_kontrak_pengadaan_langsung) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->nilai_kontrak_pengadaan_langsung) }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->realisasi_pengadaan_langsung ?: '' }}"
-                                      class="forms-input rupiah text-end"
-                                      min="500"
-                                      step="500">
+
+                                  <!-- Kolom realiasi pengadaan langsung -->
+                                  <td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_ribuan($item->realisasi_pengadaan_langsung) }}</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="realisasi_pengadaan_langsung" value="{{ old('realisasi_pengadaan_langsung', $item->realisasi_pengadaan_langsung) }}" min="500" class="forms-input rupiah text-end">
                                   </td>
-                                @else
-                                  <td class="text-end">{{ format_ribuan($item->realisasi_pengadaan_langsung) }}</td>
-                                @endif
-																<td class="text-end">{{ format_ribuan($total_realisasi_anggaran) }}</td>
-																<td class="text-center">
-																	{{ format_persen($total_realisasi_anggaran / max($item->pagu, 1)) ?? 0 }}%
-																</td>
-                                @if ($no_edit == $no_asc)
-                                  <td class="text-end">
-                                    <input
-                                      type="number"
-                                      value="{{ $item->presentasi_realisasi_fisik * 100 }}"
-                                      min="0"
-                                      step="0.1"
-                                      class="forms-input no text-end">
+
+                                  <!-- Kolom total realisasi keuangan -->
+                                  <td class="text-end">{{ format_ribuan($total_realisasi_anggaran) }}</td>
+                                  <td class="text-center">
+                                    {{ format_persen($total_realisasi_anggaran / max($item->pagu, 1)) ?? 0 }}%
                                   </td>
-                                @else
-                                  <td class="text-center">{{ format_persen($item->presentasi_realisasi_fisik) ?? 0 }}%</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td>
-                                    <input
-                                      type="text"
-                                      value="{{ $item->sumber_dana }}"
-                                      class="forms-input dana">
+
+                                  <!-- Kolom presentasi realisasi fisik -->
+                                  <td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
+                                    {{ format_persen($item->presentasi_realisasi_fisik) ?? 0 }}%</td>
+                                  <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="number" name="presentasi_realisasi_fisik" value="{{ old('presentasi_realisasi_fisik', $item->presentasi_realisasi_fisik * 100) }}" min="0" step="0.1" class="forms-input no text-end">
                                   </td>
-                                @else
-                                  <td class="text-center">{{ $item->sumber_dana ?? '-' }}</td>
-                                @endif
-                                @if ($no_edit == $no_asc)
-                                  <td>
-                                    <input
-                                      type="text"
-                                      value="{{ $item->keterangan }}"
-                                      class="forms-input no-kontrak">
+
+                                  <!-- Kolom sumber dana -->
+                                  <td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
+                                    {{ $item->sumber_dana ?? '-' }}</td>
+                                  <td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="text" name="sumber_dana" value="{{ old('sumber_dana', $item->sumber_dana) }}" maxlength="50" class="forms-input dana">
                                   </td>
-                                @else
-                                  <td class="text-center">{{ $item->keterangan ?? '-' }}</td>
-                                @endif
-																<td>
-																	<button type="button" style="scale: .85"
-																		class="btn btn-sm btn-warning text-nowrap" data-bs-toggle="modal" data-bs-target="#modalCreate">
-																		<span class="material-icons" style="font-size: 18px; vertical-align: middle;">edit_square</span>
-																	</button>
-																</td>
-															</tr>
+
+                                  <!-- Kolom keterangan -->
+                                  <td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
+                                    {{ $item->keterangan ?? '-' }}</td>
+                                  <td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
+                                    <input type="text" name="keterangan" value="{{ old('keterangan', $item->keterangan) }}" maxlength="191" class="forms-input no-kontrak">
+                                  </td>
+                                </form>
+
+                                <!-- Tombol aksi -->
+                                <td class="text-nowrap" style="scale:.8">
+                                  <button type="button" class="btn btn-sm btn-warning btn-edit {{ $rowError ? 'd-none' : '' }}">
+                                    <span class="material-icons" style="font-size:18px;vertical-align:middle;">edit_square</span>
+                                  </button>
+                                  <button type="button" class="btn btn-sm btn-success btn-save {{ $rowError ? '' : 'd-none' }}">
+                                    <span class="material-icons" style="font-size:18px;vertical-align:middle;">check</span>
+                                  </button>
+                                  <button type="button" class="btn btn-sm btn-secondary btn-cancel {{ $rowError ? '' : 'd-none' }}">
+                                    <span class="material-icons" style="font-size:18px;vertical-align:middle;">close</span>
+                                  </button>
+                                  <a href="{{ route('dashboard.delete-item-anggaran', $item->id) }}" class="btn btn-sm btn-danger btn-delete" data-confirm-delete>
+                                    <span class="material-icons" style="font-size:18px;vertical-align:middle;">delete</span>
+                                  </a>
+                                </td>
+                              </tr>
 														@endforeach
 
                             @php
@@ -567,8 +415,61 @@
 										</table>
 									</div>
 								</div>
-								<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-									<p>Formulir detail data anggaran untuk jenis pengadaan ini akan ditampilkan di sini.</p>
+								<div class="tab-pane fade {{ $activeTab === 'data-utama' ? 'active show' : '' }}" id="data-utama" role="tabpanel" aria-labelledby="pills-profile-tab">
+                  <div class="mt-4">
+                    <form action="{{ route('dashboard.update-data-laporan', $skpd_anggaran->id) }}" method="post">
+                      @csrf
+                      @method('patch')
+                      <div class="row">
+                        <div class="col-md-8">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="mb-3">
+                                <label for="jenis_pengadaan" class="form-label">Jenis Pengadaan</label>
+                                <input type="text" class="form-control" id="jenis_pengadaan" aria-describedby="jenis_pengadaanHelp"
+                                  placeholder="Masukkan jenis pengadaan..." name="jenis_pengadaan" value="{{ old('jenis_pengadaan', $skpd_anggaran->jenis_pengadaan) }}">
+                                {{-- @error('jenis_pengadaan')
+                                  <div class="form-text text-danger">{{ $message }}</div>
+                                @enderror --}}
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="mb-3">
+                                <label for="bulan_anggaran" class="form-label">Bulan</label>
+                                <select name="bulan_anggaran" class="form-select">
+                                  <option value="">-- Pilih Bulan --</option>
+                                  @foreach (range(1, 12) as $i)
+                                    <option value="{{ $i }}" {{ old('bulan_anggaran', $skpd_anggaran->bulan_anggaran) == $i ? 'selected' : '' }}>
+                                      {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                                    </option>
+                                  @endforeach
+                                </select>
+                                {{-- @error('bulan_anggaran')
+                                  <div class="form-text text-danger">{{ $message }}</div>
+                                @enderror --}}
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="mb-3">
+                                <label for="tahun_anggaran" class="form-label">Tahun Anggaran</label>
+                                <input type="text" class="form-control" id="tahun_anggaran" aria-describedby="tahun_anggaranHelp"
+                                  placeholder="Masukkan tahun anggaran..." maxlength="4" name="tahun_anggaran" value="{{ old('tahun_anggaran', $skpd_anggaran->tahun_anggaran) }}">
+                                {{-- @error('tahun_anggaran')
+                                  <div class="form-text text-danger">{{ $message }}</div>
+                                @enderror --}}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row m-t-sm">
+                            <div class="col">
+                              <button type="submit" class="btn btn-primary">
+                                <i class="material-icons">save_alt</i> Simpan</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
 								</div>
 							</div>
 						</div>

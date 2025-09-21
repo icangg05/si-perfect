@@ -8,6 +8,7 @@
 	<meta name="description" content="SI PERFECT">
 	<meta name="keywords" content="siperfect,si-perfect,pelaporan">
 	<meta name="author" content="ilmifaizan">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 	<!-- The above 6 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 	<!-- Title -->
@@ -278,6 +279,8 @@
 	</div>
 
 	<!-- Javascripts -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
 	<script src="{{ asset('') }}/assets/plugins/jquery/jquery-3.5.1.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/perfectscroll/perfect-scrollbar.min.js"></script>
@@ -286,6 +289,7 @@
 	<script src="{{ asset('') }}/assets/js/main.min.js"></script>
 	<script src="{{ asset('') }}/assets/js/custom.js"></script>
 	<script src="{{ asset('') }}/assets/js/pages/dashboard.js"></script>
+  <script src="{{ asset('assets/js/script.js') }}"></script>
 </body>
 
 </html>
