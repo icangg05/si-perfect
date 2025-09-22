@@ -57,22 +57,29 @@
                   session('active_tab') ??
                   ($errors->hasAny(['jenis_pengadaan', 'bulan_anggaran', 'tahun_anggaran']) ? 'data-utama' : 'item-anggaran');
               @endphp
-							<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-								<li class="nav-item" role="presentation">
-									<button class="nav-link {{ $activeTab === 'item-anggaran' ? 'active' : '' }}" id="pills-home-tab" data-bs-toggle="pill"
-										data-bs-target="#item-anggaran" type="button" role="tab" aria-controls="pills-home"
-										aria-selected="true">Item Anggaran</button>
-								</li>
-								<li class="nav-item" role="presentation">
-									<button class="nav-link {{ $activeTab === 'data-utama' ? 'active' : '' }}" id="pills-profile-tab" data-bs-toggle="pill"
-										data-bs-target="#data-utama" type="button" role="tab"
-										aria-controls="pills-profile" aria-selected="false">Data Utama</button>
-								</li>
-							</ul>
+              <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link {{ $activeTab === 'item-anggaran' ? 'active' : '' }}" id="pills-home-tab" data-bs-toggle="pill"
+                    data-bs-target="#item-anggaran" type="button" role="tab" aria-controls="pills-home"
+                    aria-selected="true">Item Anggaran</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link {{ $activeTab === 'data-utama' ? 'active' : '' }}" id="pills-profile-tab" data-bs-toggle="pill"
+                    data-bs-target="#data-utama" type="button" role="tab"
+                    aria-controls="pills-profile" aria-selected="false">Data Utama</button>
+                </li>
+              </ul>
 							<div class="tab-content" id="pills-tabContent">
 								<div class="tab-pane fade {{ $activeTab === 'item-anggaran' ? 'active show' : '' }}" id="item-anggaran" role="tabpanel"
 									aria-labelledby="pills-home-tab">
-									<div class="mt-4 table-responsive my-scrollbar">
+                  <div class="mt-4">
+                    <a href="{{ route('dashboard.create-item-anggaran', $skpd_anggaran->id) }}" class="btn btn-primary btn-sm" style="font-size: .9rem">
+                      <i class="material-icons" style="font-size: 1.1rem">add</i> Tambah Item</a>
+                    <a href="{{ route('export') }}" class="btn btn-success btn-sm" style="font-size: .9rem">
+                      <i class="material-icons" style="font-size: 1.1rem">description</i> Export</a>
+                  </div>
+
+									<div class="mt-3 table-responsive my-scrollbar">
 										<table class="table table-sm table-bordered table-hover my-table font-arimo">
 											<thead class="text-center align-middle">
 												<tr>

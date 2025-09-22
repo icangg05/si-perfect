@@ -279,8 +279,6 @@
 	</div>
 
 	<!-- Javascripts -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
 	<script src="{{ asset('') }}/assets/plugins/jquery/jquery-3.5.1.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/perfectscroll/perfect-scrollbar.min.js"></script>

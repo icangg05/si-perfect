@@ -28,8 +28,11 @@ Route::middleware('auth')->group(function () {
   Route::get('/laporan-realisasi', [LaporanRealisasiController::class, 'index'])->name('dashboard.laporan-realisasi');
   Route::post('/laporan-realisasi', [LaporanRealisasiController::class, 'buatLaporan'])->name('dashboard.laporan-realisasi.store');
   Route::get('/laporan-realisasi/{id}', [LaporanRealisasiController::class, 'buatLaporanItem'])->name('dashboard.laporan-realisasi-item');
+  Route::get('/laporan-realisasi/{id}/create', [LaporanRealisasiController::class, 'createLaporanItem'])->name('dashboard.create-item-anggaran');
+  Route::post('/laporan-realisasi/{id}/store', [LaporanRealisasiController::class, 'storeLaporanItem'])->name('dashboard.store-item-anggaran');
   Route::patch('/laporan-realisasi/{id}', [LaporanRealisasiController::class, 'updateDataLaporan'])->name('dashboard.update-data-laporan');
   Route::post('/update-item-anggaran/{id}', [LaporanRealisasiController::class, 'updateLaporanItem'])->name('dashboard.update-item-anggaran');
   Route::delete('/delete-item-anggaran/{id}', [LaporanRealisasiController::class, 'deleteLaporanItem'])->name('dashboard.delete-item-anggaran');
+
 
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\KategoriLaporan;
 use App\Models\Laporan;
 use App\Models\SKPDAnggaran;
 use Illuminate\Http\Request;
@@ -107,6 +108,72 @@ class LaporanRealisasiController extends Controller
     confirmDelete($title, $text);
 
     return view('dashboard.laporan-realisasi-item', compact('skpd_anggaran', 'grouped'));
+  }
+
+
+  /**
+   * Handle show view create laporan item
+   */
+  public function createLaporanItem($id)
+  {
+    $skpd_anggaran    = SKPDAnggaran::findOrFail($id);
+    $kategori_laporan = KategoriLaporan::with('sub_kategori_laporan')
+      ->whereHas('sub_kategori_laporan')
+      ->orderBy('id')
+      ->get();
+
+    $kategori = $kategori_laporan->firstWhere('id', request('kategori') ?? $kategori_laporan->first()->id);
+    abort_if(!$kategori, 404);
+
+
+    return view('dashboard.create-laporan-realisasi-item', compact('skpd_anggaran', 'kategori_laporan', 'kategori'));
+  }
+
+
+  /**
+   * Handle store new laporan item
+   */
+  public function storeLaporanItem(Request $request, $id)
+  {
+    $request->validate([
+      'sub_kategori_laporan_id'   => 'required|array',
+      'no'                        => 'required|array',
+      'nama_pekerjaan'            => 'required|array',
+      'pagu'                      => 'required|array',
+    ]);
+
+    // Looping semua row item
+    foreach ($request->no as $index => $no) {
+      Laporan::create([
+        'skpd_anggaran_id'                   => $id,
+        'sub_kategori_laporan_id'            => $request->sub_kategori_laporan_id[$index] ?? null,
+        'no'                                 => $no,
+        'nama_pekerjaan'                     => $request->nama_pekerjaan[$index] ?? null,
+        'pagu'                               => $request->pagu[$index] ?? null,
+        'no_kontrak'                         => $request->no_kontrak[$index] ?? null,
+        'tgl_mulai_kontrak'                  => $request->tgl_mulai_kontrak[$index] ?? null,
+        'tgl_berakhir_kontrak'               => $request->tgl_berakhir_kontrak[$index] ?? null,
+        'nilai_kontrak_tender'               => $request->nilai_kontrak_tender[$index] ?? null,
+        'realisasi_tender'                   => $request->realisasi_tender[$index] ?? null,
+        'nilai_kontrak_penunjukkan_langsung' => $request->nilai_kontrak_penunjukkan_langsung[$index] ?? null,
+        'realisasi_penunjukkan_langsung'     => $request->realisasi_penunjukkan_langsung[$index] ?? null,
+        'nilai_kontrak_swakelola'            => $request->nilai_kontrak_swakelola[$index] ?? null,
+        'realisasi_swakelola'                => $request->realisasi_swakelola[$index] ?? null,
+        'nilai_kontrak_epurchasing'          => $request->nilai_kontrak_epurchasing[$index] ?? null,
+        'realisasi_epurchasing'              => $request->realisasi_epurchasing[$index] ?? null,
+        'nilai_kontrak_pengadaan_langsung'   => $request->nilai_kontrak_pengadaan_langsung[$index] ?? null,
+        'realisasi_pengadaan_langsung'       => $request->realisasi_pengadaan_langsung[$index] ?? null,
+        'presentasi_realisasi_fisik'         => $request->presentasi_realisasi_fisik[$index] ? $request->presentasi_realisasi_fisik[$index] / 100 : null,
+        'sumber_dana'                        => $request->sumber_dana[$index] ?? null,
+        'keterangan'                         => $request->keterangan[$index] ?? null,
+      ]);
+    }
+
+
+    alert()->success('Sukses!', 'Item anggaran berhasil ditambahkan.')
+      ->showConfirmButton('Ok', '#1D3D62');
+
+    return redirect()->route('dashboard.laporan-realisasi-item', $id);
   }
 
 

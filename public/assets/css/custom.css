@@ -1,4 +1,8 @@
 /* Your Custom CSS Goes here */
+html {
+  scroll-behavior: smooth;
+}
+
 .font-arimo {
   font-family: "Arimo", sans-serif;
 }
@@ -86,18 +90,23 @@ body {
 .forms-input.no {
   width: 8ch;
 }
+
 .forms-input.text {
   width: 34ch;
 }
+
 .forms-input.no-kontrak {
   width: 16ch;
 }
+
 .forms-input.dana {
   width: 10ch;
 }
+
 .forms-input.rupiah {
   width: 14.5ch;
 }
+
 .forms-input.tanggal {
   width: 14ch;
 }
@@ -118,13 +127,47 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-3px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeOut {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-3px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+}
+
+.custom-p-radio {
+  scale: .9;
+  transform: translateX(-32px);
+}
+
+
+[required]:invalid,
+:target {
+  scroll-margin-top: 200px !important;
+  /* Tambahkan !important di sini */
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .custom-p-radio {
+    scale: .88 !important;
+    transform: translateX(-20px);
+  }
 }
 
 /* Mode gelap */
