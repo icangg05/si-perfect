@@ -22,11 +22,12 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
   protected $countRowPaketPenyelia  = null;
   protected $countRowPaketSwakelola = null;
 
-  protected $tahun_anggaran   = null;
-  protected $bulan_anggaran   = null;
-  protected $jenis_pengadaaan = null;
+  protected $jenis_pengadaan = null;
+  protected $tahun_anggaran  = null;
+  protected $bulan_anggaran  = null;
 
   protected $nama_skpd   = null;
+  protected $singkatan   = null;
   protected $tgl_cetak   = null;
   protected $kepala_spkd = null;
   protected $pangkat     = null;
@@ -38,11 +39,12 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
     $this->skpd_anggaran = $skpd_anggaran;
     $this->grouped       = $grouped;
 
-    $this->tahun_anggaran   = 2025;
-    $this->bulan_anggaran   = Carbon::create()->month($skpd_anggaran->bulan_anggaran)->translatedFormat('F');
-    $this->jenis_pengadaaan = 'KONSTRUKSI, KONSULTANSI, BARANG DAN JASA LAINNYA';
+    $this->tahun_anggaran  = $skpd_anggaran->tahun_anggaran;
+    $this->bulan_anggaran  = Carbon::create()->month($skpd_anggaran->bulan_anggaran)->translatedFormat('F');
+    $this->jenis_pengadaan = $skpd_anggaran->jenis_pengadaan;
 
     $this->nama_skpd   = $skpd_anggaran->skpd->nama;
+    $this->singkatan   = $skpd_anggaran->skpd->singkatan;
     $this->tgl_cetak   = Carbon::createFromFormat('Y-m-d', '2025-08-05')->translatedFormat('j F Y');
     $this->kepala_spkd = $skpd_anggaran->skpd->pimpinan_skpd;
     $this->pangkat     = $skpd_anggaran->skpd->pangkat_pimpinan;
@@ -218,12 +220,12 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
      */
     return [
       // Judul besar
-      ['LAPORAN REALISASI FISIK DAN KEUANGAN T.A. ' .  $this->tahun_anggaran],
+      ['LAPORAN REALISASI FISIK DAN KEUANGAN T.A. ' . $this->tahun_anggaran],
       [],
       // Nama dinas, tahun, jenis pengadaan
-      ['', '', 'NAMA SKPD                 : ' . $this->nama_skpd],
+      ['', '', 'NAMA SKPD                 : ' . strtoupper($this->nama_skpd)],
       ['', '', 'TAHUN ANGGARAN    : ' . $this->tahun_anggaran],
-      ['', '', 'JENIS PENGADAAN    : ' . $this->jenis_pengadaaan],
+      ['', '', 'JENIS PENGADAAN    : ' . strtoupper($this->jenis_pengadaan)],
       [],
       // Header table
       ['Urut DPA', 'No.', 'NAMA PEKERJAAN', 'PAGU (Rp)', 'NO. KONTRAK', 'TANGGAL KONTRAK', '', 'JENIS PAKET', '', '', '', '', '', '', '', '', '', 'TOTAL REALISASI ANGGARAN', 'PRESENTASI REALISASI', '', 'SUMBER DANA (APBD/ DAK/ DID)', 'KET'],
@@ -397,34 +399,37 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
       ->setFormatCode('#,##0');
 
 
-    // Styling baris jumlah per kategori
     /**
-     * Styling baris jumlah per kategori
-     * Kita akan meniru loop dari method array() untuk mendapatkan nomor baris yang tepat
+     * Styling baris jumlah per kategori & bold untuk judul
      */
-    $currentRow = $start_data_row; // Mulai dari baris data pertama, yaitu 11
+    // Inisialisasi penghitung baris. Header Anda selesai di baris 10, jadi kita mulai dari 10.
+    $currentRow = 10;
 
     // Loop utama untuk Kategori
-    foreach ($this->grouped as $kategori => $sub_kategoris) {
-      $currentRow++; // Tambah 1 baris untuk judul Kategori (cth: "1. Paket Penyedia")
+    foreach ($this->grouped as $sub_kategoris) {
+
+      // Pindah ke baris selanjutnya untuk menulis judul KATEGORI UTAMA
+      $currentRow++;
+      // Terapkan BOLD untuk Kategori Utama (cth: "1. Paket Penyedia")
+      $sheet->getStyle("C{$currentRow}")->getFont()->setBold(true);
 
       // Loop untuk Sub-Kategori
-      foreach ($sub_kategoris as $sub_kategori => $items) {
-        $currentRow++; // Tambah 1 baris untuk judul Sub-Kategori (cth: "1.1. Paket Penyedia Terumumkan")
+      foreach ($sub_kategoris as $items) {
+
+        // Pindah ke baris selanjutnya untuk menulis judul SUB-KATEGORI
+        $currentRow++;
+        // Terapkan BOLD untuk Sub-Kategori (cth: "1.1. Paket Penyedia Terumumkan")
+        $sheet->getStyle("C{$currentRow}")->getFont()->setBold(true);
 
         // Lewati semua baris data item
         $currentRow += $items->count();
 
-        // SEKARANG, $currentRow berada di posisi yang tepat untuk baris "JUMLAH"
-        $sheet->mergeCells("B{$currentRow}:C{$currentRow}");
-        $sheet->getStyle("B{$currentRow}:V{$currentRow}")->getFont()->setBold(true); // Opsional: tebalkan tulisan "JUMLAH"
-        $sheet->getRowDimension($currentRow)->setRowHeight(25);
-
-        // Setelah baris "JUMLAH", tambahkan 1 lagi sebelum loop berikutnya
+        // Pindah ke baris "JUMLAH"
         $currentRow++;
+        $sheet->mergeCells("B{$currentRow}:C{$currentRow}");
+        $sheet->getStyle("B{$currentRow}:T{$currentRow}")->getFont()->setBold(true);
       }
     }
-
 
     // Styling baris terakhir total keseluruhan
     $sheet->getStyle("A{$length_row}:V{$length_row}")->applyFromArray([

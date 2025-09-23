@@ -33,6 +33,4 @@ Route::middleware('auth')->group(function () {
   Route::patch('/laporan-realisasi/{id}', [LaporanRealisasiController::class, 'updateDataLaporan'])->name('dashboard.update-data-laporan');
   Route::post('/update-item-anggaran/{id}', [LaporanRealisasiController::class, 'updateLaporanItem'])->name('dashboard.update-item-anggaran');
   Route::delete('/delete-item-anggaran/{id}', [LaporanRealisasiController::class, 'deleteLaporanItem'])->name('dashboard.delete-item-anggaran');
-
-
 });

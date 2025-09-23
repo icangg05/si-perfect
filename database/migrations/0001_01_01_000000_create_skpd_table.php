@@ -13,7 +13,8 @@ return new class extends Migration
   {
     Schema::create('skpd', function (Blueprint $table) {
       $table->id();
-      $table->string('nama');
+      $table->string('nama')->unique();
+      $table->string('singkatan')->unique();
       $table->text('alamat')->nullable();
       $table->string('pimpinan_skpd')->nullable();
       $table->string('nip_pimpinan')->nullable();

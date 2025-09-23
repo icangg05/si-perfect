@@ -38,12 +38,12 @@ class BerandaController extends Controller
         });
       });
 
-    $skpd_nama       = $skpd_anggaran->skpd->nama;
+    $skpd_singkatan  = $skpd_anggaran->skpd->singkatan;
     $jenis_pengadaan = $skpd_anggaran->jenis_pengadaan;
     $bulan_anggaran  = Carbon::create()->month($skpd_anggaran->bulan_anggaran)->translatedFormat('F');
     $tahun_anggaran  = $skpd_anggaran->tahun_anggaran;
 
-    $file_name = strtoupper("LAP REALISASI {$jenis_pengadaan} {$bulan_anggaran} {$skpd_nama} {$tahun_anggaran}.xlsx");
+    $file_name = strtoupper("LAP REALISASI {$jenis_pengadaan} {$bulan_anggaran} {$skpd_singkatan} {$tahun_anggaran}.xlsx");
 
     return Excel::download(new UsersExport($skpd_anggaran, $grouped), $file_name);
   }

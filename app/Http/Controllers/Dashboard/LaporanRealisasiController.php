@@ -18,7 +18,13 @@ class LaporanRealisasiController extends Controller
   public function index(Request $request)
   {
     $query = SKPDAnggaran::with('skpd')
+      ->orderBy('tahun_anggaran', 'desc')
+      ->orderBy('bulan_anggaran', 'desc')
       ->withCount('laporan');
+
+    // Tampilkan semua data jika admin
+    if (Auth::user()->role != 'admin')
+      $query = $query->where('skpd_id', Auth::user()->skpd->id);
 
     // Pencarian umum
     if ($request->filled('search')) {

@@ -54,6 +54,8 @@
 											@csrf
 											<x-forms.input-group label="Nama SKPD" key="nama" placeholder="Nama SKPD" :readonly="true"
 												:value="$skpd->nama" />
+											<x-forms.input-group label="Singkatan" key="singkatan" placeholder="Singkatan" :readonly="true"
+												:value="$skpd->singkatan" />
 											<x-forms.textarea-group label="Alamat" key="alamat" placeholder="Alamat" :value="$skpd->alamat" />
 											<hr style="margin: 24px 0">
 											<x-forms.input-group label="Kepala SKPD" key="pimpinan_skpd" placeholder="Kepala SKPD" :value="$skpd->pimpinan_skpd" />
@@ -67,7 +69,7 @@
 											<div class="row">
 												<div class="col">
 													<button type="submit" class="btn btn-primary m-t-sm">
-                            <i class="material-icons">save_alt</i> Simpan</button>
+														<i class="material-icons">save_alt</i> Simpan</button>
 												</div>
 											</div>
 										</form>
@@ -116,7 +118,7 @@
 										<div class="row">
 											<div class="col">
 												<button type="submit" class="btn btn-primary m-t-sm">
-                          <i class="material-icons">save_alt</i> Simpan</button>
+													<i class="material-icons">save_alt</i> Simpan</button>
 											</div>
 										</div>
 									</form>
@@ -176,7 +178,7 @@
 								<div class="row m-t-lg">
 									<div class="col">
 										<button type="submit" class="btn btn-primary m-t-sm">
-                      <i class="material-icons">lock</i> Ubah Password</button>
+											<i class="material-icons">lock</i> Ubah Password</button>
 									</div>
 								</div>
 							</form>

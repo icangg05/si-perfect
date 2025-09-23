@@ -23,15 +23,5 @@ class UserSeeder extends Seeder
       'password' => Hash::make('admin'),
       'role'     => 'admin',
     ]);
-
-    // skpd
-    User::create([
-      'skpd_id'  => 1,
-      'name'     => 'Dishub',
-      'username' => 'dishub',
-      'email'    => 'dishub@gmail.com',
-      'password' => Hash::make('dishub'),
-      'role'     => 'skpd',
-    ]);
   }
 }
