@@ -16,10 +16,14 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
 {
+  protected $skpd_anggaran;
+  protected $grouped;
+
   protected $countRowPaketPenyelia  = null;
   protected $countRowPaketSwakelola = null;
 
   protected $tahun_anggaran   = null;
+  protected $bulan_anggaran   = null;
   protected $jenis_pengadaaan = null;
 
   protected $nama_skpd   = null;
@@ -29,241 +33,167 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
   protected $golongan    = null;
   protected $nip         = null;
 
-  public function __construct()
+  public function __construct($skpd_anggaran, $grouped)
   {
+    $this->skpd_anggaran = $skpd_anggaran;
+    $this->grouped       = $grouped;
+
     $this->tahun_anggaran   = 2025;
+    $this->bulan_anggaran   = Carbon::create()->month($skpd_anggaran->bulan_anggaran)->translatedFormat('F');
     $this->jenis_pengadaaan = 'KONSTRUKSI, KONSULTANSI, BARANG DAN JASA LAINNYA';
 
-    $this->nama_skpd   = 'DINAS PERHUBUNGAN';
+    $this->nama_skpd   = $skpd_anggaran->skpd->nama;
     $this->tgl_cetak   = Carbon::createFromFormat('Y-m-d', '2025-08-05')->translatedFormat('j F Y');
-    $this->kepala_spkd = 'PAMINUDDIN, SE., M.Si.';
-    $this->pangkat     = 'Pembina Utama Muda';
-    $this->golongan    = 'IV/c';
-    $this->nip         = '19690910 199312 1 001';
+    $this->kepala_spkd = $skpd_anggaran->skpd->pimpinan_skpd;
+    $this->pangkat     = $skpd_anggaran->skpd->pangkat_pimpinan;
+    $this->golongan    = $skpd_anggaran->skpd->golongan_pimpinan;
+    $this->nip         = $skpd_anggaran->skpd->nip_pimpinan;
   }
 
   public function array(): array
   {
-    $dataPaketPenyelia            = Laporan::where('kategori', 'paket-penyelia')->get();
-    $dataPaketSwakelola           = Laporan::where('kategori', 'paket-swakelola')->get();
-    $this->countRowPaketPenyelia  = $dataPaketPenyelia->count();
-    $this->countRowPaketSwakelola = $dataPaketSwakelola->count();
+    $rows = [];
 
-    /**
-     * =======================
-     * 1. Paket Penyelia
-     * =======================
-     */
-    $rows = $dataPaketPenyelia->map(function ($row, $index) {
-      $totalRealisasiAnggaran =
-        $row->realisasi_tender +
-        $row->realisasi_penunjukkan_langsung +
-        $row->realisasi_swakelola +
-        $row->realisasi_epurchasing +
-        $row->realisasi_pengadaan_langsung;
+    $no_kategori                               = 1;
+    $presentasi_realisasi_keuangan_keseluruhan = 0;
+    $presentasi_realisasi_fisik_keseluruhan    = 0;
+    $total_realisasi_keseluruhan               = 0;
 
-      $presentasiRealisasiKeuangan = $row->pagu > 0
-        ? $totalRealisasiAnggaran / $row->pagu
-        : 0;
+    // Loop grouped as kategori
+    foreach ($this->grouped as $kategori => $sub_kategoris) {
+      $rows[] = ['', '', "{$no_kategori}.    {$kategori}"];
 
-      return [
-        $index + 1,                                // urut_dpa (A)
-        $row->no,                                  // B
-        $row->nama_pekerjaan,                      // C
-        $row->pagu,                                // D
-        $row->no_kontrak,                          // E
-        $row->tgl_mulai_kontrak,                   // F
-        $row->tgl_berakhir_kontrak,                // G
-        $row->nilai_kontrak_tender,                // H
-        $row->realisasi_tender,                    // I
-        $row->nilai_kontrak_penunjukkan_langsung,  // J
-        $row->realisasi_penunjukkan_langsung,      // K
-        $row->nilai_kontrak_swakelola,             // L
-        $row->realisasi_swakelola,                 // M
-        $row->nilai_kontrak_epurchasing,           // N
-        $row->realisasi_epurchasing,               // O
-        $row->nilai_kontrak_pengadaan_langsung,    // P
-        $row->realisasi_pengadaan_langsung,        // Q
-        $totalRealisasiAnggaran,                   // R
-        $presentasiRealisasiKeuangan ?: '0',       // S
-        $row->presentasi_realisasi_fisik ?: '0',   // T
-        $row->sumber_dana ?? '-',                  // U
-        $row->keterangan ?? '-',                   // V
-      ];
-    })->toArray();
+      // Loop sub_kategoris
+      $no_sub_kategori                      = 1;
+      $total_realisasi_anggaran_perkategori = 0;
 
-    // Hitung total kolom data penyelia
-    $totalPaguPenyelia               = $dataPaketPenyelia->sum('pagu');
-    $totalTenderPenyelia             = $dataPaketPenyelia->sum('nilai_kontrak_tender');
-    $totalRealisasiTenderPenyelia    = $dataPaketPenyelia->sum('realisasi_tender');
-    $totalPLPenyelia                 = $dataPaketPenyelia->sum('nilai_kontrak_penunjukkan_langsung');
-    $totalRealisasiPLPenyelia      = $dataPaketPenyelia->sum('realisasi_penunjukkan_langsung');
-    $totalSwakelolaPenyelia          = $dataPaketPenyelia->sum('nilai_kontrak_swakelola');
-    $totalRealisasiSwakelolaPenyelia = $dataPaketPenyelia->sum('realisasi_swakelola');
-    $totalEpurPenyelia               = $dataPaketPenyelia->sum('nilai_kontrak_epurchasing');
-    $totalRealisasiEpurPenyelia      = $dataPaketPenyelia->sum('realisasi_epurchasing');
-    $totalPLangsungPenyelia          = $dataPaketPenyelia->sum('nilai_kontrak_pengadaan_langsung');
-    $totalRealisasiPLangsungPenyelia = $dataPaketPenyelia->sum('realisasi_pengadaan_langsung');
-    $totalRealisasiAnggaranPenyelia  = $totalRealisasiTenderPenyelia + $totalRealisasiPLPenyelia + $totalRealisasiSwakelolaPenyelia + $totalRealisasiEpurPenyelia + $totalRealisasiPLangsungPenyelia;
-
-    // Hitung rata-rata presentasi_realisasi_fisik
-    $values = $dataPaketPenyelia->pluck('presentasi_realisasi_fisik')->map(fn($v) => (float) $v);
-    $averageRealisasiFisik = $values->count() > 0 ? $values->avg() : 0;
-
-    // tambah baris total
-    $rows[] = [
-      '',                                // A
-      'JUMLAH',                          // B
-      '',                                // C
-      $totalPaguPenyelia ?: '0', // D
-      '',
-      '',
-      '',                              // E–G
-      $totalTenderPenyelia ?: '0',             // H
-      $totalRealisasiTenderPenyelia ?: '0',    // I
-      $totalPLPenyelia ?: '0',                 // J
-      $totalRealisasiPLPenyelia ?: '0',        // K
-      $totalSwakelolaPenyelia ?: '0',          // L
-      $totalRealisasiSwakelolaPenyelia ?: '0', // M
-      $totalEpurPenyelia ?: '0',               // N
-      $totalRealisasiEpurPenyelia ?: '0',      // O
-      $totalPLangsungPenyelia ?: '0',          // P
-      $totalRealisasiPLangsungPenyelia ?: '0', // Q
-      $totalRealisasiAnggaranPenyelia ?: '0',  // R
-      $totalPaguPenyelia > 0 ? $totalRealisasiAnggaranPenyelia / $totalPaguPenyelia : '0',   // S (persentase keuangan)
-      $averageRealisasiFisik > 0 ? $averageRealisasiFisik : '0',     // T (rata2 fisik)
-      '',                                                            // U
-    ];
+      foreach ($sub_kategoris as $sub_kategori => $items) {
+        $rows[] = ['', '', "{$no_kategori}.{$no_sub_kategori}. {$sub_kategori}"];
 
 
-    // =======================
-    // 2. Paket Swakelola
-    // =======================
-    $rows[] = ['', '', '2.   Paket Swakelola'];
-    $rows[] = ['', '', '2.1 Paket Swakelola Terumumkan'];
+        // hitung total per sub kategori
+        $total_pagu                               = $items->sum('pagu');
+        $total_nilai_kontrak_tender               = $items->sum('nilai_kontrak_tender');
+        $total_realisasi_tender                   = $items->sum('realisasi_tender');
+        $total_nilai_kontrak_penunjukkan_langsung = $items->sum('nilai_kontrak_penunjukkan_langsung');
+        $total_realisasi_penunjukkan_langsung     = $items->sum('realisasi_penunjukkan_langsung');
+        $total_nilai_kontrak_swakelola            = $items->sum('nilai_kontrak_swakelola');
+        $total_realisasi_swakelola                = $items->sum('realisasi_swakelola');
+        $total_nilai_kontrak_epurchasing          = $items->sum('nilai_kontrak_epurchasing');
+        $total_realisasi_epurchasing              = $items->sum('realisasi_epurchasing');
+        $total_nilai_kontrak_pengadaan_langsung   = $items->sum('nilai_kontrak_pengadaan_langsung');
+        $total_realisasi_pengadaan_langsung       = $items->sum('realisasi_pengadaan_langsung');
 
-    $rowsSwakelola = $dataPaketSwakelola->map(function ($row, $index) {
-      $totalRealisasiAnggaranSwakelola =
-        $row->realisasi_tender +
-        $row->realisasi_penunjukkan_langsung +
-        $row->realisasi_swakelola +
-        $row->realisasi_epurchasing +
-        $row->realisasi_pengadaan_langsung;
+        // tambahkan ke presentasi realisasi fisik keseluruhan
+        $presentasi_realisasi_fisik_keseluruhan    += $items->sum('presentasi_realisasi_fisik') / count($items);
 
-      $presentasiRealisasiKeuangan = $row->pagu > 0
-        ? $totalRealisasiAnggaranSwakelola / $row->pagu
-        : 0;
 
-      return [
-        $index + 1,
-        $row->no,
-        $row->nama_pekerjaan,
-        $row->pagu,
-        $row->no_kontrak,
-        $row->tgl_mulai_kontrak,
-        $row->tgl_berakhir_kontrak,
-        $row->nilai_kontrak_tender,
-        $row->realisasi_tender,
-        $row->nilai_kontrak_penunjukkan_langsung,
-        $row->realisasi_penunjukkan_langsung,
-        $row->nilai_kontrak_swakelola,
-        $row->realisasi_swakelola,
-        $row->nilai_kontrak_epurchasing,
-        $row->realisasi_epurchasing,
-        $row->nilai_kontrak_pengadaan_langsung,
-        $row->realisasi_pengadaan_langsung,
-        $totalRealisasiAnggaranSwakelola,
-        $presentasiRealisasiKeuangan ?: '0',
-        $row->presentasi_realisasi_fisik ?: '0',
-        $row->sumber_dana ?? '-',
-        $row->keterangan ?? '-',
-      ];
-    })->toArray();
+        // Loop items (item data laporan)
+        foreach ($items as $index => $item) {
+          $no_asc = $index + 1;
 
-    $rows = array_merge($rows, $rowsSwakelola);
+          $total_realisasi_anggaran =
+            $item->realisasi_tender +
+            $item->realisasi_penunjukkan_langsung +
+            $item->realisasi_swakelola +
+            $item->realisasi_epurchasing +
+            $item->realisasi_pengadaan_langsung;
 
-    // --- hitung total swakelola ---
-    $totalPaguSwakelola         = $dataPaketSwakelola->sum('pagu');
-    $totalTenderSwa             = $dataPaketSwakelola->sum('nilai_kontrak_tender');
-    $totalRealisasiTenderSwa    = $dataPaketSwakelola->sum('realisasi_tender');
-    $totalPLSwa                 = $dataPaketSwakelola->sum('nilai_kontrak_penunjukkan_langsung');
-    $totalRealisasiPLSwa        = $dataPaketSwakelola->sum('realisasi_penunjukkan_langsung');
-    $totalSwa                   = $dataPaketSwakelola->sum('nilai_kontrak_swakelola');
-    $totalRealisasiSwa          = $dataPaketSwakelola->sum('realisasi_swakelola');
-    $totalEpurSwa               = $dataPaketSwakelola->sum('nilai_kontrak_epurchasing');
-    $totalRealisasiEpurSwa      = $dataPaketSwakelola->sum('realisasi_epurchasing');
-    $totalPLangsungSwa          = $dataPaketSwakelola->sum('nilai_kontrak_pengadaan_langsung');
-    $totalRealisasiPLangsungSwa = $dataPaketSwakelola->sum('realisasi_pengadaan_langsung');
-    $totalRealisasiAnggaranSwa  = $totalRealisasiTenderSwa + $totalRealisasiPLSwa + $totalRealisasiSwa + $totalRealisasiEpurSwa + $totalRealisasiPLangsungSwa;
+          // Tambahkan ke total per kategori
+          $total_realisasi_anggaran_perkategori += $total_realisasi_anggaran;
 
-    $valuesSwa = $dataPaketSwakelola->pluck('presentasi_realisasi_fisik')->map(fn($v) => (float) $v);
-    $averageRealisasiFisikSwa = $valuesSwa->count() > 0 ? $valuesSwa->avg() : 0;
+          $tgl_mulai_kontrak    = $item->tgl_mulai_kontrak ? Carbon::create($item->tgl_mulai_kontrak)->translatedFormat('d-m-Y') : null;
+          $tgl_berakhir_kontrak = $item->tgl_berakhir_kontrak ? Carbon::create($item->tgl_berakhir_kontrak)->translatedFormat('d-m-Y') : null;
 
+          $rows[] = [
+            $no_asc,
+            $item->no,
+            $item->nama_pekerjaan,
+            $item->pagu,
+            $item->no_kontrak,
+            $tgl_mulai_kontrak,
+            $tgl_berakhir_kontrak,
+            $item->nilai_kontrak_tender,
+            $item->realisasi_tender,
+            $item->nilai_kontrak_penunjukkan_langsung,
+            $item->realisasi_penunjukkan,
+            $item->nilai_kontrak_swakelola,
+            $item->realisasi_swakelola,
+            $item->nilai_kontrak_epurchasing,
+            $item->realisasi_epurchasing,
+            $item->nilai_kontrak_pengadaan_langsung,
+            $item->realisasi_pengadaan_langsung,
+            $total_realisasi_anggaran,
+            format_persen($total_realisasi_anggaran / max($item->pagu, 1)) ?: '0',
+            format_persen($item->presentasi_realisasi_fisik) ?: '0',
+            $item->sumber_dana ?: '-',
+            $item->keterangan ?: '-',
+          ];
+        }
+
+
+        // tambahkan ke presentasi realisasi fisik keseluruhan dan total realisasi keluruhan
+        $presentasi_realisasi_keuangan_keseluruhan += $total_realisasi_anggaran_perkategori / $total_pagu;
+        $total_realisasi_keseluruhan               += $total_realisasi_anggaran_perkategori;
+
+
+        // Jumlah per sub kategori
+        $rows[] = [
+          '',
+          'JUMLAH',
+          '',
+          $total_pagu ?: '0',
+          '',
+          '',
+          '',
+          $total_nilai_kontrak_tender ?: '0',
+          $total_realisasi_tender ?: '0',
+          $total_nilai_kontrak_penunjukkan_langsung ?: '0',
+          $total_realisasi_penunjukkan_langsung ?: '0',
+          $total_nilai_kontrak_swakelola ?: '0',
+          $total_realisasi_swakelola ?: '0',
+          $total_nilai_kontrak_epurchasing ?: '0',
+          $total_realisasi_epurchasing ?: '0',
+          $total_nilai_kontrak_pengadaan_langsung ?: '0',
+          $total_realisasi_pengadaan_langsung ?: '0',
+          $total_realisasi_anggaran_perkategori ?: '0',
+          format_persen($total_realisasi_anggaran_perkategori / max($total_pagu, 1)) ?: '0',
+          format_persen($items->sum('presentasi_realisasi_fisik') / count($items)) ?: '0',
+        ];
+
+        // Increment no_sub_kategori
+        $no_sub_kategori++;
+      }
+
+      // Increment no_kategori
+      $no_kategori++;
+    }
+
+
+    // Total jumlah keseluruhan
     $rows[] = [
       '',
-      'JUMLAH',
+      'TOTAL RUPIAH',
       '',
-      $totalPaguSwakelola ?: '0',
+      $this->skpd_anggaran->laporan->sum('pagu') ?: '0',
       '',
       '',
       '',
-      $totalTenderSwa ?: '0',
-      $totalRealisasiTenderSwa ?: '0',
-      $totalPLSwa ?: '0',
-      $totalRealisasiPLSwa ?: '0',
-      $totalSwa ?: '0',
-      $totalRealisasiSwa ?: '0',
-      $totalEpurSwa ?: '0',
-      $totalRealisasiEpurSwa ?: '0',
-      $totalPLangsungSwa ?: '0',
-      $totalRealisasiPLangsungSwa ?: '0',
-      $totalRealisasiAnggaranSwa ?: '0',
-      $totalPaguSwakelola > 0 ? $totalRealisasiAnggaranSwa / $totalPaguSwakelola : '0',
-      $averageRealisasiFisikSwa > 0 ? $averageRealisasiFisikSwa : '0',
-      '',
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_tender') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_tender') ?: '0',
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_penunjukkan_langsung') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_penunjukkan_langsung') ?: '0',
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_swakelola') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_swakelola') ?: '0',
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_epurchasing') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_epurchasing') ?: '0',
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung') ?: '0',
+      $total_realisasi_keseluruhan ?: '0',
+      format_persen($presentasi_realisasi_keuangan_keseluruhan / max(count($this->grouped), 1)) ?: '0',
+      format_persen($presentasi_realisasi_fisik_keseluruhan / max(count($this->grouped), 1)) ?: '0',
     ];
 
-    /**
-     * Total baris paket penyelia + paket swakelola
-     */
-    // tambah baris total
-    $rows[] = [
-      '',                                // A
-      'TOTAL RUPIAH ',                   // B
-      '',                                // C
-      $totalPaguPenyelia + $totalPaguSwakelola ?: '0', // D
-      '',
-      '',
-      '',                              // E–G
-      $totalTenderPenyelia + $totalTenderSwa ?: '0',             // H
-      $totalRealisasiTenderPenyelia + $totalRealisasiTenderSwa ?: '0',    // I
-      $totalPLPenyelia + $totalPLSwa ?: '0',                 // J
-      $totalRealisasiPLPenyelia + $totalRealisasiPLSwa ?: '0',        // K
-      $totalSwakelolaPenyelia + $totalSwa ?: '0',          // L
-      $totalRealisasiSwakelolaPenyelia + $totalRealisasiSwa ?: '0', // M
-      $totalEpurPenyelia + $totalEpurSwa ?: '0',               // N
-      $totalRealisasiEpurPenyelia + $totalRealisasiEpurSwa ?: '0',      // O
-      $totalPLangsungPenyelia + $totalRealisasiPLangsungSwa ?: '0',          // P
-      $totalRealisasiPLangsungPenyelia + $totalRealisasiPLangsungSwa ?: '0', // Q
-      $totalRealisasiAnggaranPenyelia + $totalRealisasiAnggaranSwa ?: '0',  // R
-      ($totalRealisasiAnggaranPenyelia + $totalRealisasiAnggaranSwa) / ($totalPaguPenyelia + $totalPaguSwakelola) ?: '0',   // S (persentase keuangan)
-      ($averageRealisasiFisik + $averageRealisasiFisikSwa) / 2 ?: '0',     // T (rata2 fisik)
-      '',                                                            // U
-    ];
-
-
-    // Data TTD Kepala SKPD
-    $rows[] = [''];
-    $rows[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',  "KENDARI, $this->tgl_cetak"];
-    $rows[] = [''];
-    $rows[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',  "KEPALA $this->nama_skpd"];
-    $rows[] = [''];
-    $rows[] = [''];
-    $rows[] = [''];
-    $rows[] = [''];
-    $rows[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', $this->kepala_spkd];
-    $rows[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', "$this->pangkat, Gol $this->golongan"];
-    $rows[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', "NIP. $this->nip"];
 
     return $rows;
   }
@@ -300,16 +230,13 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
       ['', '', '', '', '', '', '', 'TENDER', '', 'PENUNJUKKAN LANGSUNG', '', 'SWAKELOLA', '', 'E-PURCHASING', '', 'PENGADAAN LANGSUNG', ''],
       ['', '', '', '', '', 'MULAI', 'BERAKHIR', 'NILAI KONTRAK (Rp)', 'REALISASI (Rp)', 'NILAI KONTRAK (Rp)', 'REALISASI (Rp)', 'NILAI KONTRAK (Rp)', 'REALISASI (Rp)', 'NILAI KONTRAK (Rp)', 'REALISASI (Rp)', 'NILAI KONTRAK (Rp)', 'REALISASI (Rp)', '', 'KEUANGAN (%)', 'FISIK (%)'],
       $ascNumber,
-      ['', '', '1.    Paket Penyedia'],
-      ['', '', '1.1. Paket Penyedia Terumumkan'],
-      // 'SUMBER DANA (APBD/ DAK/ DID)'
     ];
   }
 
 
   public function styles(Worksheet $sheet)
   {
-    // set paper size ke F4 (folio) + landscape + margins + center horizontally
+    // Set paper size ke F4 (folio) + landscape
     $sheet->getPageSetup()
       ->setPaperSize(PageSetup::PAPERSIZE_FOLIO)
       ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
@@ -329,7 +256,6 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
 
     // Set halaman center secara horizontal
     $sheet->getPageSetup()->setHorizontalCentered(true);
-
 
     // Set height baris A
     $sheet->getRowDimension(2)->setRowHeight(10);
@@ -353,7 +279,7 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
       'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
     ]);
 
-    // Bold untuk info dinas/anggaran/pengadaan
+    // Bold untuk info nama dinas/jenis pengadaan/tahun
     $sheet->getStyle('C3:C5')->getFont()->setBold(true);
 
     /**
@@ -376,6 +302,7 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
     $sheet->getColumnDimension('T')->setWidth(8);
     $sheet->getColumnDimension('U')->setWidth(10.4);
     $sheet->getColumnDimension('v')->setWidth(15);
+
 
     /**
      * Merge header tabel
@@ -402,25 +329,22 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
       $sheet->mergeCells($range);
     }
 
-    /**
-     * Style header tabel
-     */
-    $startRowPaketPenyelia = 13;
-    $lastRowPaketPenyelia  = $startRowPaketPenyelia + $this->countRowPaketPenyelia;
 
+    /**
+     * Styling header table
+     */
     $sheet->getStyle("A7:V10")->applyFromArray([
       'font' => ['bold' => true],
       'alignment' => [
         'horizontal' => Alignment::HORIZONTAL_CENTER,
-        'vertical'   => Alignment::VERTICAL_CENTER,
         'wrapText'   => true,
-      ],
-      'borders' => [
-        'allBorders' => ['borderStyle' => Border::BORDER_THIN],
       ],
     ]);
 
-    // Angka baris ke-10 (italic, kecil)
+
+    /**
+     * Styling urutan nomor header 1-22
+     */
     $sheet->getStyle("A10:V10")->applyFromArray([
       'font' => [
         'bold'   => false,
@@ -430,231 +354,84 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
     ]);
 
 
-    // Bold + border untuk baris 1. Paket Penyelia
-    $sheet->getStyle("A11:V12")->applyFromArray([
-      'font' => ['bold' => true],
+    /**
+     * Border all row-column
+     * Menghitung item berdasarkan nama kategori
+     */
+    $jumlah_perkategori = $this->skpd_anggaran->laporan->countBy(function ($laporan) {
+      return $laporan->sub_kategori_laporan->kategori_laporan->nama ?? 'Tanpa Kategori';
+    });
+
+    $additional_row = count($jumlah_perkategori) * 3;
+    $start_data_row = 11;
+    $length_row     = $jumlah_perkategori->sum() + $start_data_row + $additional_row;
+
+    $sheet->getStyle("A7:V{$length_row}")->applyFromArray([
       'borders' => [
         'allBorders' => ['borderStyle' => Border::BORDER_THIN],
       ],
       'alignment' => [
-        'vertical'   => Alignment::VERTICAL_CENTER,
-        'horizontal' => Alignment::HORIZONTAL_LEFT,
+        'vertical' => Alignment::VERTICAL_CENTER,
+        'wrapText' => true
       ],
     ]);
-
-
-    /**
-     * Isi data
-     * Border & vertical center untuk semua data
-     */
-    $sheet->getStyle("A{$startRowPaketPenyelia}:V{$lastRowPaketPenyelia}")->applyFromArray([
-      'borders' => [
-        'allBorders' => ['borderStyle' => Border::BORDER_THIN],
-      ],
-      'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
-    ]);
-
-    // Font Calibri kolom yang memuat angka (D, H-R)
-    $sheet->getStyle("D{$startRowPaketPenyelia}:D{$lastRowPaketPenyelia}")
-      ->getFont()
-      ->setName('Calibri');
-    $sheet->getStyle("H{$startRowPaketPenyelia}:R{$lastRowPaketPenyelia}")
-      ->getFont()
-      ->setName('Calibri');
-    // Set format ribuan
-    $sheet->getStyle("D{$startRowPaketPenyelia}:D{$lastRowPaketPenyelia}")
-      ->getNumberFormat()
-      ->setFormatCode('#,##0');
-    $sheet->getStyle("H{$startRowPaketPenyelia}:R{$lastRowPaketPenyelia}")
-      ->getNumberFormat()
-      ->setFormatCode('#,##0');
-
-    // Format persen kolom (S, T)
-    $sheet->getStyle("S{$startRowPaketPenyelia}:T{$lastRowPaketPenyelia}")
-      ->getNumberFormat()
-      ->setFormatCode(NumberFormat::FORMAT_PERCENTAGE_0);
-
 
     // Kolom yang harus center horizontal
     foreach (['A', 'B', 'S', 'T', 'U', 'V'] as $col) {
-      $sheet->getStyle("{$col}{$startRowPaketPenyelia}:{$col}{$lastRowPaketPenyelia}")
+      $sheet->getStyle("{$col}{$start_data_row}:{$col}{$length_row}")
         ->getAlignment()
         ->setHorizontal(Alignment::HORIZONTAL_CENTER);
     }
 
-    // Kolom yang harus wrap text
-    foreach (['C', 'U', 'V'] as $col) {
-      $sheet->getStyle("{$col}{$startRowPaketPenyelia}:{$col}{$lastRowPaketPenyelia}")
-        ->getAlignment()->setWrapText(true);
-    }
-
-    // Style baris jumlah anggaran 1. Paket Penyelia
-    $sheet->getRowDimension($lastRowPaketPenyelia)->setRowHeight(25);
-    $sheet->getStyle("A{$lastRowPaketPenyelia}:V{$lastRowPaketPenyelia}")->applyFromArray([
-      'font' => ['bold' => true],
-    ]);
-    $sheet->getStyle("B{$lastRowPaketPenyelia}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->mergeCells("B{$lastRowPaketPenyelia}:C{$lastRowPaketPenyelia}");
-
-
-    /**
-     * =======================
-     * 2. Paket Swakelola
-     * =======================
-     */
-    $startRowPaketSwakelola = $lastRowPaketPenyelia + 1;
-    $lastRowPaketSwakelola  = $startRowPaketSwakelola + $this->countRowPaketSwakelola + 2;
-    $sheet->getStyle("A{$startRowPaketSwakelola}:V" . $startRowPaketSwakelola + 1)->applyFromArray([
-      'font' => ['bold' => true],
-      'borders' => [
-        'allBorders' => ['borderStyle' => Border::BORDER_THIN],
-      ],
-      'alignment' => [
-        'vertical'   => Alignment::VERTICAL_CENTER,
-        'horizontal' => Alignment::HORIZONTAL_LEFT,
-      ],
-    ]);
-
-    $sheet->getStyle("A{$startRowPaketSwakelola}:V{$lastRowPaketSwakelola}")->applyFromArray([
-      'borders' => [
-        'allBorders' => ['borderStyle' => Border::BORDER_THIN],
-      ],
-      'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
-    ]);
-
-    // Font Calibri kolom yang memuat angka (D, H-R)
-    $sheet->getStyle("D{$startRowPaketSwakelola}:D{$lastRowPaketSwakelola}")
-      ->getFont()
-      ->setName('Calibri');
-    $sheet->getStyle("H{$startRowPaketSwakelola}:R{$lastRowPaketSwakelola}")
-      ->getFont()
-      ->setName('Calibri');
-    // Set format ribuan
-    $sheet->getStyle("D{$startRowPaketSwakelola}:D{$lastRowPaketSwakelola}")
-      ->getNumberFormat()
-      ->setFormatCode('#,##0');
-    $sheet->getStyle("H{$startRowPaketSwakelola}:R{$lastRowPaketSwakelola}")
-      ->getNumberFormat()
-      ->setFormatCode('#,##0');
-
-    // Format persen kolom (S, T)
-    $sheet->getStyle("S{$startRowPaketSwakelola}:T{$lastRowPaketSwakelola}")
+    // Kolom format persen kolom (S, T)
+    $sheet->getStyle("S{$start_data_row}:T{$length_row}")
       ->getNumberFormat()
       ->setFormatCode(NumberFormat::FORMAT_PERCENTAGE_0);
 
-    // Kolom yang harus center horizontal
-    foreach (['A', 'B', 'S', 'T', 'U', 'V'] as $col) {
-      $sheet->getStyle("{$col}{$startRowPaketSwakelola}:{$col}{$lastRowPaketSwakelola}")
-        ->getAlignment()
-        ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    }
-    // Kolom yang harus wrap text
-    foreach (['C', 'U', 'V'] as $col) {
-      $sheet->getStyle("{$col}{$startRowPaketSwakelola}:{$col}{$lastRowPaketSwakelola}")
-        ->getAlignment()->setWrapText(true);
-    }
-
-    // Style baris jumlah anggaran 2. Paket Swakelola
-    $sheet->getRowDimension($lastRowPaketSwakelola)->setRowHeight(25);
-    $sheet->getStyle("A{$lastRowPaketSwakelola}:V{$lastRowPaketSwakelola}")->applyFromArray([
-      'font' => ['bold' => true],
-    ]);
-    $sheet->getStyle("B{$lastRowPaketSwakelola}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->mergeCells("B{$lastRowPaketSwakelola}:C{$lastRowPaketSwakelola}");
-
-
-    // Style total keseluruhan
-    $rowTotalKeseluruhan = $lastRowPaketSwakelola + 1;
-    $sheet->getRowDimension($rowTotalKeseluruhan)->setRowHeight(25);
-    $sheet->getStyle("A{$rowTotalKeseluruhan}:V{$rowTotalKeseluruhan}")->applyFromArray([
-      'font' => ['bold' => true],
-    ]);
-    $sheet->getStyle("B{$rowTotalKeseluruhan}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->mergeCells("B{$rowTotalKeseluruhan}:C{$rowTotalKeseluruhan}");
-
-    // Format persen kolom (S, T)
-    $sheet->getStyle("S{$rowTotalKeseluruhan}:T{$rowTotalKeseluruhan}")
-      ->getNumberFormat()
-      ->setFormatCode(NumberFormat::FORMAT_PERCENTAGE_0);
-
-    // Kolom yang harus center horizontal
-    foreach (['S', 'T'] as $col) {
-      $sheet->getStyle("{$col}{$rowTotalKeseluruhan}:{$col}{$rowTotalKeseluruhan}")
-        ->getAlignment()
-        ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    }
-
-    $sheet->getStyle("A{$rowTotalKeseluruhan}:V{$rowTotalKeseluruhan}")->applyFromArray([
-      'borders' => [
-        'allBorders' => ['borderStyle' => Border::BORDER_THIN],
-      ],
-      'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
-    ]);
-
-    // Font Calibri kolom yang memuat angka (D, H-R)
-    $sheet->getStyle("D{$rowTotalKeseluruhan}:D{$rowTotalKeseluruhan}")
-      ->getFont()
-      ->setName('Calibri');
-    $sheet->getStyle("H{$rowTotalKeseluruhan}:R{$rowTotalKeseluruhan}")
-      ->getFont()
-      ->setName('Calibri');
-    // Set format ribuan
-    $sheet->getStyle("D{$rowTotalKeseluruhan}:D{$rowTotalKeseluruhan}")
+    // Kolom format ribuan
+    $sheet->getStyle("D{$start_data_row}:D{$length_row}")
       ->getNumberFormat()
       ->setFormatCode('#,##0');
-    $sheet->getStyle("H{$rowTotalKeseluruhan}:R{$rowTotalKeseluruhan}")
+    $sheet->getStyle("H{$start_data_row}:R{$length_row}")
       ->getNumberFormat()
       ->setFormatCode('#,##0');
 
 
+    // Styling baris jumlah per kategori
     /**
-     * Style TTD Kepala SKPD
+     * Styling baris jumlah per kategori
+     * Kita akan meniru loop dari method array() untuk mendapatkan nomor baris yang tepat
      */
-    $rowTanggal         = $rowTotalKeseluruhan + 2;
-    $rowNamaSKPD        = $rowTotalKeseluruhan + 4;
-    $rowKepalaSKPD      = $rowTotalKeseluruhan + 9;
-    $rowPangkatGolongan = $rowTotalKeseluruhan + 10;
-    $rowNIP             = $rowTotalKeseluruhan + 11;
-    // Merge
-    $mergeMapTTD = [
-      "R$rowTanggal:V$rowTanggal",
-      "R$rowNamaSKPD:V$rowNamaSKPD",
-      "R$rowKepalaSKPD:V$rowKepalaSKPD",
-      "R$rowPangkatGolongan:V$rowPangkatGolongan",
-      "R$rowNIP:V$rowNIP",
-    ];
-    foreach ($mergeMapTTD as $range) {
-      $sheet->mergeCells($range);
+    $currentRow = $start_data_row; // Mulai dari baris data pertama, yaitu 11
+
+    // Loop utama untuk Kategori
+    foreach ($this->grouped as $kategori => $sub_kategoris) {
+      $currentRow++; // Tambah 1 baris untuk judul Kategori (cth: "1. Paket Penyedia")
+
+      // Loop untuk Sub-Kategori
+      foreach ($sub_kategoris as $sub_kategori => $items) {
+        $currentRow++; // Tambah 1 baris untuk judul Sub-Kategori (cth: "1.1. Paket Penyedia Terumumkan")
+
+        // Lewati semua baris data item
+        $currentRow += $items->count();
+
+        // SEKARANG, $currentRow berada di posisi yang tepat untuk baris "JUMLAH"
+        $sheet->mergeCells("B{$currentRow}:C{$currentRow}");
+        $sheet->getStyle("B{$currentRow}:V{$currentRow}")->getFont()->setBold(true); // Opsional: tebalkan tulisan "JUMLAH"
+        $sheet->getRowDimension($currentRow)->setRowHeight(25);
+
+        // Setelah baris "JUMLAH", tambahkan 1 lagi sebelum loop berikutnya
+        $currentRow++;
+      }
     }
 
-    // Styling row Tanggal, Nama SKPD, Kepala SKPD (Bold)
-    $sheet->getStyle("R{$rowTanggal}:V{$rowKepalaSKPD}")
-      ->applyFromArray([
-        'font' => [
-          'bold' => true,
-          'size' => 15,
-        ],
-        'alignment' => [
-          'vertical'   => Alignment::VERTICAL_CENTER,
-          'horizontal' => Alignment::HORIZONTAL_CENTER,
-        ],
-      ]);
 
-    // Styling row Pangkat/Golongan & NIP (Normal, tidak bold)
-    $sheet->getStyle("R{$rowPangkatGolongan}:V{$rowNIP}")
-      ->applyFromArray([
-        'font' => [
-          'bold' => false,
-          'size' => 15,
-        ],
-        'alignment' => [
-          'vertical'   => Alignment::VERTICAL_CENTER,
-          'horizontal' => Alignment::HORIZONTAL_CENTER,
-        ],
-      ]);
-    $sheet->getRowDimension($rowTanggal - 1)->setRowHeight(21);
-    $sheet->getRowDimension($rowNamaSKPD - 1)->setRowHeight(7);
-    $sheet->getStyle("R{$rowKepalaSKPD}:V{$rowKepalaSKPD}")->applyFromArray(['font' => ['underline' => 'single']]);
+    // Styling baris terakhir total keseluruhan
+    $sheet->getStyle("A{$length_row}:V{$length_row}")->applyFromArray([
+      'font' => ['bold'   => true],
+    ]);
+    $sheet->mergeCells("B{$length_row}:C{$length_row}");
+    $sheet->getRowDimension($length_row)->setRowHeight(25);
 
 
     return [];
@@ -663,6 +440,6 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
 
   public function title(): string
   {
-    return 'Juli';
+    return $this->bulan_anggaran;
   }
 }

@@ -75,8 +75,11 @@
                   <div class="mt-4">
                     <a href="{{ route('dashboard.create-item-anggaran', $skpd_anggaran->id) }}" class="btn btn-primary btn-sm" style="font-size: .9rem">
                       <i class="material-icons" style="font-size: 1.1rem">add</i> Tambah Item</a>
-                    <a href="{{ route('export') }}" class="btn btn-success btn-sm" style="font-size: .9rem">
-                      <i class="material-icons" style="font-size: 1.1rem">description</i> Export</a>
+                    <form class="d-inline" action="{{ route('export', $skpd_anggaran->id) }}" method="post">
+                      @csrf
+                      <button @disabled($skpd_anggaran->laporan->count() == 0) type="submit" class="btn btn-success btn-sm" style="font-size: .9rem">
+                        <i class="material-icons" style="font-size: 1.1rem">description</i> Export</button>
+                    </form>
                   </div>
 
 									<div class="mt-3 table-responsive my-scrollbar">
@@ -125,6 +128,7 @@
                           $no_kategori                               = 1;
                           $presentasi_realisasi_keuangan_keseluruhan = 0;
                           $presentasi_realisasi_fisik_keseluruhan    = 0;
+                          $total_realisasi_keseluruhan               = 0;
 												@endphp
 
 												@foreach ($grouped as $kategori => $subKategoris)
@@ -140,8 +144,8 @@
 													</tr>
 
 													@php
-                            $no_sub_kategori                        = 1;
-                            $total_realisasi_anggaran_perkategori   = 0;
+                            $no_sub_kategori                      = 1;
+                            $total_realisasi_anggaran_perkategori = 0;
 													@endphp
 
 													@foreach ($subKategoris as $subKategori => $items)
@@ -167,8 +171,9 @@
 															$total_realisasi_epurchasing              = $items->sum('realisasi_epurchasing');
 															$total_nilai_kontrak_pengadaan_langsung   = $items->sum('nilai_kontrak_pengadaan_langsung');
 															$total_realisasi_pengadaan_langsung       = $items->sum('realisasi_pengadaan_langsung');
-                                // tambahkan ke presentasi realisasi fisik keseluruhan
-                              $presentasi_realisasi_fisik_keseluruhan    += $items->sum('presentasi_realisasi_fisik') / count($items);
+
+                                // tambahkan ke presentasi realisasi fisik keseluruhan dan total keseluruhan
+                              $presentasi_realisasi_fisik_keseluruhan += $items->sum('presentasi_realisasi_fisik') / count($items);
 														@endphp
 
 														@foreach ($items as $index => $item)
@@ -309,12 +314,12 @@
                                   <!-- Kolom total realisasi keuangan -->
                                   <td class="text-end">{{ format_ribuan($total_realisasi_anggaran) }}</td>
                                   <td class="text-center">
-                                    {{ format_persen($total_realisasi_anggaran / max($item->pagu, 1)) ?? 0 }}%
+                                    {{ format_persen($total_realisasi_anggaran / max($item->pagu, 1), true) ?? '0%' }}
                                   </td>
 
                                   <!-- Kolom presentasi realisasi fisik -->
                                   <td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
-                                    {{ format_persen($item->presentasi_realisasi_fisik) ?? 0 }}%</td>
+                                    {{ format_persen($item->presentasi_realisasi_fisik, true) ?? '0%' }}</td>
                                   <td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
                                     <input type="number" name="presentasi_realisasi_fisik" value="{{ old('presentasi_realisasi_fisik', $item->presentasi_realisasi_fisik * 100) }}" min="0" step="0.1" class="forms-input no text-end">
                                   </td>
@@ -353,8 +358,9 @@
 														@endforeach
 
                             @php
-                              // tambahkan ke presentasi realisasi fisik keseluruhan
+                              // tambahkan ke presentasi realisasi fisik keseluruhan dan total realisasi keluruhan
                               $presentasi_realisasi_keuangan_keseluruhan += $total_realisasi_anggaran_perkategori / $total_pagu;
+                              $total_realisasi_keseluruhan               += $total_realisasi_anggaran_perkategori;
                             @endphp
 
 														{{-- Jumlah per sub kategori --}}
@@ -376,8 +382,8 @@
 															<th class="text-end">{{ format_ribuan($total_nilai_kontrak_pengadaan_langsung) ?? 0 }}</th>
 															<th class="text-end">{{ format_ribuan($total_realisasi_pengadaan_langsung) ?? 0 }}</th>
 															<th class="text-end">{{ format_ribuan($total_realisasi_anggaran_perkategori) ?? 0 }}</th>
-															<th class="text-center">{{ format_persen($total_realisasi_anggaran_perkategori / $total_pagu) }}%</th>
-															<th class="text-center">{{ format_persen($items->sum('presentasi_realisasi_fisik') / count($items)) }}%</th>
+															<th class="text-center">{{ format_persen($total_realisasi_anggaran_perkategori / max($total_pagu, 1), true) ?? '0%' }}</th>
+															<th class="text-center">{{ format_persen($items->sum('presentasi_realisasi_fisik') / count($items), true) ?? '0%' }}</th>
 															<th></th>
 															<th></th>
 															<th></th>
@@ -411,9 +417,9 @@
 													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_epurchasing')) ?? 0 }}</th>
 													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung')) ?? 0 }}</th>
 													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung')) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('pagu')) ?? 0 }}</th>
-													<th class="text-center">{{ format_persen($presentasi_realisasi_keuangan_keseluruhan / max(count($grouped), 1)) ?? 0 }}%</th>
-													<th class="text-center">{{ format_persen($presentasi_realisasi_fisik_keseluruhan / max(count($grouped), 1)) ?? 0 }}%</th>
+													<th class="text-end">{{ format_ribuan($total_realisasi_keseluruhan) ?? 0 }}</th>
+													<th class="text-center">{{ format_persen($presentasi_realisasi_keuangan_keseluruhan / max(count($grouped), 1), true) ?? '0%' }}</th>
+													<th class="text-center">{{ format_persen($presentasi_realisasi_fisik_keseluruhan / max(count($grouped), 1), true) ?? '0%' }}</th>
 													<th></th>
 													<th></th>
 													<th></th>

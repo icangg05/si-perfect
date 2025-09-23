@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\UsersExport;
+use App\Models\SKPDAnggaran;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -21,27 +23,28 @@ class BerandaController extends Controller
   /**
    * EXPORT
    */
-  public function export()
+  public function export($skpd_anggaran_id)
   {
-    return Excel::download(new UsersExport, 'LAP Realisasi Barjas Juli DISHUB 2025.xlsx');
+    $skpd_anggaran = SKPDAnggaran::with(['skpd', 'laporan.sub_kategori_laporan.kategori_laporan'])->findOrFail($skpd_anggaran_id);
 
-    // // 1. Generate Excel dari UsersExport
-    // $export = new UsersExport();
-    // $excel  = Excel::raw($export, \Maatwebsite\Excel\Excel::XLSX);
+    // Group laporan berdasarkan kategori_laporan
+    $grouped = $skpd_anggaran->laporan
+      ->groupBy(function ($laporan) {
+        return $laporan->sub_kategori_laporan->kategori_laporan->nama ?? 'Tanpa Kategori';
+      })
+      ->map(function ($laporans) {
+        return $laporans->groupBy(function ($laporan) {
+          return $laporan->sub_kategori_laporan->nama ?? 'Tanpa Sub Kategori';
+        });
+      });
 
-    // // 2. Simpan ke file sementara
-    // $tempFile = storage_path('app/temp_export.xlsx');
-    // file_put_contents($tempFile, $excel);
+    $skpd_nama       = $skpd_anggaran->skpd->nama;
+    $jenis_pengadaan = $skpd_anggaran->jenis_pengadaan;
+    $bulan_anggaran  = Carbon::create()->month($skpd_anggaran->bulan_anggaran)->translatedFormat('F');
+    $tahun_anggaran  = $skpd_anggaran->tahun_anggaran;
 
-    // // 3. Load Excel pakai PhpSpreadsheet
-    // $spreadsheet = IOFactory::load($tempFile);
+    $file_name = strtoupper("LAP REALISASI {$jenis_pengadaan} {$bulan_anggaran} {$skpd_nama} {$tahun_anggaran}.xlsx");
 
-    // // 4. Convert ke PDF dengan MPDF
-    // $pdfFile = storage_path('app/LAP_RELASI_BARJAS_JULI_DISHUB_2025.pdf');
-    // $writer  = IOFactory::createWriter($spreadsheet, 'Mpdf');
-    // $writer->save($pdfFile);
-
-    // // 5. Return sebagai download
-    // return response()->download($pdfFile)->deleteFileAfterSend(true);
+    return Excel::download(new UsersExport($skpd_anggaran, $grouped), $file_name);
   }
 }

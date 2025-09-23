@@ -229,7 +229,7 @@
 
 										<div class="mt-3 text-end">
 											<button type="button" class="btn btn-danger btn-sm removeRow">
-												<i class="material-icons">delete</i> Hapus Item Ini
+												<i class="material-icons">delete</i> Hapus Item
 											</button>
 										</div>
 									</div>

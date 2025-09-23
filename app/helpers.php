@@ -10,11 +10,21 @@ if (! function_exists('format_ribuan')) {
 }
 
 if (! function_exists('format_persen')) {
-  function format_persen($value)
+  function format_persen($value, $as_blade = false)
   {
     if ($value == null || !$value)
       return;
-    return floor(($value) * 1000) / 10;
+
+    if ($as_blade) {
+      // Jika as_blade true, format sebagai persentase dengan satu desimal
+      // lalu tambahkan simbol persen
+      $percentage = round($value * 100, 1);
+      return $percentage . '%';
+    }
+
+    // Jika as_blade false, kembalikan nilai desimal
+    // Bulatkan ke 3 angka di belakang koma untuk akurasi
+    return round($value, 3);
   }
 }
 

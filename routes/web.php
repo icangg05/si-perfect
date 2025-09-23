@@ -16,7 +16,7 @@ Route::middleware('guest')->group(function () {
 
 
 Route::middleware('auth')->group(function () {
-  Route::get('/export', [BerandaController::class, 'export'])->name('export');
+  Route::post('/export/{skpd_anggaran_id}', [BerandaController::class, 'export'])->name('export');
   Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

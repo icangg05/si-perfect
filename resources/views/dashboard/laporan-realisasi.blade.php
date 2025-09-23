@@ -170,11 +170,14 @@
 													Lihat
 												</a>
 
-												<a href="{{ route('export') }}"
-													class="btn btn-sm btn-success text-nowrap {{ $item->laporan_count == 0 ? 'disabled' : '' }}">
-													<span class="material-icons" style="font-size: 18px; vertical-align: middle;">description</span>
-													Export
-												</a>
+                        <form class="d-inline" action="{{ route('export', $item->id) }}" method="post">
+                          @csrf
+                          <button type="submit"
+                            class="btn btn-sm btn-success text-nowrap {{ $item->laporan_count == 0 ? 'disabled' : '' }}">
+                            <span class="material-icons" style="font-size: 18px; vertical-align: middle;">description</span>
+                            Export
+                          </button>
+                        </form>
 											</td>
 										</tr>
 									@empty
