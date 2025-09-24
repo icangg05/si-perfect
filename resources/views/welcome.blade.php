@@ -18,8 +18,9 @@
 </head>
 
 <body class="bg-gray-500 flex justify-center items-center h-[100dvh]">
-	<a href="{{ route('export') }}"
-		class="text-white px-5 py-1.5 bg-sky-600 uppercase text-sm rounded-lg hover:bg-sky-700 transition">Export</a>
+  <h1 class="text-white">Hello World</h1>
+	{{-- <a href="{{ route('export') }}"
+		class="text-white px-5 py-1.5 bg-sky-600 uppercase text-sm rounded-lg hover:bg-sky-700 transition">Export</a> --}}
 </body>
 
 </html>

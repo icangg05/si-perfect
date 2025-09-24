@@ -15,7 +15,6 @@ Route::middleware('guest')->group(function () {
   Route::post('/login', [LoginController::class, 'authenticate'])->name('authenticate');
 });
 
-
 Route::middleware('auth')->group(function () {
   Route::post('/export/{skpd_anggaran_id}', [BerandaController::class, 'export'])->name('export');
   Route::get('/logout', [LoginController::class, 'logout'])->name('logout');

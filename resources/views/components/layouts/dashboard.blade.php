@@ -8,12 +8,11 @@
 	<meta name="description" content="SI PERFECT">
 	<meta name="keywords" content="siperfect,si-perfect,pelaporan">
 	<meta name="author" content="ilmifaizan">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<!-- The above 6 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 	<!-- Title -->
 	<title>Dashboard - {{ config('app.name') }}</title>
-
 
 	<!-- Styles -->
 	<link rel="preconnect" href="https://fonts.gstatic.com">
@@ -26,12 +25,14 @@
 	<link href="{{ asset('') }}/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="{{ asset('') }}/assets/plugins/perfectscroll/perfect-scrollbar.css" rel="stylesheet">
 	<link href="{{ asset('') }}/assets/plugins/pace/pace.css" rel="stylesheet">
+	<link href="{{ asset('') }}/assets/plugins/highlight/styles/github-gist.css" rel="stylesheet">
 
 	{{-- Custon fonts --}}
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap"
 		rel="stylesheet">
+
 
 	<!-- Theme Styles -->
 	<link href="{{ asset('') }}/assets/css/main.css" rel="stylesheet">
@@ -55,8 +56,9 @@
 	<div class="app horizontal-menu align-content-stretch d-flex flex-wrap">
 		<div class="app-container">
 			<div class="search container">
-				<form>
-					<input class="form-control" type="text" placeholder="Type here..." aria-label="Search">
+				<form action="{{ route('dashboard.laporan-realisasi') }}">
+					<input name="search" class="form-control" type="text" placeholder="Cari laporan realisasi..."
+						aria-label="Search">
 				</form>
 				<a href="#" class="toggle-search"><i class="material-icons">close</i></a>
 			</div>
@@ -64,8 +66,11 @@
 				<nav class="navbar navbar-light navbar-expand-lg container">
 					<div class="container-fluid">
 						<div class="navbar-nav" id="navbarNav">
-							<div class="logo">
-								<a href="index.html">Neptune</a>
+							<div class="logo d-flex align-items-center">
+								<img width="40" src="{{ asset('img/logo-kendari.png') }}" alt="logo">
+								<a href="{{ route('dashboard') }}">
+									<span style="color: #F4AB1E">SI</span>-PERFECT
+								</a>
 							</div>
 							<ul class="navbar-nav">
 								<li class="nav-item">
@@ -77,12 +82,11 @@
 										<i class="material-icons">add</i>
 									</a>
 									<ul class="dropdown-menu" aria-labelledby="addDropdownLink">
-										<li><a class="dropdown-item" href="#">New Workspace</a></li>
-										<li><a class="dropdown-item" href="#">New Board</a></li>
-										<li><a class="dropdown-item" href="#">Create Project</a></li>
+										<li><a class="dropdown-item" href="{{ route('dashboard.laporan-realisasi') }}">Buat Laporan Realisasi</a>
+										</li>
 									</ul>
 								</li>
-								<li class="nav-item dropdown hidden-on-mobile">
+								{{-- <li class="nav-item dropdown hidden-on-mobile">
 									<a class="nav-link dropdown-toggle" href="#" id="exploreDropdownLink" role="button"
 										data-bs-toggle="dropdown" aria-expanded="false">
 										<i class="material-icons-outlined">explore</i>
@@ -117,34 +121,36 @@
 											<button class="btn btn-primary">Create new repository</button>
 										</li>
 									</ul>
-								</li>
+								</li> --}}
 							</ul>
 
 						</div>
 						<div class="d-flex">
 							<ul class="navbar-nav">
 								<li class="nav-item hidden-on-mobile">
-									<a class="nav-link active" href="#">Applications</a>
+									<a class="nav-link active" href="#">
+										{{ Auth::user()->role == 'admin'
+                      ? 'Bagian Administrasi Pembangunan Setda Kota Kendari'
+                      : Auth::user()->skpd->nama }}
+									</a>
 								</li>
-								<li class="nav-item hidden-on-mobile">
+								{{-- <li class="nav-item hidden-on-mobile">
 									<a class="nav-link" href="#">Reports</a>
 								</li>
 								<li class="nav-item hidden-on-mobile">
 									<a class="nav-link" href="#">Projects</a>
-								</li>
+								</li> --}}
 								<li class="nav-item">
 									<a class="nav-link toggle-search" href="#"><i class="material-icons">search</i></a>
 								</li>
 								<li class="nav-item hidden-on-mobile">
 									<a class="nav-link language-dropdown-toggle" href="#" id="languageDropDown"
-										data-bs-toggle="dropdown"><img src="../../assets/images/flags/us.png" alt=""></a>
+										data-bs-toggle="dropdown"><img
+											src="{{ asset('img/user.png') }}"
+											alt="user" style="border-radius: 2px"></a>
 									<ul class="dropdown-menu dropdown-menu-end language-dropdown" aria-labelledby="languageDropDown">
-										<li><a class="dropdown-item" href="#"><img src="../../assets/images/flags/germany.png"
-													alt="">German</a></li>
-										<li><a class="dropdown-item" href="#"><img src="../../assets/images/flags/italy.png"
-													alt="">Italian</a></li>
-										<li><a class="dropdown-item" href="#"><img src="../../assets/images/flags/china.png"
-													alt="">Chinese</a></li>
+										<li><a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('logout') }}">
+												<i class="material-icons">logout</i> Logout</a></li>
 									</ul>
 								</li>
 								{{-- <li class="nav-item hidden-on-mobile">
@@ -280,6 +286,7 @@
 
 	<!-- Javascripts -->
 	<script src="{{ asset('') }}/assets/plugins/jquery/jquery-3.5.1.min.js"></script>
+	<script src="{{ asset('') }}/assets/plugins/bootstrap/js/popper.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/perfectscroll/perfect-scrollbar.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/pace/pace.min.js"></script>
@@ -287,8 +294,17 @@
 	<script src="{{ asset('') }}/assets/js/main.min.js"></script>
 	<script src="{{ asset('') }}/assets/js/custom.js"></script>
 	<script src="{{ asset('') }}/assets/js/pages/dashboard.js"></script>
-  <script src="{{ asset('assets/js/script.js') }}"></script>
-  @stack('script')
+	<script src="{{ asset('') }}/assets/js/script.js"></script>
+
+	{{-- Grafik chartjs --}}
+	<script src="{{ asset('') }}/assets/plugins/chartjs/chart.bundle.min.js"></script>
+	<script src="{{ asset('') }}/assets/js/pages/charts-chartjs.js"></script>
+
+	<script src="{{ asset('') }}/assets/plugins/highlight/highlight.pack.js"></script>
+
+	<script type="module" src="https://cdn.jsdelivr.net/gh/lekoala/formidable-elements@master/dist/count-up.min.js">
+	</script>
+	@stack('script')
 </body>
 
 </html>

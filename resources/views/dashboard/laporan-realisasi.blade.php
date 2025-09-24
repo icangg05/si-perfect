@@ -19,7 +19,7 @@
 							<select class="form-select" id="skpd_id" name="skpd_id" required @disabled(auth()->user()->role == 'skpd')>
 								<option value="">-- Pilih SKPD --</option>
 								@foreach ($users as $u)
-									<option @selected($u->skpd->nama == auth()->user()->skpd?->nama) value="{{ $u->skpd->id }}">{{ $u->skpd->nama }}</option>
+									<option @selected($u->skpd->nama == auth()->user()->skpd?->nama) value="{{ $u->skpd->id }}">{{ $u->skpd->singkatan }}</option>
 								@endforeach
 							</select>
 
