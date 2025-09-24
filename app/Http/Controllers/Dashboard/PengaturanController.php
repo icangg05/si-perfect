@@ -43,7 +43,7 @@ class PengaturanController extends Controller
 
     // Update data
     $user->name     = $request->name;
-    $user->username = $request->username;
+    $user->username = strtolower(str_replace(' ', '', $request->username));
     $user->email    = $request->email;
 
     $user->save();
@@ -60,7 +60,7 @@ class PengaturanController extends Controller
     $request->validate([
       'alamat'                 => ['nullable', 'string'],
       'pimpinan_skpd'          => ['required', 'string', 'max:255'],
-      'nip_pimpinan'           => ['nullable', 'string', 'max:18'],
+      'nip_pimpinan'           => ['nullable', 'string', 'min:18', 'max:18'],
       'pangkat_pimpinan'       => ['nullable', 'string', 'max:100'],
       'golongan_pimpinan'      => ['nullable', 'string', 'max:50'],
       'jenis_kelamin_pimpinan' => ['nullable'],

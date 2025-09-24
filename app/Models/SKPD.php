@@ -14,7 +14,7 @@ class SKPD extends Model
    */
   public function users()
   {
-    return $this->hasMany(User::class, 'skpd_id');
+    return $this->hasOne(User::class, 'skpd_id');
   }
 
   public function anggaran()

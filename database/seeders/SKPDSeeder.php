@@ -230,7 +230,7 @@ class SKPDSeeder extends Seeder
         'nama'                   => 'Dinas Perhubungan',
         'singkatan'              => 'Dishub',
         'alamat'                 => null,
-        'pimpinan_skpd'          => 'PAMINUDDIN, SE., M.Si.',
+        'pimpinan_skpd'          => 'Paminuddin, SE., M.Si.',
         'nip_pimpinan'           => '196909101993121001',
         'pangkat_pimpinan'       => 'Pembina Utama Muda',
         'golongan_pimpinan'      => 'IV/c',

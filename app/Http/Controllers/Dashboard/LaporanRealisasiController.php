@@ -97,6 +97,7 @@ class LaporanRealisasiController extends Controller
   public function buatLaporanItem($id)
   {
     $skpd_anggaran = SKPDAnggaran::with('laporan.sub_kategori_laporan.kategori_laporan')->findOrFail($id);
+    abort_if(Auth::user()->role != 'admin' && $skpd_anggaran->skpd_id != Auth::user()->skpd->id, 404);
 
     // Group laporan berdasarkan kategori_laporan
     $grouped = $skpd_anggaran->laporan
@@ -123,6 +124,8 @@ class LaporanRealisasiController extends Controller
   public function createLaporanItem($id)
   {
     $skpd_anggaran    = SKPDAnggaran::findOrFail($id);
+    abort_if(Auth::user()->role != 'admin' && $skpd_anggaran->skpd_id != Auth::user()->skpd->id, 404);
+
     $kategori_laporan = KategoriLaporan::with('sub_kategori_laporan')
       ->whereHas('sub_kategori_laporan')
       ->orderBy('id')
@@ -134,6 +137,22 @@ class LaporanRealisasiController extends Controller
 
     return view('dashboard.create-laporan-realisasi-item', compact('skpd_anggaran', 'kategori_laporan', 'kategori'));
   }
+
+
+  /**
+   * Handle delete laporan realisasi
+   */
+  public function destroyLaporan($id)
+  {
+    $skpd_anggaran    = SKPDAnggaran::findOrFail($id);
+    $skpd_anggaran->delete();
+
+    alert()->success('Sukses!', 'Laporan realisasi berhasil dihapus.')
+      ->showConfirmButton('Ok', '#1D3D62');
+
+    return redirect()->route('dashboard.laporan-realisasi');
+  }
+
 
 
   /**
@@ -229,6 +248,7 @@ class LaporanRealisasiController extends Controller
     ], [
       'no.required'                         => 'No. wajib diisi.',
       'no.min'                              => 'No. minimal 1.',
+      'pagu.min'                            => 'Pagu minimal Rp500.',
       'nama_pekerjaan.required'             => 'Nama pekerjaan wajib diisi.',
       'nama_pekerjaan.max'                  => 'Nama pekerjaan maksimal 255 karakter.',
       'tgl_mulai_kontrak.before_or_equal'   => 'Tanggal mulai kontrak harus sebelum atau sama dengan tanggal berakhir.',

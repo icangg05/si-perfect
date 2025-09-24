@@ -250,17 +250,17 @@
 									<i class="material-icons size-icon-nav">dataset</i> Master Data<i
 										class="material-icons has-sub-menu">keyboard_arrow_down</i></a>
 								<ul class="sub-menu">
-									<li>
+									{{-- <li>
 										<a href="mailbox.html">Mailbox<span class="badge rounded-pill badge-danger float-end">87</span></a>
-									</li>
+									</li> --}}
 									<li>
-										<a href="file-manager.html">File Manager</a>
+										<a href="{{ route('dashboard.skpd') }}">Data SKPD</a>
 									</li>
-									<li>
+									{{-- <li>
 										<a href="calendar.html">Calendar<span class="badge rounded-pill badge-success float-end">14</span></a>
-									</li>
+									</li> --}}
 									<li>
-										<a href="todo.html">Todo</a>
+										<a href="todo.html">Logs</a>
 									</li>
 								</ul>
 							</li>
@@ -288,6 +288,7 @@
 	<script src="{{ asset('') }}/assets/js/custom.js"></script>
 	<script src="{{ asset('') }}/assets/js/pages/dashboard.js"></script>
   <script src="{{ asset('assets/js/script.js') }}"></script>
+  @stack('script')
 </body>
 
 </html>

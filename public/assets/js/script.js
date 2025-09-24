@@ -118,6 +118,14 @@ $(function () {
 
     // reindex setelah append — reindex akan memberikan nama yang benar dan berurutan
     reindexRows();
+
+      $("html, body").animate(
+        {
+          scrollTop: $(document).scrollTop() + 410, // scroll 200px ke bawah
+        },
+        0 // durasi 400ms
+      );
+    // === SCROLL KE BAWAH ===
   });
 
   // hapus row
@@ -132,4 +140,17 @@ $(function () {
 
   // inisialisasi pada load (agar id/name konsisten jika ada 1 row dari server)
   reindexRows();
+
+  // // Targetkan input dengan ID confirmDelete
+  $("#confirmDelete").on("keyup", function () {
+    // Ambil nilai input, hapus spasi, dan ubah ke huruf besar
+    let val = $(this).val().trim();
+
+    // Logika untuk mengaktifkan/menonaktifkan tombol
+    if (val === "HAPUS") {
+      $("#btnConfirmDelete").prop("disabled", false);
+    } else {
+      $("#btnConfirmDelete").prop("disabled", true);
+    }
+  });
 });

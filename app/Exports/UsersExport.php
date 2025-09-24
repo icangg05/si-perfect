@@ -428,6 +428,7 @@ class UsersExport implements FromArray, WithHeadings, WithStyles, WithTitle
         $currentRow++;
         $sheet->mergeCells("B{$currentRow}:C{$currentRow}");
         $sheet->getStyle("B{$currentRow}:T{$currentRow}")->getFont()->setBold(true);
+        $sheet->getRowDimension($currentRow)->setRowHeight(20);
       }
     }
 
