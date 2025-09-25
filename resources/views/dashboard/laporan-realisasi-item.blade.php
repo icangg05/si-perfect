@@ -567,7 +567,7 @@
 														<div class="col-md-6">
 															<div class="mb-3">
 																<label for="bulan_anggaran" class="form-label">Bulan</label>
-																<select name="bulan_anggaran" class="form-select">
+																<select name="bulan_anggaran" id="bulan_anggaran" class="form-select">
 																	<option value="">-- Pilih Bulan --</option>
 																	@foreach (range(1, 12) as $i)
 																		<option value="{{ $i }}"
@@ -611,4 +611,18 @@
 			</div>
 		</div>
 	</div>
+
+		@push('script')
+		<script>
+			$(document).ready(function() {
+
+				$('#bulan_anggaran').select2({
+					placeholder: '-- Pilih Bulan --',
+					allowClear: false,
+					width: '100%',
+					minimumResultsForSearch: Infinity
+				});
+			});
+		</script>
+	@endpush
 </x-layouts.dashboard>

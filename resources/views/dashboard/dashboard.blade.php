@@ -8,33 +8,23 @@
 				<div class="page-description-actions d-flex align-items-center gap-1">
 					<form class="d-flex flex-md-row flex-column gap-1" action="{{ url()->current() }}" method="get" id="filterForm">
 						@can('admin')
-							<select name="skpd" class="form-select">
+							<select name="skpd" id="skpdSelect" class="form-select">
 								<option value="">-- Semua SKPD --</option>
 								@foreach ($all_skpd as $key => $item)
 									<option value="{{ $key }}" {{ request('skpd') == $key ? 'selected' : '' }}>
-										-- {{ $item }} --
+										{{ $item }}
 									</option>
 								@endforeach
 							</select>
 						@endcan
 
-						<select name="tahun" class="form-select">
-							@for ($i = date('Y') - 3; $i <= date('Y'); $i++)
+						<select name="tahun" id="tahunSelect" class="form-select">
+							@for ($i = date('Y'); $i >= date('Y') - 3; $i--)
 								<option value="{{ $i }}" {{ (request('tahun') ?? date('Y')) == $i ? 'selected' : '' }}>
-									-- {{ $i }} --
+									{{ $i }}
 								</option>
 							@endfor
 						</select>
-
-						@push('script')
-							<script>
-								$(document).ready(function() {
-									$('#filterForm select').on('change', function() {
-										$('#filterForm').submit();
-									});
-								});
-							</script>
-						@endpush
 					</form>
 
 					<span class="mx-2 border-start"></span>
@@ -236,4 +226,24 @@
 			</div>
 		</div>
 	</div>
+
+	@push('script')
+		<script>
+			$(document).ready(function() {
+				$('#skpdSelect').select2({
+					placeholder: '-- Semua SKPD --',
+					allowClear: true,
+					width: '200px',
+				});
+				$('#tahunSelect').select2({
+					allowClear: true,
+					width: '200px',
+					minimumResultsForSearch: Infinity
+				});
+				$('#filterForm select').on('change', function() {
+					$('#filterForm').submit();
+				});
+			});
+		</script>
+	@endpush
 </x-layouts.dashboard>

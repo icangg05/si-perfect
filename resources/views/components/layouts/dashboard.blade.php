@@ -23,6 +23,7 @@
 		href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
 		rel="stylesheet">
 	<link href="{{ asset('') }}/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="{{ asset('') }}/assets/plugins/select2/css/select2.min.css" rel="stylesheet">
 	<link href="{{ asset('') }}/assets/plugins/perfectscroll/perfect-scrollbar.css" rel="stylesheet">
 	<link href="{{ asset('') }}/assets/plugins/pace/pace.css" rel="stylesheet">
 	<link href="{{ asset('') }}/assets/plugins/highlight/styles/github-gist.css" rel="stylesheet">
@@ -252,21 +253,15 @@
 
 						@if (auth()->user()->role == 'admin')
 							<li>
-								<a href="#">
+								<a href="#" @class(['active' => request()->is('skpd*') || request()->routeIs('dashboard.logs')])>
 									<i class="material-icons size-icon-nav">dataset</i> Master Data<i
 										class="material-icons has-sub-menu">keyboard_arrow_down</i></a>
 								<ul class="sub-menu">
-									{{-- <li>
-										<a href="mailbox.html">Mailbox<span class="badge rounded-pill badge-danger float-end">87</span></a>
-									</li> --}}
 									<li>
-										<a href="{{ route('dashboard.skpd') }}">Data SKPD</a>
+										<a href="{{ route('dashboard.skpd') }}" @class(['active' => request()->is('skpd*')])>Data SKPD</a>
 									</li>
-									{{-- <li>
-										<a href="calendar.html">Calendar<span class="badge rounded-pill badge-success float-end">14</span></a>
-									</li> --}}
 									<li>
-										<a href="todo.html">Logs</a>
+										<a href="todo.html" @class(['active' => request()->is('logs')])>Logs</a>
 									</li>
 								</ul>
 							</li>
@@ -288,17 +283,18 @@
 	<script src="{{ asset('') }}/assets/plugins/jquery/jquery-3.5.1.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/bootstrap/js/popper.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ asset('') }}/assets/plugins/select2/js/select2.full.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/perfectscroll/perfect-scrollbar.min.js"></script>
 	<script src="{{ asset('') }}/assets/plugins/pace/pace.min.js"></script>
-	<script src="{{ asset('') }}/assets/plugins/apexcharts/apexcharts.min.js"></script>
+	{{-- <script src="{{ asset('') }}/assets/plugins/apexcharts/apexcharts.min.js"></script> --}}
 	<script src="{{ asset('') }}/assets/js/main.min.js"></script>
 	<script src="{{ asset('') }}/assets/js/custom.js"></script>
-	<script src="{{ asset('') }}/assets/js/pages/dashboard.js"></script>
+	{{-- <script src="{{ asset('') }}/assets/js/pages/dashboard.js"></script> --}}
 	<script src="{{ asset('') }}/assets/js/script.js"></script>
 
 	{{-- Grafik chartjs --}}
-	<script src="{{ asset('') }}/assets/plugins/chartjs/chart.bundle.min.js"></script>
-	<script src="{{ asset('') }}/assets/js/pages/charts-chartjs.js"></script>
+	{{-- <script src="{{ asset('') }}/assets/plugins/chartjs/chart.bundle.min.js"></script>
+	<script src="{{ asset('') }}/assets/js/pages/charts-chartjs.js"></script> --}}
 
 	<script src="{{ asset('') }}/assets/plugins/highlight/highlight.pack.js"></script>
 

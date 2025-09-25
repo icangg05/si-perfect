@@ -17,7 +17,7 @@
 							@endphp
 							<label for="skpd_id" class="form-label">SKPD</label>
 							<select class="form-select" id="skpd_id" name="skpd_id" required @disabled(auth()->user()->role == 'skpd')>
-								<option value="">-- Pilih SKPD --</option>
+								<option value=""></option>
 								@foreach ($users as $u)
 									<option @selected($u->skpd->nama == auth()->user()->skpd?->nama) value="{{ $u->skpd->id }}">{{ $u->skpd->singkatan }}</option>
 								@endforeach
@@ -43,7 +43,7 @@
 						<div class="mb-3">
 							<label for="bulan_anggaran" class="form-label">Bulan</label>
 							<select class="form-select" id="bulan_anggaran" name="bulan_anggaran" required>
-								<option value="">-- Pilih Bulan --</option>
+								<option value=""></option>
 								@php
 									$months = [
 									    1 => 'Januari',
@@ -118,7 +118,7 @@
 							value="{{ request('search') }}" @if (request('search')) autofocus @endif>
 
 						{{-- Filter bulan --}}
-						<select name="bulan" class="form-select">
+						<select name="bulan" id="bulanFilter" class="form-select">
 							<option value="">-- Semua Bulan --</option>
 							@foreach (range(1, 12) as $i)
 								<option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
@@ -196,4 +196,31 @@
 			</div>
 		</div>
 	</div>
+
+	@push('script')
+		<script>
+			$(document).ready(function() {
+				
+				$('#skpd_id').select2({
+					placeholder: '-- Pilih SKPD --',
+					allowClear: false,
+					dropdownParent: $('#modalCreate'),
+					width: '100%',
+				});
+				$('#bulan_anggaran').select2({
+					placeholder: '-- Pilih Bulan --',
+					allowClear: false,
+					dropdownParent: $('#modalCreate'),
+					width: '100%',
+					minimumResultsForSearch: Infinity
+				});
+				$('#bulanFilter').select2({
+					placeholder: '-- Semua Bulan --',
+					allowClear: true,
+					width: '100%',
+					minimumResultsForSearch: Infinity
+				});
+			});
+		</script>
+	@endpush
 </x-layouts.dashboard>

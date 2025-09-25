@@ -42,8 +42,7 @@
 							<li class="nav-item" role="presentation">
 								<button
 									onclick="window.location.href='{{ route('dashboard.create-item-anggaran', ['id' => $skpd_anggaran->id, 'kategori' => $k->id]) }}'"
-									type="button"
-									class="nav-link {{ $activeKategoriId == $k->id ? 'active' : '' }}">
+									type="button" class="nav-link {{ $activeKategoriId == $k->id ? 'active' : '' }}">
 									{{ $k->nama }}
 								</button>
 							</li>
@@ -132,12 +131,12 @@
 											</div>
 											<div class="col-md-4">
 												<label class="form-label">Tanggal Mulai</label>
-												<input type="date" class="form-control form-control-sm"
+												<input type="text" onfocus="(this.type='date')" placeholder="Pilih tanggal mulai" class="form-control form-control-sm"
 													name="tgl_mulai_kontrak[]">
 											</div>
 											<div class="col-md-4">
 												<label class="form-label">Tanggal Berakhir</label>
-												<input type="date" class="form-control form-control-sm"
+												<input type="text" onfocus="(this.type='date')" placeholder="Pilih tanggal berakhir" class="form-control form-control-sm"
 													name="tgl_berakhir_kontrak[]">
 											</div>
 										</div>
