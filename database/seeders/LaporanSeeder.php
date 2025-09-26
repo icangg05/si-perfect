@@ -16,9 +16,7 @@ class LaporanSeeder extends Seeder
     $data = [
       // 1. Paket Penyedia
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 1,
-        'no'                                 => 139,
+        'kategori_laporan_id'                => 3,
         'nama_pekerjaan'                     => 'Belanja Alat/Bahan untuk Kegiatan Kantor-Alat Tulis Kantor',
         'pagu'                               => 1684800,
         'no_kontrak'                         => null,
@@ -39,9 +37,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 1,
-        'no'                                 => 140,
+        'kategori_laporan_id'                => 3,
         'nama_pekerjaan'                     => 'Belanja Alat/Bahan untuk Kegiatan Kantor-Bahan Cetak',
         'pagu'                               => 1640520,
         'no_kontrak'                         => null,
@@ -62,9 +58,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 1,
-        'no'                                 => 141,
+        'kategori_laporan_id'                => 3,
         'nama_pekerjaan'                     => 'Belanja Makanan dan Minuman Rapat',
         'pagu'                               => 5040000,
         'no_kontrak'                         => null,
@@ -85,9 +79,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 1,
-        'no'                                 => 1,
+        'kategori_laporan_id'                => 3,
         'nama_pekerjaan'                     => 'Kantor',
         'pagu'                               => 1220400,
         'no_kontrak'                         => null,
@@ -108,9 +100,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 1,
-        'no'                                 => 4,
+        'kategori_laporan_id'                => 3,
         'nama_pekerjaan'                     => 'Fotocopy',
         'pagu'                               => 1033620,
         'no_kontrak'                         => null,
@@ -131,9 +121,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 1,
-        'no'                                 => 3,
+        'kategori_laporan_id'                => 3,
         'nama_pekerjaan'                     => 'Cetak Spanduk',
         'pagu'                               => 4032000,
         'no_kontrak'                         => null,
@@ -154,9 +142,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 1,
-        'no'                                 => 11,
+        'kategori_laporan_id'                => 3,
         'nama_pekerjaan'                     => 'Belanja Makanan dan Minuman Jamuan Tamu',
         'pagu'                               => 6580000,
         'no_kontrak'                         => null,
@@ -179,9 +165,7 @@ class LaporanSeeder extends Seeder
 
       // 2. Paket Swakelola
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 2,
-        'no'                                 => 2,
+        'kategori_laporan_id'                => 4,
         'nama_pekerjaan'                     => 'Belanja Lembur',
         'pagu'                               => 35877000,
         'no_kontrak'                         => null,
@@ -202,9 +186,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 2,
-        'no'                                 => 1,
+        'kategori_laporan_id'                => 4,
         'nama_pekerjaan'                     => 'Belanja Bimbingan Teknis',
         'pagu'                               => 62349000,
         'no_kontrak'                         => null,
@@ -225,9 +207,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 2,
-        'no'                                 => 3,
+        'kategori_laporan_id'                => 4,
         'nama_pekerjaan'                     => 'Belanja Perjalanan Dinas Biasa',
         'pagu'                               => 52844000,
         'no_kontrak'                         => null,
@@ -248,9 +228,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 2,
-        'no'                                 => 4,
+        'kategori_laporan_id'                => 4,
         'nama_pekerjaan'                     => 'Belanja Perjalanan Dinas Dalam Kota',
         'pagu'                               => 18720000,
         'no_kontrak'                         => null,
@@ -271,9 +249,7 @@ class LaporanSeeder extends Seeder
         'keterangan'                         => null,
       ],
       [
-        'skpd_anggaran_id'                   => 1,
-        'sub_kategori_laporan_id'            => 2,
-        'no'                                 => 19,
+        'kategori_laporan_id'                => 4,
         'nama_pekerjaan'                     => 'Belanja Jasa Tenaga Penanganan Prasarana dan Sarana Umum',
         'pagu'                               => 56000000,
         'no_kontrak'                         => null,

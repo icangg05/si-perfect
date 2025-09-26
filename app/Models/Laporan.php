@@ -14,8 +14,8 @@ class Laporan extends Model
     return $this->belongsTo(SKPDAnggaran::class, 'skpd_anggaran_id');
   }
 
-  public function sub_kategori_laporan()
+  public function kategori_laporan()
   {
-    return $this->belongsTo(SubKategoriLaporan::class, 'sub_kategori_laporan_id');
+    return $this->belongsTo(KategoriLaporan::class, 'kategori_laporan_id');
   }
 }

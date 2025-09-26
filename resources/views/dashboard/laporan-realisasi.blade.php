@@ -200,7 +200,7 @@
 	@push('script')
 		<script>
 			$(document).ready(function() {
-				
+
 				$('#skpd_id').select2({
 					placeholder: '-- Pilih SKPD --',
 					allowClear: false,

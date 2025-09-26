@@ -14,8 +14,13 @@ class KategoriLaporan extends Model
   /**
    * Set relation table
    */
-  public function sub_kategori_laporan()
+  public function skpd_anggaran()
   {
-    return $this->hasMany(SubKategoriLaporan::class, 'kategori_laporan_id');
+    return $this->belongsTo(SKPDAnggaran::class, 'skpd_anggaran_id');
+  }
+
+  public function laporan()
+  {
+    return $this->hasMany(Laporan::class, 'kategori_laporan_id');
   }
 }

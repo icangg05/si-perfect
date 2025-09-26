@@ -8,7 +8,9 @@ use App\Http\Controllers\Dashboard\PengaturanController;
 use App\Http\Controllers\Dashboard\SKPDController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', [BerandaController::class, 'index'])->name('beranda');
+Route::get('/tes', [BerandaController::class, 'tes']);
 
 Route::middleware('guest')->group(function () {
   Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -32,7 +34,7 @@ Route::middleware('auth')->group(function () {
   Route::delete('/laporan-realisasi/{id}/destroy', [LaporanRealisasiController::class, 'destroyLaporan'])->name('dashboard.laporan-realisasi.destroy');
   Route::post('/laporan-realisasi/{id}/store', [LaporanRealisasiController::class, 'storeLaporanItem'])->name('dashboard.store-item-anggaran');
   Route::patch('/laporan-realisasi/{id}', [LaporanRealisasiController::class, 'updateDataLaporan'])->name('dashboard.update-data-laporan');
-  Route::post('/update-item-anggaran/{id}', [LaporanRealisasiController::class, 'updateLaporanItem'])->name('dashboard.update-item-anggaran');
+  Route::patch('/update-item-anggaran/{id}', [LaporanRealisasiController::class, 'updateLaporanItem'])->name('dashboard.update-item-anggaran');
   Route::delete('/delete-item-anggaran/{id}', [LaporanRealisasiController::class, 'deleteLaporanItem'])->name('dashboard.delete-item-anggaran');
 
   // Master data

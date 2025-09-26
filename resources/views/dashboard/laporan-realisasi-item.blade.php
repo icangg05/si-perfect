@@ -98,8 +98,8 @@
 						<span style="color: rgb(155, 155, 155);">—</span>
 						<span style="font-weight: 400; font-size: .9rem">
 							{{ auth()->user()->role == 'admin'
-                ? 'Bagian Administrasi Pembangunan Setda Kota Kendari'
-                : auth()->user()->skpd->nama }}
+							    ? 'Bagian Administrasi Pembangunan Setda Kota Kendari'
+							    : auth()->user()->skpd->nama }}
 						</span>
 					</h5>
 				</div>
@@ -153,7 +153,6 @@
 										<table class="table table-sm table-bordered table-hover my-table font-arimo">
 											<thead class="text-center align-middle">
 												<tr>
-													<th scope="col" rowspan="3">Urut DPA</th>
 													<th scope="col" rowspan="3">NO.</th>
 													<th scope="col" rowspan="3">NAMA PEKERJAAN</th>
 													<th scope="col" rowspan="3">PAGU (Rp)</th>
@@ -191,251 +190,256 @@
 												</tr>
 											</thead>
 											<tbody>
-												@php
-													$no_kategori = 1;
-													$presentasi_realisasi_keuangan_keseluruhan = 0;
-													$presentasi_realisasi_fisik_keseluruhan = 0;
-													$total_realisasi_keseluruhan = 0;
-												@endphp
-
-												@foreach ($grouped as $kategori => $subKategoris)
-													<tr>
+                        @php
+                          $total_realisasi_keseluruhan    = 0;
+                          $realisasi_fisik_keseluruhan    = 0;
+                        @endphp
+												@foreach ($skpd_anggaran->kategori_laporan as $kategori)
+													<!-- Baris nama kategori -->
+													<tr style="background: {{ is_null($kategori->parent) ? '#FDE9D9' : 'transparent' }}">
 														<th></th>
-														<th></th>
-														<th class="text-nowrap">
-															{{ $no_kategori . '. ' }}&nbsp;&nbsp;&nbsp;{{ $kategori }}
+														<th class="fw-bold" style="position: relative">
+															{{-- <span class="font-arimo" style="position: absolute; left: 1;">{{ $kategori->id }}</span> --}}
+															{{-- <span class="font-arimo" style="padding-left: 26px">{{ $kategori->nama }}</span> --}}
+															<span class="font-arimo">{{ $kategori->nama }}</span>
 														</th>
+														<!-- Buat 20 kolom kosong sisanya agar sejajar -->
 														@for ($i = 0; $i < 20; $i++)
 															<th></th>
 														@endfor
 													</tr>
 
-													@php
-														$no_sub_kategori = 1;
-														$total_realisasi_anggaran_perkategori = 0;
-													@endphp
+                          <!-- Total perkategori -->
+                          @php
+                            $total_pagu_perkategori                           = 0;
+                            $total_nilai_tender_perkategori                   = 0;
+                            $total_realisasi_tender_perkategori               = 0;
+                            $total_nilai_penunjukkan_langsung_perkategori     = 0;
+                            $total_realisasi_penunjukkan_langsung_perkategori = 0;
+                            $total_nilai_swakelola_perkategori                = 0;
+                            $total_realisasi_swakelola_perkategori            = 0;
+                            $total_nilai_epurchasing_perkategori              = 0;
+                            $total_realisasi_epurchasing_perkategori          = 0;
+                            $total_nilai_pengadaan_langsung_perkategori       = 0;
+                            $total_realisasi_pengadaan_langsung_perkategori   = 0;
 
-													@foreach ($subKategoris as $subKategori => $items)
-														<tr>
-															<th></th>
-															<th></th>
-															<th class="text-nowrap">{{ $no_kategori . '.' . $no_sub_kategori . '. ' . $subKategori }}</th>
-															@for ($i = 0; $i < 20; $i++)
-																<th></th>
-															@endfor
-														</tr>
+                            $total_realisasi_anggaran_perkategori = 0;
+                            $realisasi_fisik_perkategori          = 0;
+                          @endphp
 
-														@php
-															// hitung total untuk sub kategori
-															$total_pagu = $items->sum('pagu');
-															$total_nilai_kontrak_tender = $items->sum('nilai_kontrak_tender');
-															$total_realisasi_tender = $items->sum('realisasi_tender');
-															$total_nilai_kontrak_penunjukkan_langsung = $items->sum('nilai_kontrak_penunjukkan_langsung');
-															$total_realisasi_penunjukkan_langsung = $items->sum('realisasi_penunjukkan_langsung');
-															$total_nilai_kontrak_swakelola = $items->sum('nilai_kontrak_swakelola');
-															$total_realisasi_swakelola = $items->sum('realisasi_swakelola');
-															$total_nilai_kontrak_epurchasing = $items->sum('nilai_kontrak_epurchasing');
-															$total_realisasi_epurchasing = $items->sum('realisasi_epurchasing');
-															$total_nilai_kontrak_pengadaan_langsung = $items->sum('nilai_kontrak_pengadaan_langsung');
-															$total_realisasi_pengadaan_langsung = $items->sum('realisasi_pengadaan_langsung');
-
-															// tambahkan ke presentasi realisasi fisik keseluruhan dan total keseluruhan
-															$presentasi_realisasi_fisik_keseluruhan += $items->sum('presentasi_realisasi_fisik') / count($items);
-														@endphp
-
-														@foreach ($items as $index => $item)
+													<!-- Baris item anggaran -->
+													@if (count($kategori->laporan) > 0)
+														@foreach ($kategori->laporan as $laporan)
 															@php
-																$total_realisasi_anggaran =
-																    $item->realisasi_tender +
-																    $item->realisasi_penunjukkan_langsung +
-																    $item->realisasi_swakelola +
-																    $item->realisasi_epurchasing +
-																    $item->realisasi_pengadaan_langsung;
+                                $rowError                          = session('row_id') == $laporan->id;
+                                $total_realisasi_anggaran_perbaris = 0;
+                                $realisasi_keuangan_perbaris       = 0;
 
-																// tambahkan ke total per kategori
-																$total_realisasi_anggaran_perkategori += $total_realisasi_anggaran;
-																$no_asc = $index + 1;
+                                // Jumlah nilai untuk perbaris
+                                $total_realisasi_anggaran_perbaris +=
+                                  $laporan->nilai_kontrak_tender + $laporan->realisasi_tender +
+                                  $laporan->nilai_kontrak_penunjukkan_langsung + $laporan->realisasi_penunjukkan_langsung +
+                                  $laporan->nilai_kontrak_swakelola + $laporan->realisasi_swakelola +
+                                  $laporan->nilai_kontrak_epurchasing + $laporan->realisasi_epurchasing +
+                                  $laporan->nilai_kontrak_pengadaan_langsung + $laporan->realisasi_pengadaan_langsung;
+                                $realisasi_keuangan_perbaris = $total_realisasi_anggaran_perbaris / max($laporan->pagu, 1);
+
+
+                                // Jumlah nilai untuk baris subtotal
+                                $total_pagu_perkategori                           += $laporan->pagu;
+                                $total_nilai_tender_perkategori                   += $laporan->nilai_kontrak_tender;
+                                $total_realisasi_tender_perkategori               += $laporan->realisasi_tender;
+                                $total_nilai_penunjukkan_langsung_perkategori     += $laporan->nilai_kontrak_penunjukkan_langsung;
+                                $total_realisasi_penunjukkan_langsung_perkategori += $laporan->realisasi_penunjukkan_langsung;
+                                $total_nilai_swakelola_perkategori                += $laporan->nilai_kontrak_swakelola;
+                                $total_realisasi_swakelola_perkategori            += $laporan->realisasi_swakelola;
+                                $total_nilai_epurchasing_perkategori              += $laporan->nilai_kontrak_epurchasing;
+                                $total_realisasi_epurchasing_perkategori          += $laporan->realisasi_epurchasing;
+                                $total_nilai_pengadaan_langsung_perkategori       += $laporan->nilai_kontrak_pengadaan_langsung;
+                                $total_realisasi_pengadaan_langsung_perkategori   += $laporan->realisasi_pengadaan_langsung;
+
+                                $total_realisasi_anggaran_perkategori += $total_realisasi_anggaran_perbaris;
+                                $realisasi_fisik_perkategori          += format_persen($laporan->presentasi_realisasi_fisik);
+
+
+                                // Jumlah nilai baris keseluruhan
+                                $total_realisasi_keseluruhan += $total_realisasi_anggaran_perbaris;
+                                $realisasi_fisik_keseluruhan += format_persen($realisasi_fisik_perkategori / max(count($kategori->laporan), 1));
 															@endphp
-
-															<tr data-id="{{ $item->id }}">
-																@php
-																	$rowError = session('row_id') == $item->id;
-																@endphp
-																<form action="{{ route('dashboard.update-item-anggaran', $item->id) }}" method="post">
+															<tr>
+																<form action="{{ route('dashboard.update-item-anggaran', $laporan->id) }}" method="post">
 																	@csrf
-																	<!-- Kolom urut dpa -->
-																	<td class="text-center">{{ $no_asc }}</td>
+																	@method('patch')
+																	<!-- No -->
+																	<td class="text-center">{{ $loop->iteration }}</td>
 
-																	<!-- Kolom no -->
-																	<td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
-																		{{ $item->no }}</td>
-																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																		<input type="number" name="no" value="{{ old('no', $item->no) }}" min="1"
-																			class="forms-input no text-end">
-																	</td>
-
-																	<!-- Kolom nama pekerjaan -->
-																	<td class="view-mode {{ $rowError ? 'd-none' : '' }}">
-																		{{ $item->nama_pekerjaan }}</td>
+																	<!-- Nama pekerjaan -->
+																	<td class="view-mode {{ $rowError ? 'd-none' : '' }}" style="min-width: 255px">
+																		{{ $laporan->nama_pekerjaan }}</td>
 																	<td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
 																		<input type="text" name="nama_pekerjaan"
-																			value="{{ old('nama_pekerjaan', $item->nama_pekerjaan) }}" maxlength="100"
+																			value="{{ old('nama_pekerjaan', $laporan->nama_pekerjaan) }}" maxlength="100"
 																			class="forms-input text">
 																	</td>
 
-																	<!-- Kolom pagu -->
+																	<!-- Pagu -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->pagu) }}</td>
+																		{{ format_ribuan($laporan->pagu) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																		<input type="number" name="pagu" value="{{ old('pagu', $item->pagu) }}" min="500"
+																		<input type="number" name="pagu" value="{{ old('pagu', $laporan->pagu) }}" min="500"
 																			class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom no kontrak -->
+																	<!-- No kontrak -->
 																	<td class="view-mode {{ $rowError ? 'd-none' : '' }}">
-																		{{ $item->no_kontrak }}</td>
+																		{{ $laporan->no_kontrak }}</td>
 																	<td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
-																		<input type="text" name="no_kontrak" value="{{ old('no_kontrak', $item->no_kontrak) }}"
+																		<input type="text" name="no_kontrak" value="{{ old('no_kontrak', $laporan->no_kontrak) }}"
 																			class="forms-input no-kontrak">
 																	</td>
 
-																	<!-- Kolom tgl mulai kontrak -->
+																	<!-- Tgl mulai kontrak -->
 																	<td class="view-mode text-nowrap {{ $rowError ? 'd-none' : '' }}">
-																		{{ $item->tgl_mulai_kontrak ? Carbon\Carbon::create($item->tgl_mulai_kontrak)->translatedFormat('d-m-Y') : null }}
+																		{{ $laporan->tgl_mulai_kontrak ? Carbon\Carbon::create($laporan->tgl_mulai_kontrak)->translatedFormat('d-m-Y') : null }}
 																	</td>
 																	<td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
 																		<input type="date" name="tgl_mulai_kontrak"
-																			value="{{ old('tgl_mulai_kontrak', $item->tgl_mulai_kontrak) }}" class="forms-input tanggal">
+																			value="{{ old('tgl_mulai_kontrak', $laporan->tgl_mulai_kontrak) }}" class="forms-input tanggal">
 																	</td>
 
-																	<!-- Kolom tgl berakhir kontrak -->
+																	<!-- Tgl berakhir kontrak -->
 																	<td class="view-mode text-nowrap {{ $rowError ? 'd-none' : '' }}">
-																		{{ $item->tgl_berakhir_kontrak ? Carbon\Carbon::create($item->tgl_berakhir_kontrak)->translatedFormat('d-m-Y') : null }}
+																		{{ $laporan->tgl_berakhir_kontrak ? Carbon\Carbon::create($laporan->tgl_berakhir_kontrak)->translatedFormat('d-m-Y') : null }}
 																	</td>
 																	<td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
 																		<input type="date" name="tgl_berakhir_kontrak"
-																			value="{{ old('tgl_berakhir_kontrak', $item->tgl_berakhir_kontrak) }}"
+																			value="{{ old('tgl_berakhir_kontrak', $laporan->tgl_berakhir_kontrak) }}"
 																			class="forms-input tanggal">
 																	</td>
 
-																	<!-- Kolom nilai kontrak tender -->
+																	<!-- Nilai kontrak tender -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->nilai_kontrak_tender) }}</td>
+																		{{ format_ribuan($laporan->nilai_kontrak_tender) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="nilai_kontrak_tender"
-																			value="{{ old('nilai_kontrak_tender', $item->nilai_kontrak_tender) }}" min="500"
+																			value="{{ old('nilai_kontrak_tender', $laporan->nilai_kontrak_tender) }}" min="500"
 																			class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom realisasi tender -->
+																	<!-- Realisasi tender -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->realisasi_tender) }}</td>
+																		{{ format_ribuan($laporan->realisasi_tender) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="realisasi_tender"
-																			value="{{ old('realisasi_tender', $item->realisasi_tender) }}" min="500"
+																			value="{{ old('realisasi_tender', $laporan->realisasi_tender) }}" min="500"
 																			class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom nilai kontrak penunjukkan langsung -->
+																	<!-- Nilai kontrak penunjukkan langsung -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->nilai_kontrak_penunjukkan_langsung) }}</td>
+																		{{ format_ribuan($laporan->nilai_kontrak_penunjukkan_langsung) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="nilai_kontrak_penunjukkan_langsung"
-																			value="{{ old('nilai_kontrak_penunjukkan_langsung', $item->nilai_kontrak_penunjukkan_langsung) }}"
+																			value="{{ old('nilai_kontrak_penunjukkan_langsung', $laporan->nilai_kontrak_penunjukkan_langsung) }}"
 																			min="500" class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom realisasi penunjukkan langsung -->
+																	<!-- Realisasi penunjukkan langsung -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->realisasi_penunjukkan_langsung) }}</td>
+																		{{ format_ribuan($laporan->realisasi_penunjukkan_langsung) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="realisasi_penunjukkan_langsung"
-																			value="{{ old('realisasi_penunjukkan_langsung', $item->realisasi_penunjukkan_langsung) }}"
+																			value="{{ old('realisasi_penunjukkan_langsung', $laporan->realisasi_penunjukkan_langsung) }}"
 																			min="500" class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom nilai kontrak swakelola -->
+																	<!-- Nilai kontrak swakelola -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->nilai_kontrak_swakelola) }}</td>
+																		{{ format_ribuan($laporan->nilai_kontrak_swakelola) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="nilai_kontrak_swakelola"
-																			value="{{ old('nilai_kontrak_swakelola', $item->nilai_kontrak_swakelola) }}" min="500"
+																			value="{{ old('nilai_kontrak_swakelola', $laporan->nilai_kontrak_swakelola) }}" min="500"
 																			class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom realisasi swakelola -->
+																	<!-- Realisasi swakelola -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->realisasi_swakelola) }}</td>
+																		{{ format_ribuan($laporan->realisasi_swakelola) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="realisasi_swakelola"
-																			value="{{ old('realisasi_swakelola', $item->realisasi_swakelola) }}" min="500"
+																			value="{{ old('realisasi_swakelola', $laporan->realisasi_swakelola) }}" min="500"
 																			class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom nilai kontrak epurchasing -->
+																	<!-- Nilai kontrak epurchasing -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->nilai_kontrak_epurchasing) }}</td>
+																		{{ format_ribuan($laporan->nilai_kontrak_epurchasing) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="nilai_kontrak_epurchasing"
-																			value="{{ old('nilai_kontrak_epurchasing', $item->nilai_kontrak_epurchasing) }}" min="500"
+																			value="{{ old('nilai_kontrak_epurchasing', $laporan->nilai_kontrak_epurchasing) }}" min="500"
 																			class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom realisasi epurchasing -->
+																	<!-- Realisasi epurchasing -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->realisasi_epurchasing) }}</td>
+																		{{ format_ribuan($laporan->realisasi_epurchasing) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="realisasi_epurchasing"
-																			value="{{ old('realisasi_epurchasing', $item->realisasi_epurchasing) }}" min="500"
+																			value="{{ old('realisasi_epurchasing', $laporan->realisasi_epurchasing) }}" min="500"
 																			class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom nilai kontrak pengadaan langsung -->
+																	<!-- Nilai kontrak pengadaan langsung -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->nilai_kontrak_pengadaan_langsung) }}</td>
+																		{{ format_ribuan($laporan->nilai_kontrak_pengadaan_langsung) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="nilai_kontrak_pengadaan_langsung"
-																			value="{{ old('nilai_kontrak_pengadaan_langsung', $item->nilai_kontrak_pengadaan_langsung) }}"
+																			value="{{ old('nilai_kontrak_pengadaan_langsung', $laporan->nilai_kontrak_pengadaan_langsung) }}"
 																			min="500" class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom realiasi pengadaan langsung -->
+																	<!-- Realisasi pengadaan langsung -->
 																	<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_ribuan($item->realisasi_pengadaan_langsung) }}</td>
+																		{{ format_ribuan($laporan->realisasi_pengadaan_langsung) }}</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="realisasi_pengadaan_langsung"
-																			value="{{ old('realisasi_pengadaan_langsung', $item->realisasi_pengadaan_langsung) }}"
+																			value="{{ old('realisasi_pengadaan_langsung', $laporan->realisasi_pengadaan_langsung) }}"
 																			min="500" class="forms-input rupiah text-end">
 																	</td>
 
-																	<!-- Kolom total realisasi keuangan -->
-																	<td class="text-end">{{ format_ribuan($total_realisasi_anggaran) }}</td>
-																	<td class="text-center">
-																		{{ format_persen($total_realisasi_anggaran / max($item->pagu, 1), true) ?? '0%' }}
+																	<!-- Total realisasi anggaran -->
+																	<td class="text-end">
+																		{{ format_ribuan($total_realisasi_anggaran_perbaris) }}
 																	</td>
 
-																	<!-- Kolom presentasi realisasi fisik -->
+																	<!-- Presentasi realisasi keuangan -->
+																	<td class="text-center">
+																		{{ format_persen($realisasi_keuangan_perbaris, true) ?? '0%' }}
+																	</td>
+
+																	<!-- Presentasi realisasi fisik -->
 																	<td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
-																		{{ format_persen($item->presentasi_realisasi_fisik, true) ?? '0%' }}</td>
+																		{{ format_persen($laporan->presentasi_realisasi_fisik, true) ?? '0%' }}
+																	</td>
 																	<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																		<input type="number" name="presentasi_realisasi_fisik"
-																			value="{{ old('presentasi_realisasi_fisik', $item->presentasi_realisasi_fisik * 100) }}"
+																			value="{{ old('presentasi_realisasi_fisik', $laporan->presentasi_realisasi_fisik * 100) }}"
 																			min="0" step="0.1" class="forms-input no text-end">
 																	</td>
 
-																	<!-- Kolom sumber dana -->
+																	<!-- Sumber dana -->
 																	<td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
-																		{{ $item->sumber_dana ?? '-' }}</td>
+																		{{ $laporan->sumber_dana ?? '-' }}</td>
 																	<td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
-																		<input type="text" name="sumber_dana" value="{{ old('sumber_dana', $item->sumber_dana) }}"
+																		<input type="text" name="sumber_dana" value="{{ old('sumber_dana', $laporan->sumber_dana) }}"
 																			maxlength="50" class="forms-input dana">
 																	</td>
 
-																	<!-- Kolom keterangan -->
+																	<!-- Keterangan -->
 																	<td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
-																		{{ $item->keterangan ?? '-' }}</td>
+																		{{ $laporan->keterangan ?? '-' }}</td>
 																	<td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
-																		<input type="text" name="keterangan" value="{{ old('keterangan', $item->keterangan) }}"
+																		<input type="text" name="keterangan" value="{{ old('keterangan', $laporan->keterangan) }}"
 																			maxlength="191" class="forms-input no-kontrak">
 																	</td>
 																</form>
@@ -451,94 +455,75 @@
 																	<button type="button" class="btn btn-sm btn-secondary btn-cancel {{ $rowError ? '' : 'd-none' }}">
 																		<span class="material-icons" style="font-size:18px;vertical-align:middle;">close</span>
 																	</button>
-																	<a href="{{ route('dashboard.delete-item-anggaran', $item->id) }}"
+																	<a href="{{ route('dashboard.delete-item-anggaran', $laporan->id) }}"
 																		class="btn btn-sm btn-danger btn-delete" data-confirm-delete>
 																		<span class="material-icons" style="font-size:18px;vertical-align:middle;">delete</span>
 																	</a>
 																</td>
 															</tr>
+
+															<!-- Baris sub total -->
+                              @if ($loop->iteration === count($kategori->laporan))
+                                <tr class="col-total">
+                                  <th colspan="2" class="text-center">SUB TOTAL</th>
+                                  <th class="text-end">{{ format_ribuan($total_pagu_perkategori) ?? 0 }}</th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                  <th class="text-end">{{ format_ribuan($total_nilai_tender_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_realisasi_tender_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_nilai_penunjukkan_langsung_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_realisasi_penunjukkan_langsung_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_nilai_swakelola_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_realisasi_swakelola_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_nilai_epurchasing_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_realisasi_epurchasing_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_nilai_pengadaan_langsung_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_realisasi_pengadaan_langsung_perkategori) ?? 0 }}</th>
+                                  <th class="text-end">{{ format_ribuan($total_realisasi_anggaran_perkategori) ?? 0 }}</th>
+                                  <th class="text-center">
+                                    {{ format_persen($total_realisasi_anggaran_perkategori / max($total_pagu_perkategori, 1), true) ?? '0%' }}
+                                  </th>
+                                  <th class="text-center">
+                                    {{ format_persen($realisasi_fisik_perkategori / max(count($kategori->laporan), 1), true) ?? '0%' }}
+                                  </th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                </tr>
+                              @endif
 														@endforeach
-
-														@php
-															// tambahkan ke presentasi realisasi fisik keseluruhan dan total realisasi keluruhan
-															$presentasi_realisasi_keuangan_keseluruhan += $total_realisasi_anggaran_perkategori / $total_pagu;
-															$total_realisasi_keseluruhan += $total_realisasi_anggaran_perkategori;
-														@endphp
-
-														{{-- Jumlah per sub kategori --}}
-														<tr class="col-total">
-															<th></th>
-															<th colspan="2" class="text-center">JUMLAH</th>
-															<th class="text-end">{{ format_ribuan($total_pagu) ?? 0 }}</th>
-															<th></th>
-															<th></th>
-															<th></th>
-															<th class="text-end">{{ format_ribuan($total_nilai_kontrak_tender) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_realisasi_tender) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_nilai_kontrak_penunjukkan_langsung) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_realisasi_penunjukkan_langsung) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_nilai_kontrak_swakelola) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_realisasi_swakelola) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_nilai_kontrak_epurchasing) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_realisasi_epurchasing) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_nilai_kontrak_pengadaan_langsung) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_realisasi_pengadaan_langsung) ?? 0 }}</th>
-															<th class="text-end">{{ format_ribuan($total_realisasi_anggaran_perkategori) ?? 0 }}</th>
-															<th class="text-center">
-																{{ format_persen($total_realisasi_anggaran_perkategori / max($total_pagu, 1), true) ?? '0%' }}</th>
-															<th class="text-center">
-																{{ format_persen($items->sum('presentasi_realisasi_fisik') / count($items), true) ?? '0%' }}</th>
-															<th></th>
-															<th></th>
-															<th></th>
-														</tr>
-
-														@php
-															$no_sub_kategori++;
-														@endphp
-													@endforeach
-
-													@php
-														$no_kategori++;
-													@endphp
+													@endif
 												@endforeach
 
-												{{-- Total jumlah keseluruhan --}}
-												<tr class="col-total">
-													<th></th>
-													<th colspan="2" class="text-center">TOTAL RUPIAH</th>
-													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('pagu')) ?? 0 }}</th>
-													<th></th>
-													<th></th>
-													<th></th>
-													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_tender')) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_tender')) ?? 0 }}</th>
-													<th class="text-end">
-														{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_penunjukkan_langsung')) ?? 0 }}</th>
-													<th class="text-end">
-														{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_penunjukkan_langsung')) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_swakelola')) ?? 0 }}
-													</th>
-													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_swakelola')) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_epurchasing')) ?? 0 }}
-													</th>
-													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_epurchasing')) ?? 0 }}
-													</th>
-													<th class="text-end">
-														{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung')) ?? 0 }}</th>
-													<th class="text-end">
-														{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung')) ?? 0 }}</th>
-													<th class="text-end">{{ format_ribuan($total_realisasi_keseluruhan) ?? 0 }}</th>
-													<th class="text-center">
-														{{ format_persen($presentasi_realisasi_keuangan_keseluruhan / max(count($grouped), 1), true) ?? '0%' }}
-													</th>
-													<th class="text-center">
-														{{ format_persen($presentasi_realisasi_fisik_keseluruhan / max(count($grouped), 1), true) ?? '0%' }}
-													</th>
-													<th></th>
-													<th></th>
-													<th></th>
-												</tr>
+                        <!-- Total rupiah keseluruhan -->
+                        <tr class="col-total">
+                          <th colspan="2" class="text-center">TOTAL RUPIAH</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('pagu')) ?? 0 }}</th>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_tender')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_tender')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_penunjukkan_langsung')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_penunjukkan_langsung')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_swakelola')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_swakelola')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_epurchasing')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_epurchasing')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung')) ?? 0 }}</th>
+                          <th class="text-end">{{ format_ribuan($total_realisasi_keseluruhan) ?? 0 }}</th>
+                          <th class="text-center">
+                            {{ format_persen($total_realisasi_keseluruhan / max($skpd_anggaran->laporan->sum('pagu'), 1), true) ?? '0%' }}
+                          </th>
+                          <th class="text-center">
+                            {{ format_persen($realisasi_fisik_keseluruhan / max(count($kategori->laporan), 1), true) ?? '0%' }}
+                          </th>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                        </tr>
 											</tbody>
 										</table>
 									</div>
@@ -559,9 +544,6 @@
 																	aria-describedby="jenis_pengadaanHelp"
 																	placeholder="Masukkan jenis pengadaan..." name="jenis_pengadaan"
 																	value="{{ old('jenis_pengadaan', $skpd_anggaran->jenis_pengadaan) }}">
-																{{-- @error('jenis_pengadaan')
-                                  <div class="form-text text-danger">{{ $message }}</div>
-                                @enderror --}}
 															</div>
 														</div>
 														<div class="col-md-6">
@@ -576,9 +558,6 @@
 																		</option>
 																	@endforeach
 																</select>
-																{{-- @error('bulan_anggaran')
-                                  <div class="form-text text-danger">{{ $message }}</div>
-                                @enderror --}}
 															</div>
 														</div>
 														<div class="col-md-6">
@@ -587,9 +566,6 @@
 																<input type="text" class="form-control" id="tahun_anggaran" aria-describedby="tahun_anggaranHelp"
 																	placeholder="Masukkan tahun anggaran..." maxlength="4" name="tahun_anggaran"
 																	value="{{ old('tahun_anggaran', $skpd_anggaran->tahun_anggaran) }}">
-																{{-- @error('tahun_anggaran')
-                                  <div class="form-text text-danger">{{ $message }}</div>
-                                @enderror --}}
 															</div>
 														</div>
 													</div>
@@ -612,7 +588,7 @@
 		</div>
 	</div>
 
-		@push('script')
+	@push('script')
 		<script>
 			$(document).ready(function() {
 

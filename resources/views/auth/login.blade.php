@@ -15,7 +15,7 @@
 
 			<label for="password" class="form-label">Password</label>
 			<input type="password" class="form-control" id="password" aria-describedby="password"
-				placeholder="Passowrd" name="password">
+				placeholder="Password" name="password">
 			@error('password')
 				<p class="text-danger" style="margin-top: 8px; font-size: .85rem">{{ $message }}</p>
 			@enderror

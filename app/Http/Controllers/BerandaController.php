@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\UsersExport;
+use App\Models\KategoriLaporan;
+use App\Models\Laporan;
 use App\Models\SKPDAnggaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -46,5 +48,14 @@ class BerandaController extends Controller
     $file_name = strtoupper("LAP REALISASI {$jenis_pengadaan} {$bulan_anggaran} {$skpd_singkatan} {$tahun_anggaran}.xlsx");
 
     return Excel::download(new UsersExport($skpd_anggaran, $grouped), $file_name);
+  }
+
+
+  /**
+   * TES
+   */
+  public function tes()
+  {
+    dd('Aman');
   }
 }

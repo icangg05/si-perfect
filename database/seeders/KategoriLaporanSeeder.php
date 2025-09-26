@@ -14,23 +14,43 @@ class KategoriLaporanSeeder extends Seeder
    */
   public function run(): void
   {
-    // Kategori 1
-    $data1 = KategoriLaporan::create([
-      'nama' => 'Paket Penyedia',
-    ]);
-    $sub_1 = SubKategoriLaporan::create([
-      'kategori_laporan_id' => $data1->id,
-      'nama'                => 'Paket Penyedia Terumumkan',
-    ]);
+    $data = [
+      [
+        'id'               => 1,
+        'skpd_anggaran_id' => 1,
+        'nama'             => 'Paket Penyedia',
+        'parent'           => null,
+        'level'            => 1,
+        'urutan'           => 1,
+      ],
+      [
+        'id'               => 2,
+        'skpd_anggaran_id' => 1,
+        'nama'             => 'Paket Swakelola',
+        'parent'           => null,
+        'level'            => 1,
+        'urutan'           => 3,
+      ],
+      [
+        'id'               => 3,
+        'skpd_anggaran_id' => 1,
+        'nama'             => 'Paket Penyedia Terumumkan',
+        'parent'           => 1,
+        'level'            => 2,
+        'urutan'           => 2,
+      ],
+      [
+        'id'               => 4,
+        'skpd_anggaran_id' => 1,
+        'nama'             => 'Paket Swakelola Terumumkan',
+        'parent'           => 2,
+        'level'            => 2,
+        'urutan'           => 4,
+      ],
+    ];
 
-
-    // Kategori 2
-    $data2 = KategoriLaporan::create([
-      'nama' => 'Paket Swakelola',
-    ]);
-    $sub_1 = SubKategoriLaporan::create([
-      'kategori_laporan_id' => $data2->id,
-      'nama'                => 'Paket Swakelola Terumumkan',
-    ]);
+    foreach ($data as $item) {
+      KategoriLaporan::create($item);
+    }
   }
 }

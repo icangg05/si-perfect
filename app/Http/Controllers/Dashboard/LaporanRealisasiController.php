@@ -96,25 +96,20 @@ class LaporanRealisasiController extends Controller
    */
   public function buatLaporanItem($id)
   {
-    $skpd_anggaran = SKPDAnggaran::with('laporan.sub_kategori_laporan.kategori_laporan')->findOrFail($id);
-    abort_if(Auth::user()->role != 'admin' && $skpd_anggaran->skpd_id != Auth::user()->skpd->id, 404);
+    $skpd_anggaran = SKPDAnggaran::with([
+      'kategori_laporan' => function ($query) {
+        $query->orderBy('urutan');
+      },
+      'kategori_laporan.laporan'
+    ])->findOrFail($id);
 
-    // Group laporan berdasarkan kategori_laporan
-    $grouped = $skpd_anggaran->laporan
-      ->groupBy(function ($laporan) {
-        return $laporan->sub_kategori_laporan->kategori_laporan->nama ?? 'Tanpa Kategori';
-      })
-      ->map(function ($laporans) {
-        return $laporans->groupBy(function ($laporan) {
-          return $laporan->sub_kategori_laporan->nama ?? 'Tanpa Sub Kategori';
-        });
-      });
+    abort_if(Auth::user()->role != 'admin' && $skpd_anggaran->skpd_id != Auth::user()->skpd->id, 404);
 
     $title = 'Hapus data!';
     $text  = "Hapus item anggaran?";
     confirmDelete($title, $text);
 
-    return view('dashboard.laporan-realisasi-item', compact('skpd_anggaran', 'grouped'));
+    return view('dashboard.laporan-realisasi-item', compact('skpd_anggaran'));
   }
 
 
@@ -237,7 +232,6 @@ class LaporanRealisasiController extends Controller
   public function updateLaporanItem(Request $request, $id)
   {
     $validator = Validator::make($request->all(), [
-      'no'                   => ['required', 'numeric', 'min:1'],
       'nama_pekerjaan'       => ['required', 'max:100'],
       'no_kontrak'           => ['nullable', 'max:100'],
       'tgl_mulai_kontrak'    => ['nullable', 'date', 'before_or_equal:tgl_berakhir_kontrak'],

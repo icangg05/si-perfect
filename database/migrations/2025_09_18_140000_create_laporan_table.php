@@ -13,9 +13,8 @@ return new class extends Migration
   {
     Schema::create('laporan', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('skpd_anggaran_id')->constrained('skpd_anggaran')->cascadeOnDelete();
-      $table->foreignId('sub_kategori_laporan_id')->nullable()->constrained('sub_kategori_laporan')->nullOnDelete();
-      $table->unsignedInteger('no');
+      $table->foreignId('kategori_laporan_id')->nullable()->constrained('kategori_Laporan')->cascadeOnDelete();
+      $table->unsignedInteger('no')->nullable();
       $table->string('nama_pekerjaan', 100);
       $table->unsignedBigInteger('pagu');
       $table->string('no_kontrak', 100)->nullable();

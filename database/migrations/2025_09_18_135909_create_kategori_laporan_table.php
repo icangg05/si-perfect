@@ -13,7 +13,11 @@ return new class extends Migration
   {
     Schema::create('kategori_laporan', function (Blueprint $table) {
       $table->id();
-      $table->string('nama')->unique();
+      $table->foreignId('skpd_anggaran_id')->constrained('skpd_anggaran')->cascadeOnDelete();
+      $table->string('nama');
+      $table->integer('parent')->nullable();
+      $table->integer('level');
+      $table->integer('urutan');
     });
   }
 
