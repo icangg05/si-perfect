@@ -23,4 +23,14 @@ class KategoriLaporan extends Model
   {
     return $this->hasMany(Laporan::class, 'kategori_laporan_id');
   }
+
+  public function children()
+  {
+    return $this->hasMany(KategoriLaporan::class, 'parent')->orderBy('urutan');
+  }
+
+  public function parent()
+  {
+    return $this->belongsTo(KategoriLaporan::class, 'parent');
+  }
 }

@@ -97,9 +97,7 @@
 						{{ $skpd_anggaran->jenis_pengadaan }}
 						<span style="color: rgb(155, 155, 155);">—</span>
 						<span style="font-weight: 400; font-size: .9rem">
-							{{ auth()->user()->role == 'admin'
-							    ? 'Bagian Administrasi Pembangunan Setda Kota Kendari'
-							    : auth()->user()->skpd->nama }}
+							{{ $skpd_anggaran->skpd->nama }}
 						</span>
 					</h5>
 				</div>
@@ -125,6 +123,12 @@
 										data-bs-toggle="pill"
 										data-bs-target="#item-anggaran" type="button" role="tab" aria-controls="pills-home"
 										aria-selected="true">Item Anggaran</button>
+								</li>
+								<li class="nav-item" role="presentation">
+									<button class="nav-link {{ $activeTab === 'struktur-anggaran' ? 'active' : '' }}" id="pills-home-tab"
+										data-bs-toggle="pill"
+										data-bs-target="#struktur-anggaran" type="button" role="tab" aria-controls="pills-home"
+										aria-selected="true">Struktur Anggaran</button>
 								</li>
 								<li class="nav-item" role="presentation">
 									<button class="nav-link {{ $activeTab === 'data-utama' ? 'active' : '' }}" id="pills-profile-tab"
@@ -190,10 +194,10 @@
 												</tr>
 											</thead>
 											<tbody>
-                        @php
-                          $total_realisasi_keseluruhan    = 0;
-                          $realisasi_fisik_keseluruhan    = 0;
-                        @endphp
+												@php
+													$total_realisasi_keseluruhan = 0;
+													$realisasi_fisik_keseluruhan = 0;
+												@endphp
 												@foreach ($skpd_anggaran->kategori_laporan as $kategori)
 													<!-- Baris nama kategori -->
 													<tr style="background: {{ is_null($kategori->parent) ? '#FDE9D9' : 'transparent' }}">
@@ -209,62 +213,67 @@
 														@endfor
 													</tr>
 
-                          <!-- Total perkategori -->
-                          @php
-                            $total_pagu_perkategori                           = 0;
-                            $total_nilai_tender_perkategori                   = 0;
-                            $total_realisasi_tender_perkategori               = 0;
-                            $total_nilai_penunjukkan_langsung_perkategori     = 0;
-                            $total_realisasi_penunjukkan_langsung_perkategori = 0;
-                            $total_nilai_swakelola_perkategori                = 0;
-                            $total_realisasi_swakelola_perkategori            = 0;
-                            $total_nilai_epurchasing_perkategori              = 0;
-                            $total_realisasi_epurchasing_perkategori          = 0;
-                            $total_nilai_pengadaan_langsung_perkategori       = 0;
-                            $total_realisasi_pengadaan_langsung_perkategori   = 0;
+													<!-- Total perkategori -->
+													@php
+														$total_pagu_perkategori = 0;
+														$total_nilai_tender_perkategori = 0;
+														$total_realisasi_tender_perkategori = 0;
+														$total_nilai_penunjukkan_langsung_perkategori = 0;
+														$total_realisasi_penunjukkan_langsung_perkategori = 0;
+														$total_nilai_swakelola_perkategori = 0;
+														$total_realisasi_swakelola_perkategori = 0;
+														$total_nilai_epurchasing_perkategori = 0;
+														$total_realisasi_epurchasing_perkategori = 0;
+														$total_nilai_pengadaan_langsung_perkategori = 0;
+														$total_realisasi_pengadaan_langsung_perkategori = 0;
 
-                            $total_realisasi_anggaran_perkategori = 0;
-                            $realisasi_fisik_perkategori          = 0;
-                          @endphp
+														$total_realisasi_anggaran_perkategori = 0;
+														$realisasi_fisik_perkategori = 0;
+													@endphp
 
 													<!-- Baris item anggaran -->
 													@if (count($kategori->laporan) > 0)
 														@foreach ($kategori->laporan as $laporan)
 															@php
-                                $rowError                          = session('row_id') == $laporan->id;
-                                $total_realisasi_anggaran_perbaris = 0;
-                                $realisasi_keuangan_perbaris       = 0;
+																$rowError = session('row_id') == $laporan->id;
+																$total_realisasi_anggaran_perbaris = 0;
+																$realisasi_keuangan_perbaris = 0;
 
-                                // Jumlah nilai untuk perbaris
-                                $total_realisasi_anggaran_perbaris +=
-                                  $laporan->nilai_kontrak_tender + $laporan->realisasi_tender +
-                                  $laporan->nilai_kontrak_penunjukkan_langsung + $laporan->realisasi_penunjukkan_langsung +
-                                  $laporan->nilai_kontrak_swakelola + $laporan->realisasi_swakelola +
-                                  $laporan->nilai_kontrak_epurchasing + $laporan->realisasi_epurchasing +
-                                  $laporan->nilai_kontrak_pengadaan_langsung + $laporan->realisasi_pengadaan_langsung;
-                                $realisasi_keuangan_perbaris = $total_realisasi_anggaran_perbaris / max($laporan->pagu, 1);
+																// Jumlah nilai untuk perbaris
+																$total_realisasi_anggaran_perbaris +=
+																    $laporan->nilai_kontrak_tender +
+																    $laporan->realisasi_tender +
+																    $laporan->nilai_kontrak_penunjukkan_langsung +
+																    $laporan->realisasi_penunjukkan_langsung +
+																    $laporan->nilai_kontrak_swakelola +
+																    $laporan->realisasi_swakelola +
+																    $laporan->nilai_kontrak_epurchasing +
+																    $laporan->realisasi_epurchasing +
+																    $laporan->nilai_kontrak_pengadaan_langsung +
+																    $laporan->realisasi_pengadaan_langsung;
+																$realisasi_keuangan_perbaris = $total_realisasi_anggaran_perbaris / max($laporan->pagu, 1);
 
+																// Jumlah nilai untuk baris subtotal
+																$total_pagu_perkategori += $laporan->pagu;
+																$total_nilai_tender_perkategori += $laporan->nilai_kontrak_tender;
+																$total_realisasi_tender_perkategori += $laporan->realisasi_tender;
+																$total_nilai_penunjukkan_langsung_perkategori += $laporan->nilai_kontrak_penunjukkan_langsung;
+																$total_realisasi_penunjukkan_langsung_perkategori += $laporan->realisasi_penunjukkan_langsung;
+																$total_nilai_swakelola_perkategori += $laporan->nilai_kontrak_swakelola;
+																$total_realisasi_swakelola_perkategori += $laporan->realisasi_swakelola;
+																$total_nilai_epurchasing_perkategori += $laporan->nilai_kontrak_epurchasing;
+																$total_realisasi_epurchasing_perkategori += $laporan->realisasi_epurchasing;
+																$total_nilai_pengadaan_langsung_perkategori += $laporan->nilai_kontrak_pengadaan_langsung;
+																$total_realisasi_pengadaan_langsung_perkategori += $laporan->realisasi_pengadaan_langsung;
 
-                                // Jumlah nilai untuk baris subtotal
-                                $total_pagu_perkategori                           += $laporan->pagu;
-                                $total_nilai_tender_perkategori                   += $laporan->nilai_kontrak_tender;
-                                $total_realisasi_tender_perkategori               += $laporan->realisasi_tender;
-                                $total_nilai_penunjukkan_langsung_perkategori     += $laporan->nilai_kontrak_penunjukkan_langsung;
-                                $total_realisasi_penunjukkan_langsung_perkategori += $laporan->realisasi_penunjukkan_langsung;
-                                $total_nilai_swakelola_perkategori                += $laporan->nilai_kontrak_swakelola;
-                                $total_realisasi_swakelola_perkategori            += $laporan->realisasi_swakelola;
-                                $total_nilai_epurchasing_perkategori              += $laporan->nilai_kontrak_epurchasing;
-                                $total_realisasi_epurchasing_perkategori          += $laporan->realisasi_epurchasing;
-                                $total_nilai_pengadaan_langsung_perkategori       += $laporan->nilai_kontrak_pengadaan_langsung;
-                                $total_realisasi_pengadaan_langsung_perkategori   += $laporan->realisasi_pengadaan_langsung;
+																$total_realisasi_anggaran_perkategori += $total_realisasi_anggaran_perbaris;
+																$realisasi_fisik_perkategori += format_persen($laporan->presentasi_realisasi_fisik);
 
-                                $total_realisasi_anggaran_perkategori += $total_realisasi_anggaran_perbaris;
-                                $realisasi_fisik_perkategori          += format_persen($laporan->presentasi_realisasi_fisik);
-
-
-                                // Jumlah nilai baris keseluruhan
-                                $total_realisasi_keseluruhan += $total_realisasi_anggaran_perbaris;
-                                $realisasi_fisik_keseluruhan += format_persen($realisasi_fisik_perkategori / max(count($kategori->laporan), 1));
+																// Jumlah nilai baris keseluruhan
+																$total_realisasi_keseluruhan += $total_realisasi_anggaran_perbaris;
+																$realisasi_fisik_keseluruhan += format_persen(
+																    $realisasi_fisik_perkategori / max(count($kategori->laporan), 1),
+																);
 															@endphp
 															<tr>
 																<form action="{{ route('dashboard.update-item-anggaran', $laporan->id) }}" method="post">
@@ -463,69 +472,113 @@
 															</tr>
 
 															<!-- Baris sub total -->
-                              @if ($loop->iteration === count($kategori->laporan))
-                                <tr class="col-total">
-                                  <th colspan="2" class="text-center">SUB TOTAL</th>
-                                  <th class="text-end">{{ format_ribuan($total_pagu_perkategori) ?? 0 }}</th>
-                                  <th></th>
-                                  <th></th>
-                                  <th></th>
-                                  <th class="text-end">{{ format_ribuan($total_nilai_tender_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_realisasi_tender_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_nilai_penunjukkan_langsung_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_realisasi_penunjukkan_langsung_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_nilai_swakelola_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_realisasi_swakelola_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_nilai_epurchasing_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_realisasi_epurchasing_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_nilai_pengadaan_langsung_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_realisasi_pengadaan_langsung_perkategori) ?? 0 }}</th>
-                                  <th class="text-end">{{ format_ribuan($total_realisasi_anggaran_perkategori) ?? 0 }}</th>
-                                  <th class="text-center">
-                                    {{ format_persen($total_realisasi_anggaran_perkategori / max($total_pagu_perkategori, 1), true) ?? '0%' }}
-                                  </th>
-                                  <th class="text-center">
-                                    {{ format_persen($realisasi_fisik_perkategori / max(count($kategori->laporan), 1), true) ?? '0%' }}
-                                  </th>
-                                  <th></th>
-                                  <th></th>
-                                  <th></th>
-                                </tr>
-                              @endif
+															@if ($loop->iteration === count($kategori->laporan))
+																<tr class="col-total">
+																	<th colspan="2" class="text-center">SUBTOTAL</th>
+																	<th class="text-end">{{ format_ribuan($total_pagu_perkategori) ?? 0 }}</th>
+																	<th></th>
+																	<th></th>
+																	<th></th>
+																	<th class="text-end">{{ format_ribuan($total_nilai_tender_perkategori) ?? 0 }}</th>
+																	<th class="text-end">{{ format_ribuan($total_realisasi_tender_perkategori) ?? 0 }}</th>
+																	<th class="text-end">{{ format_ribuan($total_nilai_penunjukkan_langsung_perkategori) ?? 0 }}</th>
+																	<th class="text-end">{{ format_ribuan($total_realisasi_penunjukkan_langsung_perkategori) ?? 0 }}
+																	</th>
+																	<th class="text-end">{{ format_ribuan($total_nilai_swakelola_perkategori) ?? 0 }}</th>
+																	<th class="text-end">{{ format_ribuan($total_realisasi_swakelola_perkategori) ?? 0 }}</th>
+																	<th class="text-end">{{ format_ribuan($total_nilai_epurchasing_perkategori) ?? 0 }}</th>
+																	<th class="text-end">{{ format_ribuan($total_realisasi_epurchasing_perkategori) ?? 0 }}</th>
+																	<th class="text-end">{{ format_ribuan($total_nilai_pengadaan_langsung_perkategori) ?? 0 }}</th>
+																	<th class="text-end">{{ format_ribuan($total_realisasi_pengadaan_langsung_perkategori) ?? 0 }}</th>
+																	<th class="text-end">{{ format_ribuan($total_realisasi_anggaran_perkategori) ?? 0 }}</th>
+																	<th class="text-center">
+																		{{ format_persen($total_realisasi_anggaran_perkategori / max($total_pagu_perkategori, 1), true) ?? '0%' }}
+																	</th>
+																	<th class="text-center">
+																		{{ format_persen($realisasi_fisik_perkategori / max(count($kategori->laporan), 1), true) ?? '0%' }}
+																	</th>
+																	<th></th>
+																	<th></th>
+																	<th></th>
+																</tr>
+															@endif
 														@endforeach
 													@endif
 												@endforeach
 
-                        <!-- Total rupiah keseluruhan -->
-                        <tr class="col-total">
-                          <th colspan="2" class="text-center">TOTAL RUPIAH</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('pagu')) ?? 0 }}</th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_tender')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_tender')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_penunjukkan_langsung')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_penunjukkan_langsung')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_swakelola')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_swakelola')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_epurchasing')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_epurchasing')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung')) ?? 0 }}</th>
-                          <th class="text-end">{{ format_ribuan($total_realisasi_keseluruhan) ?? 0 }}</th>
-                          <th class="text-center">
-                            {{ format_persen($total_realisasi_keseluruhan / max($skpd_anggaran->laporan->sum('pagu'), 1), true) ?? '0%' }}
-                          </th>
-                          <th class="text-center">
-                            {{ format_persen($realisasi_fisik_keseluruhan / max(count($kategori->laporan), 1), true) ?? '0%' }}
-                          </th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                        </tr>
+												<!-- Total rupiah keseluruhan -->
+												<tr class="col-total">
+													<th colspan="2" class="text-center">TOTAL RUPIAH</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('pagu')) ?? 0 }}</th>
+													<th></th>
+													<th></th>
+													<th></th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_tender')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_tender')) ?? 0 }}</th>
+													<th class="text-end">
+														{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_penunjukkan_langsung')) ?? 0 }}</th>
+													<th class="text-end">
+														{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_penunjukkan_langsung')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_swakelola')) ?? 0 }}
+													</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_swakelola')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_epurchasing')) ?? 0 }}
+													</th>
+													<th class="text-end">{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_epurchasing')) ?? 0 }}
+													</th>
+													<th class="text-end">
+														{{ format_ribuan($skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung')) ?? 0 }}</th>
+													<th class="text-end">
+														{{ format_ribuan($skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung')) ?? 0 }}</th>
+													<th class="text-end">{{ format_ribuan($total_realisasi_keseluruhan) ?? 0 }}</th>
+													<th class="text-center">
+														{{ format_persen($total_realisasi_keseluruhan / max($skpd_anggaran->laporan->sum('pagu'), 1), true) ?? '0%' }}
+													</th>
+													<th class="text-center">
+														{{ format_persen($realisasi_fisik_keseluruhan / max(count($kategori->laporan), 1), true) ?? '0%' }}
+													</th>
+													<th></th>
+													<th></th>
+													<th></th>
+												</tr>
 											</tbody>
 										</table>
+									</div>
+								</div>
+								<div class="tab-pane fade {{ $activeTab === 'struktur-utama' ? 'active show' : '' }}" id="struktur-anggaran"
+									role="tabpanel" aria-labelledby="pills-profile-tab">
+									<div class="mt-4">
+										<div class="relative d-flex align-items-center gap-2">
+											<a href="https://si-perfect.test/laporan-realisasi" class="btn btn-warning btn-sm btn-style-light">
+												<i class="material-icons">add</i> Tambah
+											</a>
+											<div id="loading" class="spinner-border spinner-border-sm text-info"
+												role="status">
+												<span class="visually-hidden">Loading...</span>
+											</div>
+										</div>
+										<hr>
+										<div class="row">
+											<div class="col-md-7">
+												<div class="dd" id="nestable" style="width: 100%">
+													<ol class="dd-list">
+														{{-- Loop hanya untuk item level pertama (root) --}}
+														@foreach ($kategoriTree as $item)
+															{{-- Panggil partial view untuk setiap item --}}
+															@include('components.kategori_item', ['item' => $item])
+														@endforeach
+													</ol>
+												</div>
+											</div>
+											<div class="col-md-5">
+												<div class="alert alert-primary alert-style-light d-flex align-items-center" role="alert">
+													<span class="material-icons me-1">swap_vert</span>
+													<div>
+														Silakan <strong>drag & drop</strong> kategori untuk mengubah urutan atau hierarki.
+													</div>
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div class="tab-pane fade {{ $activeTab === 'data-utama' ? 'active show' : '' }}" id="data-utama"
@@ -589,6 +642,7 @@
 	</div>
 
 	@push('script')
+		<script src="{{ asset('assets/js/jquery.nestable.js') }}"></script>
 		<script>
 			$(document).ready(function() {
 
@@ -599,6 +653,76 @@
 					minimumResultsForSearch: Infinity
 				});
 			});
+		</script>
+
+		<script>
+			$(document).ready(function() {
+				var $loading = $("#loading").hide();
+				// init nestable
+				$('#nestable').nestable({
+					group: 1
+				}).on('change', function(e) {
+					$loading.fadeIn(200);
+					var order = $('#nestable').nestable('serialize');
+
+					// langsung kirim ke backend tiap ada perubahan
+					$.ajax({
+						url: "{{ route('kategori.updateOrder') }}",
+						type: "POST",
+						data: {
+							order: order,
+							_token: "{{ csrf_token() }}"
+						},
+						success: function(res) {
+							if (res.status === 'success') {
+								// console.log("Urutan berhasil diperbarui");
+							} else {
+								console.warn("Gagal menyimpan urutan!");
+							}
+						},
+						error: function(xhr) {
+							console.error("Error:", xhr.responseText);
+						},
+						complete: function() {
+							$loading.fadeOut(400);
+						}
+					});
+				});
+			});
+
+			// $(document).ready(function() {
+
+			// 	var updateOutput = function(e) {
+			// 		var list = e.length ? e : $(e.target),
+			// 			output = list.data('output');
+			// 		if (window.JSON) {
+			// 			var jsonData = window.JSON.stringify(list.nestable('serialize'));
+			//       output.val(jsonData);
+			// 		} else {
+			// 			output.val('JSON browser support required for this demo.');
+			// 		}
+			// 	};
+
+			// 	// activate Nestable for list 1
+			// 	$('#nestable').nestable({
+			// 			group: 1
+			// 		})
+			// 		.on('change', updateOutput);
+
+			// 	// output initial serialised data
+			// 	updateOutput($('#nestable').data('output', $('#nestable-output')));
+
+			// 	$('#nestable-menu').on('click', function(e) {
+			// 		var target = $(e.target),
+			// 			action = target.data('action');
+			// 		if (action === 'expand-all') {
+			// 			$('.dd').nestable('expandAll');
+			// 		}
+			// 		if (action === 'collapse-all') {
+			// 			$('.dd').nestable('collapseAll');
+			// 		}
+			// 	});
+			// });
 		</script>
 	@endpush
 </x-layouts.dashboard>

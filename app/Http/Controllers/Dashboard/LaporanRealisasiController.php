@@ -100,16 +100,58 @@ class LaporanRealisasiController extends Controller
       'kategori_laporan' => function ($query) {
         $query->orderBy('urutan');
       },
-      'kategori_laporan.laporan'
+      'kategori_laporan.laporan',
+      'skpd',
     ])->findOrFail($id);
 
+
+    // 1. Ambil semua kategori dari database untuk SKPD tertentu
+    $kategori = KategoriLaporan::where('skpd_anggaran_id', $skpd_anggaran->id)
+      ->orderBy('urutan', 'asc')
+      ->get();
+
+    // 2. Ubah koleksi flat menjadi struktur pohon (tree)
+    $kategoriTree = $this->buildTree($kategori);
+
     abort_if(Auth::user()->role != 'admin' && $skpd_anggaran->skpd_id != Auth::user()->skpd->id, 404);
+
 
     $title = 'Hapus data!';
     $text  = "Hapus item anggaran?";
     confirmDelete($title, $text);
 
-    return view('dashboard.laporan-realisasi-item', compact('skpd_anggaran'));
+    return view('dashboard.laporan-realisasi-item', compact('skpd_anggaran', 'kategoriTree'));
+  }
+
+
+  /**
+   * Fungsi rekursif untuk membangun struktur pohon.
+   *
+   * @param \Illuminate\Database\Eloquent\Collection $elements
+   * @param int|null $parentId
+   * @return array
+   */
+  private function buildTree($elements, $parentId = null)
+  {
+    $branch = [];
+
+    foreach ($elements as $element) {
+      // Periksa apakah 'parent' dari elemen saat ini cocok dengan parentId yang dicari
+      // Untuk item root, $parentId adalah null (atau 0, sesuaikan dengan data Anda)
+      if ($element->parent == $parentId) {
+        // Cari anak (children) dari elemen saat ini
+        $children = $this->buildTree($elements, $element->id);
+
+        if ($children) {
+          // Jika ada anak, tambahkan ke properti 'children'
+          $element->children = $children;
+        }
+
+        $branch[] = $element;
+      }
+    }
+
+    return $branch;
   }
 
 

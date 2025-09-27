@@ -49,6 +49,7 @@
 				<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 				<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 				<![endif]-->
+  @stack('head')
 </head>
 
 <body>
@@ -131,8 +132,8 @@
 								<li class="nav-item hidden-on-mobile">
 									<a class="nav-link active" href="#">
 										{{ Auth::user()->role == 'admin'
-                      ? 'Bagian Administrasi Pembangunan Setda Kota Kendari'
-                      : Auth::user()->skpd->nama }}
+										    ? Auth::user()->name
+										    : Auth::user()->skpd->nama }}
 									</a>
 								</li>
 								{{-- <li class="nav-item hidden-on-mobile">
@@ -253,7 +254,9 @@
 
 						@if (auth()->user()->role == 'admin')
 							<li>
-								<a href="#" @class(['active' => request()->is('skpd*') || request()->routeIs('dashboard.logs')])>
+								<a href="#" @class([
+									'active' => request()->is('skpd*') || request()->routeIs('dashboard.logs'),
+								])>
 									<i class="material-icons size-icon-nav">dataset</i> Master Data<i
 										class="material-icons has-sub-menu">keyboard_arrow_down</i></a>
 								<ul class="sub-menu">

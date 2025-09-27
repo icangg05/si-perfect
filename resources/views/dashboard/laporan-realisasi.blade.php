@@ -106,7 +106,7 @@
 						<span style="color: rgb(155, 155, 155);">—</span>
 						<span style="font-weight: 400; font-size: .9rem">
 							{{ auth()->user()->role == 'admin'
-							    ? 'Bagian Administrasi Pembangunan Setda Kota Kendari'
+							    ? auth()->user()->name
 							    : auth()->user()->skpd->nama }}
 						</span>
 					</h5>
