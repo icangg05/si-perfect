@@ -120,7 +120,7 @@ class LaporanRealisasiController extends Controller
     $text  = "Hapus item anggaran?";
     confirmDelete($title, $text);
 
-    return view('dashboard.laporan-realisasi-item', compact('skpd_anggaran', 'kategoriTree'));
+    return view('dashboard.laporan-realisasi-item.index', compact('skpd_anggaran', 'kategoriTree'));
   }
 
 
@@ -160,19 +160,58 @@ class LaporanRealisasiController extends Controller
    */
   public function createLaporanItem($id)
   {
-    $skpd_anggaran    = SKPDAnggaran::findOrFail($id);
+    $skpd_anggaran = SKPDAnggaran::with('skpd')->findOrFail($id);
     abort_if(Auth::user()->role != 'admin' && $skpd_anggaran->skpd_id != Auth::user()->skpd->id, 404);
-
-    $kategori_laporan = KategoriLaporan::with('sub_kategori_laporan')
-      ->whereHas('sub_kategori_laporan')
-      ->orderBy('id')
+    $kategori_laporan = KategoriLaporan::where('skpd_anggaran_id', $skpd_anggaran->id)
+      ->orderBy('urutan')
       ->get();
 
-    $kategori = $kategori_laporan->firstWhere('id', request('kategori') ?? $kategori_laporan->first()->id);
-    abort_if(!$kategori, 404);
+    return view('dashboard.create-laporan-realisasi-item', compact('skpd_anggaran', 'kategori_laporan'));
+  }
 
 
-    return view('dashboard.create-laporan-realisasi-item', compact('skpd_anggaran', 'kategori_laporan', 'kategori'));
+  /**
+   * Handle store new laporan item
+   */
+  public function storeLaporanItem(Request $request, $id)
+  {
+    // dd($request->all());
+    $request->validate([
+      'kategori_laporan_id' => 'required|array',
+      'nama_pekerjaan'      => 'required|array',
+      'pagu'                => 'required|array',
+    ]);
+
+    // Looping semua row item
+    for ($i = 0; $i < count($request->kategori_laporan_id); $i++) {
+      Laporan::create([
+        'kategori_laporan_id'                => $request->kategori_laporan_id[$i] ?? null,
+        'nama_pekerjaan'                     => $request->nama_pekerjaan[$i] ?? null,
+        'pagu'                               => $request->pagu[$i] ?? null,
+        'no_kontrak'                         => $request->no_kontrak[$i] ?? null,
+        'tgl_mulai_kontrak'                  => $request->tgl_mulai_kontrak[$i] ?? null,
+        'tgl_berakhir_kontrak'               => $request->tgl_berakhir_kontrak[$i] ?? null,
+        'nilai_kontrak_tender'               => $request->nilai_kontrak_tender[$i] ?? null,
+        'realisasi_tender'                   => $request->realisasi_tender[$i] ?? null,
+        'nilai_kontrak_penunjukkan_langsung' => $request->nilai_kontrak_penunjukkan_langsung[$i] ?? null,
+        'realisasi_penunjukkan_langsung'     => $request->realisasi_penunjukkan_langsung[$i] ?? null,
+        'nilai_kontrak_swakelola'            => $request->nilai_kontrak_swakelola[$i] ?? null,
+        'realisasi_swakelola'                => $request->realisasi_swakelola[$i] ?? null,
+        'nilai_kontrak_epurchasing'          => $request->nilai_kontrak_epurchasing[$i] ?? null,
+        'realisasi_epurchasing'              => $request->realisasi_epurchasing[$i] ?? null,
+        'nilai_kontrak_pengadaan_langsung'   => $request->nilai_kontrak_pengadaan_langsung[$i] ?? null,
+        'realisasi_pengadaan_langsung'       => $request->realisasi_pengadaan_langsung[$i] ?? null,
+        'presentasi_realisasi_fisik'         => $request->presentasi_realisasi_fisik[$i] ? format_persen($request->presentasi_realisasi_fisik[$i] / 100) : null,
+        'sumber_dana'                        => $request->sumber_dana[$i] ?? null,
+        'keterangan'                         => $request->keterangan[$i] ?? null,
+      ]);
+    }
+
+
+    alert()->success('Sukses!', 'Item anggaran berhasil ditambahkan.')
+      ->showConfirmButton('Ok', '#1D3D62');
+
+    return redirect()->route('dashboard.laporan-realisasi-item', $id);
   }
 
 
@@ -191,60 +230,12 @@ class LaporanRealisasiController extends Controller
   }
 
 
-
-  /**
-   * Handle store new laporan item
-   */
-  public function storeLaporanItem(Request $request, $id)
-  {
-    $request->validate([
-      'sub_kategori_laporan_id'   => 'required|array',
-      'no'                        => 'required|array',
-      'nama_pekerjaan'            => 'required|array',
-      'pagu'                      => 'required|array',
-    ]);
-
-    // Looping semua row item
-    foreach ($request->no as $index => $no) {
-      Laporan::create([
-        'skpd_anggaran_id'                   => $id,
-        'sub_kategori_laporan_id'            => $request->sub_kategori_laporan_id[$index] ?? null,
-        'no'                                 => $no,
-        'nama_pekerjaan'                     => $request->nama_pekerjaan[$index] ?? null,
-        'pagu'                               => $request->pagu[$index] ?? null,
-        'no_kontrak'                         => $request->no_kontrak[$index] ?? null,
-        'tgl_mulai_kontrak'                  => $request->tgl_mulai_kontrak[$index] ?? null,
-        'tgl_berakhir_kontrak'               => $request->tgl_berakhir_kontrak[$index] ?? null,
-        'nilai_kontrak_tender'               => $request->nilai_kontrak_tender[$index] ?? null,
-        'realisasi_tender'                   => $request->realisasi_tender[$index] ?? null,
-        'nilai_kontrak_penunjukkan_langsung' => $request->nilai_kontrak_penunjukkan_langsung[$index] ?? null,
-        'realisasi_penunjukkan_langsung'     => $request->realisasi_penunjukkan_langsung[$index] ?? null,
-        'nilai_kontrak_swakelola'            => $request->nilai_kontrak_swakelola[$index] ?? null,
-        'realisasi_swakelola'                => $request->realisasi_swakelola[$index] ?? null,
-        'nilai_kontrak_epurchasing'          => $request->nilai_kontrak_epurchasing[$index] ?? null,
-        'realisasi_epurchasing'              => $request->realisasi_epurchasing[$index] ?? null,
-        'nilai_kontrak_pengadaan_langsung'   => $request->nilai_kontrak_pengadaan_langsung[$index] ?? null,
-        'realisasi_pengadaan_langsung'       => $request->realisasi_pengadaan_langsung[$index] ?? null,
-        'presentasi_realisasi_fisik'         => $request->presentasi_realisasi_fisik[$index] ? $request->presentasi_realisasi_fisik[$index] / 100 : null,
-        'sumber_dana'                        => $request->sumber_dana[$index] ?? null,
-        'keterangan'                         => $request->keterangan[$index] ?? null,
-      ]);
-    }
-
-
-    alert()->success('Sukses!', 'Item anggaran berhasil ditambahkan.')
-      ->showConfirmButton('Ok', '#1D3D62');
-
-    return redirect()->route('dashboard.laporan-realisasi-item', $id);
-  }
-
-
   /**
    * Handle update main data laporan
    */
   public function updateDataLaporan(Request $request, $id)
   {
-    $request->validate([
+    $validator = Validator::make($request->all(), [
       'jenis_pengadaan' => ['required'],
       'bulan_anggaran'  => ['required', 'numeric', 'between:1,12'],
       'tahun_anggaran'  => ['required', 'numeric', 'digits:4'],
@@ -257,6 +248,10 @@ class LaporanRealisasiController extends Controller
       'tahun_anggaran.numeric'   => 'Tahun harus angka.',
       'tahun_anggaran.digits'    => 'Tahun harus terdiri dari 4 digit.',
     ]);
+
+    if ($validator->fails()) {
+      return redirect()->back()->withErrors($validator)->withInput()->with('active_tab', 'data-utama');
+    }
 
     $skpd_anggaran = SKPDAnggaran::findOrFail($id);
     $skpd_anggaran->update($request->all());
@@ -274,21 +269,21 @@ class LaporanRealisasiController extends Controller
   public function updateLaporanItem(Request $request, $id)
   {
     $validator = Validator::make($request->all(), [
-      'nama_pekerjaan'       => ['required', 'max:100'],
-      'no_kontrak'           => ['nullable', 'max:100'],
-      'tgl_mulai_kontrak'    => ['nullable', 'date', 'before_or_equal:tgl_berakhir_kontrak'],
-      'tgl_berakhir_kontrak' => ['nullable', 'date', 'after_or_equal:tgl_mulai_kontrak'],
-      'sumber_dana'          => ['nullable', 'max:50'],
-      'keterangan'           => ['nullable', 'max:191'],
-      'pagu'                 => ['required', 'numeric', 'min:500'],
+      'nama_pekerjaan'             => ['required', 'max:100'],
+      'no_kontrak'                 => ['nullable', 'max:100'],
+      'tgl_mulai_kontrak'          => ['nullable', 'date', 'before_or_equal:tgl_berakhir_kontrak'],
+      'tgl_berakhir_kontrak'       => ['nullable', 'date', 'after_or_equal:tgl_mulai_kontrak'],
+      'sumber_dana'                => ['nullable', 'max:50'],
+      'keterangan'                 => ['nullable', 'max:191'],
+      'pagu'                       => ['required', 'numeric', 'min:500'],
+      'presentasi_realisasi_fisik' => ['required'],
     ], [
-      'no.required'                         => 'No. wajib diisi.',
-      'no.min'                              => 'No. minimal 1.',
       'pagu.min'                            => 'Pagu minimal Rp500.',
       'nama_pekerjaan.required'             => 'Nama pekerjaan wajib diisi.',
       'nama_pekerjaan.max'                  => 'Nama pekerjaan maksimal 255 karakter.',
       'tgl_mulai_kontrak.before_or_equal'   => 'Tanggal mulai kontrak harus sebelum atau sama dengan tanggal berakhir.',
       'tgl_berakhir_kontrak.after_or_equal' => 'Tanggal berakhir kontrak harus setelah atau sama dengan tanggal mulai.',
+      'presentasi_realisasi_fisik'          => 'Presentasi realisasi fisik wajib diisi.'
     ]);
 
     $validator->after(function ($validator) use ($request) {
@@ -312,7 +307,7 @@ class LaporanRealisasiController extends Controller
     $item_anggaran = Laporan::findOrFail($id);
     $data          = $request->all();
 
-    $data['presentasi_realisasi_fisik'] = $request->presentasi_realisasi_fisik / 100;
+    $data['presentasi_realisasi_fisik'] = format_persen($request->presentasi_realisasi_fisik / 100);
     $item_anggaran->update($data);
 
 
@@ -332,6 +327,23 @@ class LaporanRealisasiController extends Controller
     $item_anggaran->delete();
 
     alert()->success('Sukses!', 'Item anggaran berhasil dihapus.')
+      ->showConfirmButton('Ok', '#1D3D62');
+
+    return redirect()->back();
+  }
+
+
+  /**
+   * Handle edit kategori item anggaran
+   */
+  public function editKategoriItem(Request $request, $id)
+  {
+    $laporan = Laporan::findOrFail($id);
+    $laporan->update([
+      'kategori_laporan_id' => $request->kategori_laporan_id,
+    ]);
+
+    alert()->success('Sukses!', 'Kategori item anggaran berhasil diperbarui.')
       ->showConfirmButton('Ok', '#1D3D62');
 
     return redirect()->back();

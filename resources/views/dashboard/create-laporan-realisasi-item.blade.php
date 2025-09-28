@@ -29,26 +29,13 @@
 		<div class="col-md-12">
 			<div class="card">
 				<div class="card-header pb-4 d-flex justify-content-between align-items-center">
-					<h5 class="card-title">Form Tambah Item Anggaran</h5>
-				</div>
-				<div class="card-footer">
-					@php
-						$activeKategoriId = request('kategori') ?? $kategori_laporan->first()->id;
-						$no_kategori = $kategori_laporan->search(fn($item) => $item->id == $activeKategoriId) + 1;
-					@endphp
-
-					<ul class="nav nav-pills" id="kategoriTabs" role="tablist">
-						@foreach ($kategori_laporan as $k)
-							<li class="nav-item" role="presentation">
-								<button
-									onclick="window.location.href='{{ route('dashboard.create-item-anggaran', ['id' => $skpd_anggaran->id, 'kategori' => $k->id]) }}'"
-									type="button" class="nav-link {{ $activeKategoriId == $k->id ? 'active' : '' }}">
-									{{ $k->nama }}
-								</button>
-							</li>
-						@endforeach
-					</ul>
-
+					<h5 class="card-title d-flex align-items-center gap-2 mb-2 mb-md-0">
+						Form Tambah Item Anggaran
+						<span style="color: rgb(155, 155, 155);">—</span>
+						<span style="font-weight: 400; font-size: .9rem">
+							{{ $skpd_anggaran->skpd->nama }}
+						</span>
+					</h5>
 				</div>
 			</div>
 		</div>
@@ -65,7 +52,7 @@
 								data-bs-target="#collapse"
 								aria-expanded="true"
 								aria-controls="collapse">
-								<span># {{ $no_kategori }}.</span><span>{{ $kategori->nama }}</span>
+								{{ $skpd_anggaran->jenis_pengadaan }}
 							</button>
 						</h2>
 						<div id="collapse" class="accordion-collapse collapse show"
@@ -75,39 +62,23 @@
 								{{-- Container tiap row item --}}
 								<div id="formRows">
 									<div class="form-row border rounded p-3 mb-3 bg-light">
-										<h6 class="mb-3">📂 Sub Kategori</h6>
-										<div class="row">
-											@foreach ($kategori->sub_kategori_laporan as $sub_kategori)
-												<div class="col-md-6">
-													<div class="form-check bg-white py-2 border rounded" style="padding-left: 35px;">
-														<input class="form-check-input"
-															type="radio"
-															id="sub_0_{{ $sub_kategori->id }}"
-															name="sub_kategori_laporan_id[0]" {{-- <- index awal 0 --}}
-															value="{{ $sub_kategori->id }}"
-															@if ($loop->first) checked @endif>
-														<label class="form-check-label" for="sub_0_{{ $sub_kategori->id }}">
-															{{ $sub_kategori->nama }}
-														</label>
-													</div>
-												</div>
+										<h6 class="mb-3">📂 Kategori</h6>
+										<select name="kategori_laporan_id[]"
+											class="form-select kategoriSelect" required>
+											<option value="">-- Pilih Kategori --</option>
+											@foreach ($kategori_laporan as $kategori)
+												<option value="{{ $kategori->id }}">
+													{{ $kategori->nama }}
+												</option>
 											@endforeach
-										</div>
+										</select>
 
 										<hr>
 
 										{{-- Informasi Dasar --}}
 										<h6 class="mb-3">📌 Informasi Dasar</h6>
 										<div class="row g-3">
-											<div class="col-md-2">
-												<label class="form-label">No.</label>
-												<input type="number"
-													class="form-control form-control-sm"
-													name="no[]"
-													placeholder="Contoh : 1"
-													required>
-											</div>
-											<div class="col-md-6">
+											<div class="col-md-8">
 												<label class="form-label">Nama Pekerjaan</label>
 												<input type="text" class="form-control form-control-sm"
 													name="nama_pekerjaan[]" placeholder="Masukkan nama pekerjaan..." required>
@@ -131,12 +102,14 @@
 											</div>
 											<div class="col-md-4">
 												<label class="form-label">Tanggal Mulai</label>
-												<input type="text" onfocus="(this.type='date')" placeholder="Pilih tanggal mulai" class="form-control form-control-sm"
+												<input type="text" onfocus="(this.type='date')" placeholder="Pilih tanggal mulai"
+													class="form-control form-control-sm"
 													name="tgl_mulai_kontrak[]">
 											</div>
 											<div class="col-md-4">
 												<label class="form-label">Tanggal Berakhir</label>
-												<input type="text" onfocus="(this.type='date')" placeholder="Pilih tanggal berakhir" class="form-control form-control-sm"
+												<input type="text" onfocus="(this.type='date')" placeholder="Pilih tanggal berakhir"
+													class="form-control form-control-sm"
 													name="tgl_berakhir_kontrak[]">
 											</div>
 										</div>
@@ -254,4 +227,18 @@
 			</form>
 		</div>
 	</div>
+
+	@push('script')
+		<script>
+			$(document).ready(function() {
+				// $('.kategoriSelect').select2({
+				// 	placeholder: '-- Pilih Kategori --',
+				// 	allowClear: true,
+				// });
+				// $('#filterForm select').on('change', function() {
+				// 	$('#filterForm').submit();
+				// });
+			});
+		</script>
+	@endpush
 </x-layouts.dashboard>

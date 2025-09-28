@@ -90,29 +90,20 @@ $(function () {
     const lastRow = $("#formRows .form-row").last();
     const newRow = lastRow.clone(); // clone block terakhir
 
-    // === PERBAIKAN UTAMA DI SINI ===
-    // Beri nama SEMENTARA yang unik untuk radio di baris baru agar tidak
-    // mengganggu pilihan di baris yang sudah ada.
-    newRow
-      .find("input[type=radio]")
-      .attr("name", "temp_radio_" + new Date().getTime());
-    // ================================
-
-    // reset hanya input di row baru (jangan sentuh row lama)
-    newRow
-      .find("input")
-      .not("[type=radio]")
-      .each(function () {
-        $(this).val("");
-      });
-
-    // Kosongkan semua radio di row baru, lalu pilih radio pertama sebagai default
-    // Ini sekarang aman karena namanya berbeda dari baris lain.
-    newRow
-      .find("input[type=radio]")
-      .prop("checked", false)
-      .first()
-      .prop("checked", true);
+    // newRow
+    //   .find("input[type=radio]")
+    //   .attr("name", "temp_radio_" + new Date().getTime());
+    // newRow
+    //   .find("input")
+    //   .not("[type=radio]")
+    //   .each(function () {
+    //     $(this).val("");
+    //   });
+    // newRow
+    //   .find("input[type=radio]")
+    //   .prop("checked", false)
+    //   .first()
+    //   .prop("checked", true);
 
     $("#formRows").append(newRow);
 
@@ -121,11 +112,10 @@ $(function () {
 
       $("html, body").animate(
         {
-          scrollTop: $(document).scrollTop() + 410, // scroll 200px ke bawah
+          scrollTop: $(document).scrollTop() + 290,
         },
-        0 // durasi 400ms
+        0
       );
-    // === SCROLL KE BAWAH ===
   });
 
   // hapus row

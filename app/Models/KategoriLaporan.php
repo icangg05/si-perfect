@@ -33,4 +33,12 @@ class KategoriLaporan extends Model
   {
     return $this->belongsTo(KategoriLaporan::class, 'parent');
   }
+
+  public function deleteWithChildren()
+  {
+    foreach ($this->children as $child) {
+      $child->deleteWithChildren();
+    }
+    $this->delete();
+  }
 }

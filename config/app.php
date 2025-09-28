@@ -1,7 +1,17 @@
 <?php
 
 return [
+  'color_level_1' => 'rgba(255, 224, 178, 0.6)',
+  'color_level_2' => 'rgba(187, 222, 251, 0.6)',
+  'color_level_3' => 'rgba(200, 230, 201, 0.6)',
+  'color_level_4' => 'rgba(225, 190, 231, 0.6)',
+  'color_level_5' => 'rgba(238, 238, 238, 0.6)',
 
+  'xcolor_level_1' => 'rgba(255, 224, 178, 0.1)',
+  'xcolor_level_2' => 'rgba(187, 222, 251, 0.1)',
+  'xcolor_level_3' => 'rgba(200, 230, 201, 0.1)',
+  'xcolor_level_4' => 'rgba(225, 190, 231, 0.1)',
+  'xcolor_level_5' => 'rgba(238, 238, 238, 0.1)',
   /*
     |--------------------------------------------------------------------------
     | Application Name

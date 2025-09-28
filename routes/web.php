@@ -30,15 +30,23 @@ Route::middleware('auth')->group(function () {
   Route::post('/pengaturan/{id}/update-skpd', [PengaturanController::class, 'updateSKPD'])->name('dashboard.update-skpd');
   Route::post('/pengaturan/{id}/update-password', [PengaturanController::class, 'updatePassword'])->name('dashboard.update-password');
 
+  // Laporan realisasi
   Route::get('/laporan-realisasi', [LaporanRealisasiController::class, 'index'])->name('dashboard.laporan-realisasi');
   Route::post('/laporan-realisasi', [LaporanRealisasiController::class, 'buatLaporan'])->name('dashboard.laporan-realisasi.store');
   Route::get('/laporan-realisasi/{id}', [LaporanRealisasiController::class, 'buatLaporanItem'])->name('dashboard.laporan-realisasi-item');
+  // Laporan realisasi item
   Route::get('/laporan-realisasi/{id}/create', [LaporanRealisasiController::class, 'createLaporanItem'])->name('dashboard.create-item-anggaran');
   Route::delete('/laporan-realisasi/{id}/destroy', [LaporanRealisasiController::class, 'destroyLaporan'])->name('dashboard.laporan-realisasi.destroy');
   Route::post('/laporan-realisasi/{id}/store', [LaporanRealisasiController::class, 'storeLaporanItem'])->name('dashboard.store-item-anggaran');
   Route::patch('/laporan-realisasi/{id}', [LaporanRealisasiController::class, 'updateDataLaporan'])->name('dashboard.update-data-laporan');
   Route::patch('/update-item-anggaran/{id}', [LaporanRealisasiController::class, 'updateLaporanItem'])->name('dashboard.update-item-anggaran');
   Route::delete('/delete-item-anggaran/{id}', [LaporanRealisasiController::class, 'deleteLaporanItem'])->name('dashboard.delete-item-anggaran');
+  Route::patch('/laporan-realisasi-item/{id}/edit-kategori', [LaporanRealisasiController::class, 'editKategoriItem'])->name('dashboard.update-kategori-item-anggaran');
+
+  // Tambah kategori
+  Route::post('/kategori/{skpd_anggaran_id}/create', [NestableController::class, 'storeKategori'])->name('dashboard.store-kategori');
+  Route::patch('/kategori/{id}/update', [NestableController::class, 'updateKategori'])->name('dashboard.update-kategori');
+  Route::delete('/kategori/{id}/destroy', [NestableController::class, 'destroyKategori'])->name('dashboard.destroy-kategori');
 
   // Master data
   Route::middleware(['can:admin'])->group(function () {

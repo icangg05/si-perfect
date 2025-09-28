@@ -15,9 +15,17 @@ return new class extends Migration
       $table->id();
       $table->foreignId('skpd_anggaran_id')->constrained('skpd_anggaran')->cascadeOnDelete();
       $table->string('nama');
-      $table->integer('parent')->nullable();
-      $table->integer('level');
-      $table->integer('urutan');
+      $table->foreignId('parent')->nullable()
+        ->constrained('kategori_laporan')
+        ->cascadeOnDelete();
+      $table->integer('level')->default(1);
+      $table->integer('urutan')->default(1);
+      // $table->id();
+      // $table->foreignId('skpd_anggaran_id')->constrained('skpd_anggaran')->cascadeOnDelete();
+      // $table->string('nama');
+      // $table->integer('parent')->nullable();
+      // $table->integer('level')->default(1);
+      // $table->integer('urutan')->default(1);
     });
   }
 

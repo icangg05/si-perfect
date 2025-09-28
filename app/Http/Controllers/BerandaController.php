@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\UsersExport;
-use App\Models\KategoriLaporan;
-use App\Models\Laporan;
+use App\Exports\LaporanExport;
 use App\Models\SKPDAnggaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,18 +25,13 @@ class BerandaController extends Controller
    */
   public function export($skpd_anggaran_id)
   {
-    $skpd_anggaran = SKPDAnggaran::with(['skpd', 'laporan.sub_kategori_laporan.kategori_laporan'])->findOrFail($skpd_anggaran_id);
-
-    // Group laporan berdasarkan kategori_laporan
-    $grouped = $skpd_anggaran->laporan
-      ->groupBy(function ($laporan) {
-        return $laporan->sub_kategori_laporan->kategori_laporan->nama ?? 'Tanpa Kategori';
-      })
-      ->map(function ($laporans) {
-        return $laporans->groupBy(function ($laporan) {
-          return $laporan->sub_kategori_laporan->nama ?? 'Tanpa Sub Kategori';
-        });
-      });
+    $skpd_anggaran = SKPDAnggaran::with([
+      'kategori_laporan' => function ($query) {
+        $query->orderBy('urutan');
+      },
+      'kategori_laporan.laporan',
+      'skpd',
+    ])->findOrFail($skpd_anggaran_id);
 
     $skpd_singkatan  = $skpd_anggaran->skpd->singkatan;
     $jenis_pengadaan = $skpd_anggaran->jenis_pengadaan;
@@ -47,7 +40,7 @@ class BerandaController extends Controller
 
     $file_name = strtoupper("LAP REALISASI {$jenis_pengadaan} {$bulan_anggaran} {$skpd_singkatan} {$tahun_anggaran}.xlsx");
 
-    return Excel::download(new UsersExport($skpd_anggaran, $grouped), $file_name);
+    return Excel::download(new LaporanExport($skpd_anggaran), $file_name);
   }
 
 

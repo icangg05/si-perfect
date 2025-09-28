@@ -156,12 +156,6 @@ body {
 }
 
 
-[required]:invalid,
-:target {
-  scroll-margin-top: 200px !important;
-  /* Tambahkan !important di sini */
-}
-
 /* Mobile */
 @media (max-width: 768px) {
   .custom-p-radio {
@@ -192,7 +186,7 @@ body {
 }
 
 .dd-list .dd-list {
-  padding-left: 30px;
+  padding-left: 20px;
 }
 
 .dd-collapsed .dd-list {
@@ -445,14 +439,4 @@ body {
 
 .dd3-handle:hover {
   background: #ddd;
-}
-
-/**
- * Socialite
- */
-
-.socialite {
-  display: block;
-  float: left;
-  height: 35px;
 }
