@@ -6,6 +6,7 @@ use App\Exports\LaporanExport;
 use App\Models\SKPDAnggaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -45,10 +46,26 @@ class BerandaController extends Controller
 
 
   /**
-   * TES
+   * Migrate
    */
-  public function tes()
+  public function migrate()
   {
-    dd('Aman');
+    try {
+      // Jalankan migrasi fresh (hapus semua tabel dan migrate ulang)
+      Artisan::call('migrate:fresh', [
+        '--seed' => true, // langsung jalankan seeder setelah migrate
+        '--force' => true, // biar bisa jalan di production
+      ]);
+
+      return response()->json([
+        'status'  => 'success',
+        'message' => 'Database berhasil di-migrate dan di-seed ulang.'
+      ]);
+    } catch (\Exception $e) {
+      return response()->json([
+        'status'  => 'error',
+        'message' => $e->getMessage()
+      ], 500);
+    }
   }
 }

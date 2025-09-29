@@ -1,8 +1,8 @@
 <x-layouts.auth>
 	<form action="{{ route('authenticate') }}" method="post">
 		@csrf
-		<p class="auth-description">Please sign-in to your account and continue to the dashboard.<br>Don't have an account?
-			<a href="sign-up.html">Sign Up</a>
+		<p class="auth-description">
+			Silakan masukkan username dan password pada form di bawah ini untuk melanjutkan.
 		</p>
 
 		<div class="auth-credentials m-b-xxl">

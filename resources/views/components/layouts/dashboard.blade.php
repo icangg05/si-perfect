@@ -40,8 +40,8 @@
 	<link href="{{ asset('') }}/assets/css/horizontal-menu/horizontal-menu.css" rel="stylesheet">
 	<link href="{{ asset('') }}/assets/css/custom.css" rel="stylesheet">
 
-	<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('') }}/assets/images/neptune.png" />
-	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('') }}/assets/images/neptune.png" />
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('') }}/img/logo-kendari.png" />
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('') }}/img/logo-kendari.png" />
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -263,9 +263,9 @@
 									<li>
 										<a href="{{ route('dashboard.skpd') }}" @class(['active' => request()->is('skpd*')])>Data SKPD</a>
 									</li>
-									<li>
+									{{-- <li>
 										<a href="todo.html" @class(['active' => request()->is('logs')])>Logs</a>
-									</li>
+									</li> --}}
 								</ul>
 							</li>
 						@endif

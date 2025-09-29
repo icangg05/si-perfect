@@ -31,8 +31,8 @@
 	<link href="{{ asset('') }}/assets/css/horizontal-menu/horizontal-menu.css" rel="stylesheet">
 	<link href="{{ asset('') }}/assets/css/custom.css" rel="stylesheet">
 
-	<link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/neptune.png" />
-	<link rel="icon" type="image/png" sizes="16x16" href="../../assets/images/neptune.png" />
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('') }}/img/logo-kendari.png" />
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('') }}/img/logo-kendari.png" />
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -47,11 +47,14 @@
 		<div class="app-auth-background">
 		</div>
 		<div class="app-auth-container">
-			<div class="logo">
-				<a href="index.html">Neptune</a>
-			</div>
-
-      {{ $slot }}
+			<a href="{{ route('beranda') }}" class="d-flex align-items-center gap-2"
+				style="text-decoration: none; color: rgb(58, 58, 58); font-weight: bold; font-size: 2rem">
+				<img src="{{ asset('img/logo-kendari.png') }}" alt="logo" style="width: 70px">
+				<p style="margin-top: 15px">
+					<span style="color: #F4AB1E">SI-</span>PERFECT
+				</p>
+			</a>
+			{{ $slot }}
 		</div>
 	</div>
 
