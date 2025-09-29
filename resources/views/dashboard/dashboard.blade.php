@@ -117,7 +117,7 @@
 									<li class="mb-2">
 										<i class="material-icons me-2 align-middle fs-6 text-muted">badge</i>
 										<span class="fw-semibold text-muted">NIP:</span>
-										{{ $skpd->nip_pimpinan ?? '-' }}
+										{{ $skpd->nip_pimpinan ? format_nip($skpd->nip_pimpinan) : '-' }}
 									</li>
 									<li class="mb-2">
 										<i class="material-icons me-2 align-middle fs-6 text-muted">military_tech</i>
@@ -233,7 +233,7 @@
 				$('#skpdSelect').select2({
 					placeholder: '-- Semua SKPD --',
 					allowClear: true,
-					width: '200px',
+					width: '230px',
 				});
 				$('#tahunSelect').select2({
 					allowClear: true,

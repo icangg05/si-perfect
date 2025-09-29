@@ -179,20 +179,20 @@
 
 														<!-- Total perkategori -->
 														@php
-															$total_pagu_perkategori = 0;
-															$total_nilai_tender_perkategori = 0;
-															$total_realisasi_tender_perkategori = 0;
-															$total_nilai_penunjukkan_langsung_perkategori = 0;
+															$total_pagu_perkategori                           = 0;
+															$total_nilai_tender_perkategori                   = 0;
+															$total_realisasi_tender_perkategori               = 0;
+															$total_nilai_penunjukkan_langsung_perkategori     = 0;
 															$total_realisasi_penunjukkan_langsung_perkategori = 0;
-															$total_nilai_swakelola_perkategori = 0;
-															$total_realisasi_swakelola_perkategori = 0;
-															$total_nilai_epurchasing_perkategori = 0;
-															$total_realisasi_epurchasing_perkategori = 0;
-															$total_nilai_pengadaan_langsung_perkategori = 0;
-															$total_realisasi_pengadaan_langsung_perkategori = 0;
+															$total_nilai_swakelola_perkategori                = 0;
+															$total_realisasi_swakelola_perkategori            = 0;
+															$total_nilai_epurchasing_perkategori              = 0;
+															$total_realisasi_epurchasing_perkategori          = 0;
+															$total_nilai_pengadaan_langsung_perkategori       = 0;
+															$total_realisasi_pengadaan_langsung_perkategori   = 0;
 
 															$total_realisasi_anggaran_perkategori = 0;
-															$realisasi_fisik_perkategori = 0;
+															$realisasi_fisik_perkategori          = 0;
 														@endphp
 
 														<!-- Baris item anggaran -->
@@ -205,33 +205,33 @@
 
 																	// Jumlah nilai untuk perbaris
 																	$total_realisasi_anggaran_perbaris +=
-																	    $laporan->nilai_kontrak_tender +
-																	    $laporan->realisasi_tender +
-																	    $laporan->nilai_kontrak_penunjukkan_langsung +
-																	    $laporan->realisasi_penunjukkan_langsung +
-																	    $laporan->nilai_kontrak_swakelola +
-																	    $laporan->realisasi_swakelola +
-																	    $laporan->nilai_kontrak_epurchasing +
-																	    $laporan->realisasi_epurchasing +
-																	    $laporan->nilai_kontrak_pengadaan_langsung +
-																	    $laporan->realisasi_pengadaan_langsung;
+                                    // $laporan->nilai_kontrak_tender +
+                                    $laporan->realisasi_tender +
+                                    // $laporan->nilai_kontrak_penunjukkan_langsung +
+                                    $laporan->realisasi_penunjukkan_langsung +
+                                    // $laporan->nilai_kontrak_swakelola +
+                                    $laporan->realisasi_swakelola +
+                                    // $laporan->nilai_kontrak_epurchasing +
+                                    $laporan->realisasi_epurchasing +
+                                    // $laporan->nilai_kontrak_pengadaan_langsung +
+                                    $laporan->realisasi_pengadaan_langsung;
 																	$realisasi_keuangan_perbaris = $total_realisasi_anggaran_perbaris / max($laporan->pagu, 1);
 
 																	// Jumlah nilai untuk baris subtotal
-																	$total_pagu_perkategori += $laporan->pagu;
-																	$total_nilai_tender_perkategori += $laporan->nilai_kontrak_tender;
-																	$total_realisasi_tender_perkategori += $laporan->realisasi_tender;
-																	$total_nilai_penunjukkan_langsung_perkategori += $laporan->nilai_kontrak_penunjukkan_langsung;
+																	$total_pagu_perkategori                           += $laporan->pagu;
+																	$total_nilai_tender_perkategori                   += $laporan->nilai_kontrak_tender;
+																	$total_realisasi_tender_perkategori               += $laporan->realisasi_tender;
+																	$total_nilai_penunjukkan_langsung_perkategori     += $laporan->nilai_kontrak_penunjukkan_langsung;
 																	$total_realisasi_penunjukkan_langsung_perkategori += $laporan->realisasi_penunjukkan_langsung;
-																	$total_nilai_swakelola_perkategori += $laporan->nilai_kontrak_swakelola;
-																	$total_realisasi_swakelola_perkategori += $laporan->realisasi_swakelola;
-																	$total_nilai_epurchasing_perkategori += $laporan->nilai_kontrak_epurchasing;
-																	$total_realisasi_epurchasing_perkategori += $laporan->realisasi_epurchasing;
-																	$total_nilai_pengadaan_langsung_perkategori += $laporan->nilai_kontrak_pengadaan_langsung;
-																	$total_realisasi_pengadaan_langsung_perkategori += $laporan->realisasi_pengadaan_langsung;
+																	$total_nilai_swakelola_perkategori                += $laporan->nilai_kontrak_swakelola;
+																	$total_realisasi_swakelola_perkategori            += $laporan->realisasi_swakelola;
+																	$total_nilai_epurchasing_perkategori              += $laporan->nilai_kontrak_epurchasing;
+																	$total_realisasi_epurchasing_perkategori          += $laporan->realisasi_epurchasing;
+																	$total_nilai_pengadaan_langsung_perkategori       += $laporan->nilai_kontrak_pengadaan_langsung;
+																	$total_realisasi_pengadaan_langsung_perkategori   += $laporan->realisasi_pengadaan_langsung;
 
 																	$total_realisasi_anggaran_perkategori += $total_realisasi_anggaran_perbaris;
-																	$realisasi_fisik_perkategori += format_persen($laporan->presentasi_realisasi_fisik);
+																	$realisasi_fisik_perkategori          += format_persen($laporan->presentasi_realisasi_fisik);
 
 																	// Jumlah nilai baris keseluruhan
 																	$total_realisasi_keseluruhan += $total_realisasi_anggaran_perbaris;
@@ -515,9 +515,10 @@
 														<th class="text-center">
 															@php
 																$kategori_count = $skpd_anggaran->kategori_laporan
-                                  ->filter(function ($kategori) {
-                                      return $kategori->laporan && $kategori->laporan->count() > 0;
-                                  })->count();
+																    ->filter(function ($kategori) {
+																        return $kategori->laporan && $kategori->laporan->count() > 0;
+																    })
+																    ->count();
 															@endphp
 															{{ format_persen($realisasi_fisik_keseluruhan / max($kategori_count, 1), true) ?? '0%' }}
 														</th>
@@ -535,89 +536,41 @@
 									id="struktur-anggaran"
 									role="tabpanel" aria-labelledby="pills-profile-tab">
 									<div class="mt-4">
-										<div class="relative d-flex align-items-center gap-2">
-											<button type="button" class="btn btn-warning btn-sm btn-style-light" data-bs-toggle="modal"
-												data-bs-target="#modalCreateKategori">
-												<i class="material-icons">add</i> Tambah
-											</button>
-											<div id="loading" class="spinner-border spinner-border-sm text-info"
-												role="status">
-												<span class="visually-hidden">Loading...</span>
-											</div>
-										</div>
-										<hr>
 										<div class="row">
-											<div class="col-md-7">
-												<div class="dd" id="nestable" style="width: 100%">
-													<ol class="dd-list">
-														{{-- Loop hanya untuk item level pertama (root) --}}
-														@forelse ($kategoriTree as $item)
-															<!-- Modal konfirmasi delete laporan -->
-															<div class="modal fade" id="modalDelete{{ $item->id }}" tabindex="-1"
-																aria-labelledby="modalDelete{{ $item->id }}Title"
-																aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title d-flex align-items-center gap-1" id="modalDelete{{ $item->id }}Title">
-																				<i class="material-icons">warning</i> <span>Konfirmasi Hapus</span>
-																			</h5>
-																			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-																		</div>
-
-																		<form action="{{ route('dashboard.laporan-realisasi.destroy', $skpd_anggaran->id) }}"
-																			method="POST">
-																			@csrf
-																			@method('delete')
-																			<div class="modal-body">
-
-																				<div class="alert alert-warning" role="alert">
-																					<strong>Peringatan!</strong>
-																					Laporan realisasi akan <u>terhapus permanen</u> dan tidak dapat dikembalikan.
-																					Penghapusan juga mencakup:
-																					<ul class="mb-0">
-																						<li>Seluruh item anggaran yang tercatat di dalamnya</li>
-																						<li>Data pendukung yang berhubungan dengan laporan realisasi</li>
-																					</ul>
-																				</div>
-
-																				<div class="mb-3">
-																					<label for="confirmDelete" class="form-label">
-																						Untuk melanjutkan, ketik <code>HAPUS</code> pada kotak di bawah:
-																					</label>
-																					<input type="text" class="form-control" id="confirmDelete"
-																						placeholder="Ketik HAPUS untuk konfirmasi" required autocomplete="off">
-																					<small class="text-muted">Tombol hapus baru aktif jika teks sesuai.</small>
-																				</div>
-
-																			</div>
-
-																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light" data-bs-dismiss="modal">
-																					Batal
-																				</button>
-																				<button type="submit" id="btnConfirmDelete" class="btn btn-danger" disabled>
-																					<i class="material-icons">delete</i> Hapus
-																				</button>
-																			</div>
-																		</form>
-																	</div>
-																</div>
-															</div>
-															{{-- Panggil partial view untuk setiap item --}}
-															@include('components.kategori_item', ['item' => $item])
-														@empty
-															<p class="text-muted text-center">Belum ada data. Klik tambah untuk membuat kategori baru.</p>
-														@endforelse
-													</ol>
-												</div>
-											</div>
-											<div class="col-md-5">
+											<div
+												class="col-md-10 relative d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
 												<div class="alert alert-primary alert-style-light d-flex align-items-center" role="alert">
 													<span class="material-icons me-1">swap_vert</span>
 													<div>
 														Silakan <strong>drag & drop</strong> kategori untuk mengubah urutan atau hierarki.
 													</div>
+												</div>
+												<div>
+													<div id="loading" class="me-1 spinner-border spinner-border-sm text-info"
+														role="status">
+														<span class="visually-hidden">Loading...</span>
+													</div>
+													<button type="button" class="btn btn-warning btn-sm btn-style-light" data-bs-toggle="modal"
+														data-bs-target="#modalCreateKategori">
+														<i class="material-icons">add</i> Tambah Kategori
+													</button>
+												</div>
+											</div>
+										</div>
+										<hr>
+										<div class="row">
+											<div class="col-md-10">
+                        <!-- kode asli -->
+												<div class="dd" id="nestable" style="width: 100%">
+													<ol class="dd-list">
+														<!-- Loop hanya untuk item level pertama (root) -->
+														@forelse ($kategoriTree as $item)
+															<!-- Panggil partial view untuk setiap item -->
+															@include('components.kategori_item', ['item' => $item])
+														@empty
+															<p class="text-muted text-center">Belum ada data. Klik tambah untuk membuat kategori baru.</p>
+														@endforelse
+													</ol>
 												</div>
 											</div>
 										</div>

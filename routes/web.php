@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [BerandaController::class, 'index'])->name('beranda');
-Route::get('/migrate', [BerandaController::class, 'migrate']);
+// Route::get('/migrate', [BerandaController::class, 'migrate']);
 
 Route::middleware('guest')->group(function () {
   Route::get('/login', [LoginController::class, 'index'])->name('login');

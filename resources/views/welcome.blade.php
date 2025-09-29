@@ -5,6 +5,28 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
+	<!-- SEO Meta Tags -->
+	<meta name="description"
+		content="SI-PERFECT adalah Sistem Informasi Pelaporan Efektif, Cepat, dan Tepat untuk mendukung digitalisasi proses pelaporan di Kota Kendari.">
+	<meta name="keywords"
+		content="SI-PERFECT, Sistem Informasi, Pelaporan, Kota Kendari, digitalisasi laporan, aplikasi pelaporan">
+	<meta name="author" content="Pemerintah Kota Kendari">
+	<meta name="robots" content="index, follow">
+
+	<!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+	<meta property="og:title" content="SI-PERFECT - Sistem Informasi Pelaporan Efektif, Cepat, dan Tepat">
+	<meta property="og:description" content="Solusi praktis pelaporan modern berbasis web untuk Pemerintah Kota Kendari.">
+	<meta property="og:image" content="{{ asset('img/hero-right.png') }}">
+	<meta property="og:url" content="{{ url()->current() }}">
+	<meta property="og:type" content="website">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="SI-PERFECT - Sistem Informasi Pelaporan">
+	<meta name="twitter:description"
+		content="Sistem Informasi Pelaporan Efektif, Cepat, dan Tepat untuk mendukung digitalisasi proses pelaporan.">
+	<meta name="twitter:image" content="{{ asset('img/hero-right.png') }}">
+
 	<title>{{ config('app.name') }}</title>
 
 	<!-- Styles / Scripts -->
@@ -181,7 +203,7 @@
 			<div class="grid grid-cols-2 gap-0 lg:gap-24 items-center">
 				<div class="col-span-2 lg:col-span-1" data-aos="zoom-in-left" data-aos-duration="1000">
 					<img src="{{ asset('img/hp.png') }}" alt="hp">
-          <div class="bg-secondary w-full h-1"></div>
+					<div class="bg-secondary w-full h-1"></div>
 				</div>
 				<div class="py-10 lg:py-0 col-span-2 lg:col-span-1" data-aos="fade-left" data-aos-duration="1000">
 					<h2 class="mb-3 text-3xl lg:text-5xl font-light leading-9 lg:leading-14">
@@ -198,15 +220,15 @@
 	</section>
 
 	<!-- Footer -->
-	<footer class="bg-white border-t py-6 text-sm text-gray-600" data-aos="fade-up" data-aos-duration="800">
+	<footer class="bg-white border-t py-6 text-sm text-gray-600">
 		<div class="container flex flex-col lg:flex-row items-center gap-6 lg:gap-24">
 			@include('app-logo')
-			<div data-aos="fade-right" data-aos-delay="200">
+			<div>
 				<p class="text-xs lg:text-base">Alamat : Jl. Drs. H. Abdullah Silondae No.8 Lantai 9, Gedung Menara Balai Kota
 					Kendari Pondambea, Kec. Kadia,
 					Kota Kendari, Sulawesi Tenggara 93111</p>
 			</div>
-			<div data-aos="fade-left" data-aos-delay="400">
+			<div>
 				<p class="text-xs lg:text-base">Copyright © 2025 All Rights Reserved</p>
 			</div>
 		</div>

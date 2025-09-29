@@ -63,11 +63,11 @@ class DashboardController extends Controller
 
     // Kalkulasi total menjadi sangat sederhana
     $total_pagu           = $anggaranData->sum('total_pagu');
-    $tender               = $anggaranData->sum('nilai_kontrak_tender') + $anggaranData->sum('realisasi_tender');
-    $penunjukkan_langsung = $anggaranData->sum('nilai_kontrak_penunjukkan_langsung') + $anggaranData->sum('realisasi_penunjukkan_langsung');
-    $swakelola            = $anggaranData->sum('nilai_kontrak_swakelola') + $anggaranData->sum('realisasi_swakelola');
-    $epurchasing          = $anggaranData->sum('nilai_kontrak_epurchasing') + $anggaranData->sum('realisasi_epurchasing');
-    $pengadaan_langsung   = $anggaranData->sum('nilai_kontrak_pengadaan_langsung') + $anggaranData->sum('realisasi_pengadaan_langsung');
+    $tender               = $anggaranData->sum('realisasi_tender');
+    $penunjukkan_langsung = $anggaranData->sum('realisasi_penunjukkan_langsung');
+    $swakelola            = $anggaranData->sum('realisasi_swakelola');
+    $epurchasing          = $anggaranData->sum('realisasi_epurchasing');
+    $pengadaan_langsung   = $anggaranData->sum('realisasi_pengadaan_langsung');
 
     $all_skpd = SKPD::orderBy('nama')->pluck('singkatan', 'id');
 

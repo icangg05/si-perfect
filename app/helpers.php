@@ -28,6 +28,26 @@ if (! function_exists('format_persen')) {
   }
 }
 
+if (! function_exists('format_nip')) {
+  function format_nip($nip)
+  {
+    // Hapus semua karakter non-digit
+    $nip = preg_replace('/\D/', '', $nip);
+
+    if (strlen($nip) !== 18) {
+      return "NIP tidak valid";
+    }
+
+    // Pisahkan bagian-bagian NIP
+    $tanggal_lahir = substr($nip, 0, 8);
+    $tahun_masuk = substr($nip, 8, 6);
+    $jenis_kelamin = substr($nip, 14, 1);
+    $nomor_urut = substr($nip, 15, 3);
+
+    return "$tanggal_lahir $tahun_masuk $jenis_kelamin $nomor_urut";
+  }
+}
+
 if (! function_exists('mdd')) {
   function mdd($data)
   {

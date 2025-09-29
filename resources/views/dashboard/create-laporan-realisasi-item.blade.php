@@ -63,12 +63,11 @@
 								<div id="formRows">
 									<div class="form-row border rounded p-3 mb-3 bg-light">
 										<h6 class="mb-3">📂 Kategori</h6>
-										<select name="kategori_laporan_id[]"
-											class="form-select kategoriSelect" required>
+										<select name="kategori_laporan_id[]" class="form-select kategoriSelect" required>
 											<option value="">-- Pilih Kategori --</option>
 											@foreach ($kategori_laporan as $kategori)
 												<option value="{{ $kategori->id }}">
-													{{ $kategori->nama }}
+													{!! str_repeat('—', ($kategori->level - 1) * 2) !!} {{ $kategori->nama }}
 												</option>
 											@endforeach
 										</select>
@@ -227,18 +226,4 @@
 			</form>
 		</div>
 	</div>
-
-	@push('script')
-		<script>
-			$(document).ready(function() {
-				// $('.kategoriSelect').select2({
-				// 	placeholder: '-- Pilih Kategori --',
-				// 	allowClear: true,
-				// });
-				// $('#filterForm select').on('change', function() {
-				// 	$('#filterForm').submit();
-				// });
-			});
-		</script>
-	@endpush
 </x-layouts.dashboard>

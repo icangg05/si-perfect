@@ -87,15 +87,15 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
 
         // Jumlah nilai untuk perbaris
         $total_realisasi_anggaran_perbaris +=
-          $laporan->nilai_kontrak_tender +
+          // $laporan->nilai_kontrak_tender +
           $laporan->realisasi_tender +
-          $laporan->nilai_kontrak_penunjukkan_langsung +
+          // $laporan->nilai_kontrak_penunjukkan_langsung +
           $laporan->realisasi_penunjukkan_langsung +
-          $laporan->nilai_kontrak_swakelola +
+          // $laporan->nilai_kontrak_swakelola +
           $laporan->realisasi_swakelola +
-          $laporan->nilai_kontrak_epurchasing +
+          // $laporan->nilai_kontrak_epurchasing +
           $laporan->realisasi_epurchasing +
-          $laporan->nilai_kontrak_pengadaan_langsung +
+          // $laporan->nilai_kontrak_pengadaan_langsung +
           $laporan->realisasi_pengadaan_langsung;
         $realisasi_keuangan_perbaris = $total_realisasi_anggaran_perbaris / max($laporan->pagu, 1);
 
