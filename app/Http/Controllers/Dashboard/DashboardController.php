@@ -69,8 +69,13 @@ class DashboardController extends Controller
     $epurchasing          = $anggaranData->sum('nilai_kontrak_epurchasing') + $anggaranData->sum('realisasi_epurchasing');
     $pengadaan_langsung   = $anggaranData->sum('nilai_kontrak_pengadaan_langsung') + $anggaranData->sum('realisasi_pengadaan_langsung');
 
+    $all_skpd = SKPD::orderBy('nama')->pluck('singkatan', 'id');
+
     $total_jenis_paket = $tender + $penunjukkan_langsung + $swakelola + $epurchasing + $pengadaan_langsung;
     $realisasi_fisik   = format_persen($anggaranData->sum('presentasi_realisasi_fisik'));
+
+    if (Auth::user()->role == 'admin' && !request('skpd'))
+      $realisasi_fisik = $realisasi_fisik / max(count($all_skpd), 1);
 
     return view('dashboard.dashboard', [
       'total_pagu'           => $total_pagu,
@@ -80,7 +85,7 @@ class DashboardController extends Controller
       'epurchasing'          => $epurchasing,
       'pengadaan_langsung'   => $pengadaan_langsung,
       'skpd'                 => $skpdId ? SKPD::with('users')->find($skpdId) : null,
-      'all_skpd'             => SKPD::orderBy('nama')->pluck('singkatan', 'id'),
+      'all_skpd'             => $all_skpd,
       'total_jenis_paket'    => $total_jenis_paket,
       'realisasi_fisik'      => $realisasi_fisik,
     ]);

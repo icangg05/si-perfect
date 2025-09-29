@@ -525,7 +525,7 @@ class SKPDSeeder extends Seeder
         'name'      => 'Admin ' . $item['singkatan'],
         'username'  => $username == 'dkp' ? 'dinaspangan' : $username,
         'email'     => $username . '@example.com',
-        'password'  => Hash::make($username),
+        'password'  => Hash::make($username == 'dkp' ? 'dinaspangan' : $username),
         'skpd_id'   => $skpd->id,
       ];
 

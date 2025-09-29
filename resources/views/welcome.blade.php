@@ -59,26 +59,26 @@
 	<!-- Keunggulan -->
 	<section class="bg-white py-8 lg:py-6">
 		<div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-10">
-			<div class="flex items-center gap-2" data-aos="fade-up" data-aos-delay="100">
+			<div class="flex items-center gap-3" data-aos="fade-up" data-aos-delay="100">
 				<div>
 					<h3 class="text-xl lg:text-[22px] font-bold text-primary">Efektif</h3>
 					<p class="text-sm lg:text-base">Mengurangi pekerjaan manual yang berulang</p>
 				</div>
-				<img src="{{ asset('img/icon-1.svg') }}" alt="icon-1" class="w-7 lg:w-10">
+				<img src="{{ asset('img/icon-1.svg') }}" alt="icon-1" class="ml-1 w-7 lg:w-10">
 			</div>
-			<div class="flex items-center gap-2" data-aos="fade-up" data-aos-delay="300">
+			<div class="flex items-center gap-3" data-aos="fade-up" data-aos-delay="300">
 				<div>
 					<h3 class="text-xl lg:text-[22px] font-bold text-primary">Cepat</h3>
 					<p class="text-sm lg:text-base">Akses mudah melalui PC maupun smartphone</p>
 				</div>
-				<img src="{{ asset('img/icon-2.svg') }}" alt="icon-1" class="w-7 lg:w-10">
+				<img src="{{ asset('img/icon-2.svg') }}" alt="icon-1" class="ml-1 w-7 lg:w-10">
 			</div>
-			<div class="flex items-center gap-2" data-aos="fade-up" data-aos-delay="500">
+			<div class="flex items-center gap-3" data-aos="fade-up" data-aos-delay="500">
 				<div>
 					<h3 class="text-xl lg:text-[22px] font-bold text-primary">Tepat</h3>
 					<p class="text-sm lg:text-base">Data tersimpan aman dan akurat dalam basis data</p>
 				</div>
-				<img src="{{ asset('img/icon-3.svg') }}" alt="icon-1" class="w-7 lg:w-10">
+				<img src="{{ asset('img/icon-3.svg') }}" alt="icon-1" class="ml-1 w-7 lg:w-10">
 			</div>
 		</div>
 	</section>
@@ -178,9 +178,10 @@
 	<!-- Login CTA -->
 	<section class="bg-primary text-white">
 		<div class="container">
-			<div class="grid grid-cols-2 gap-24 items-center">
-				<div class="hidden lg:block col-span-1" data-aos="zoom-in-left" data-aos-duration="1000">
+			<div class="grid grid-cols-2 gap-0 lg:gap-24 items-center">
+				<div class="col-span-2 lg:col-span-1" data-aos="zoom-in-left" data-aos-duration="1000">
 					<img src="{{ asset('img/hp.png') }}" alt="hp">
+          <div class="bg-secondary w-full h-1"></div>
 				</div>
 				<div class="py-10 lg:py-0 col-span-2 lg:col-span-1" data-aos="fade-left" data-aos-duration="1000">
 					<h2 class="mb-3 text-3xl lg:text-5xl font-light leading-9 lg:leading-14">
