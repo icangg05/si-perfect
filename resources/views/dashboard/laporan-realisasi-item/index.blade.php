@@ -160,7 +160,7 @@
 												</tr>
 											</thead>
 											<tbody>
-                        <!-- Loop item anggaran -->
+												<!-- Loop item anggaran -->
 												@if (count($skpd_anggaran->kategori_laporan) > 0)
 													@php
 														$total_realisasi_keseluruhan = 0;
@@ -169,27 +169,27 @@
 													@foreach ($skpd_anggaran->kategori_laporan as $kategori)
 														<tr style="background: {{ config('app.color_level_' . $kategori->level) ?? 'transparent' }}">
 															<th></th>
-															<th class="fw-bold" style="position: relative">
+															<th colspan="2" class="fw-bold" style="position: relative">
 																<span class="font-arimo">{{ $kategori->nama }}</span>
 															</th>
-															@for ($i = 0; $i < 20; $i++)
+															@for ($i = 0; $i < 19; $i++)
 																<th></th>
 															@endfor
 														</tr>
 
 														<!-- Total perkategori -->
 														@php
-															$total_pagu_perkategori                           = 0;
-															$total_nilai_tender_perkategori                   = 0;
-															$total_realisasi_tender_perkategori               = 0;
-															$total_nilai_penunjukkan_langsung_perkategori     = 0;
+															$total_pagu_perkategori = 0;
+															$total_nilai_tender_perkategori = 0;
+															$total_realisasi_tender_perkategori = 0;
+															$total_nilai_penunjukkan_langsung_perkategori = 0;
 															$total_realisasi_penunjukkan_langsung_perkategori = 0;
-															$total_nilai_swakelola_perkategori                = 0;
-															$total_realisasi_swakelola_perkategori            = 0;
-															$total_nilai_epurchasing_perkategori              = 0;
-															$total_realisasi_epurchasing_perkategori          = 0;
-															$total_nilai_pengadaan_langsung_perkategori       = 0;
-															$total_realisasi_pengadaan_langsung_perkategori   = 0;
+															$total_nilai_swakelola_perkategori = 0;
+															$total_realisasi_swakelola_perkategori = 0;
+															$total_nilai_epurchasing_perkategori = 0;
+															$total_realisasi_epurchasing_perkategori = 0;
+															$total_nilai_pengadaan_langsung_perkategori = 0;
+															$total_realisasi_pengadaan_langsung_perkategori = 0;
 
 															$total_realisasi_anggaran_perkategori = 0;
 															$realisasi_fisik_perkategori = 0;
@@ -235,9 +235,6 @@
 
 																	// Jumlah nilai baris keseluruhan
 																	$total_realisasi_keseluruhan += $total_realisasi_anggaran_perbaris;
-																	$realisasi_fisik_keseluruhan += format_persen(
-																	    $realisasi_fisik_perkategori / max(count($kategori->laporan), 1),
-																	);
 																@endphp
 																<tr>
 																	<form action="{{ route('dashboard.update-item-anggaran', $laporan->id) }}" method="post">
@@ -446,7 +443,7 @@
 																</tr>
 
 																<!-- Baris sub total -->
-																@if ($loop->iteration === count($kategori->laporan))
+																@if ($loop->iteration == count($kategori->laporan))
 																	<tr class="col-total">
 																		<th colspan="2" class="text-center">SUBTOTAL</th>
 																		<th class="text-end">{{ format_ribuan($total_pagu_perkategori) ?? 0 }}</th>
@@ -475,6 +472,11 @@
 																		<th></th>
 																		<th></th>
 																	</tr>
+																	@php
+																		$realisasi_fisik_keseluruhan += format_persen(
+																		    $realisasi_fisik_perkategori / max(count($kategori->laporan), 1),
+																		);
+																	@endphp
 																@endif
 															@endforeach
 														@endif
@@ -511,7 +513,13 @@
 															{{ format_persen($total_realisasi_keseluruhan / max($skpd_anggaran->laporan->sum('pagu'), 1), true) ?? '0%' }}
 														</th>
 														<th class="text-center">
-															{{ format_persen($realisasi_fisik_keseluruhan / max(count($kategori->laporan), 1), true) ?? '0%' }}
+															@php
+																$kategori_count = $skpd_anggaran->kategori_laporan
+                                  ->filter(function ($kategori) {
+                                      return $kategori->laporan && $kategori->laporan->count() > 0;
+                                  })->count();
+															@endphp
+															{{ format_persen($realisasi_fisik_keseluruhan / max($kategori_count, 1), true) ?? '0%' }}
 														</th>
 														<th></th>
 														<th></th>

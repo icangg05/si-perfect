@@ -51,10 +51,9 @@ class BerandaController extends Controller
   public function migrate()
   {
     try {
-      // Jalankan migrasi fresh (hapus semua tabel dan migrate ulang)
       Artisan::call('migrate:fresh', [
-        '--seed' => true, // langsung jalankan seeder setelah migrate
-        '--force' => true, // biar bisa jalan di production
+        '--seed' => true,
+        '--force' => true,
       ]);
 
       return response()->json([

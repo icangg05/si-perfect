@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
       SKPDSeeder::class,
       SKPDAnggaranSeeder::class,
       KategoriLaporanSeeder::class,
-      LaporanSeeder::class,
+      // LaporanSeeder::class,
     ]);
   }
 }

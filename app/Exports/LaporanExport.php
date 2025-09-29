@@ -117,9 +117,6 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
 
         // Jumlah nilai baris keseluruhan
         $total_realisasi_keseluruhan += $total_realisasi_anggaran_perbaris;
-        $realisasi_fisik_keseluruhan += format_persen(
-          $realisasi_fisik_perkategori / max(count($kategori->laporan), 1),
-        );
 
         $rows[] = [
           $i + 1,
@@ -168,11 +165,18 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
             format_persen($total_realisasi_anggaran_perkategori / max($total_pagu_perkategori, 1)) ?: '0',
             format_persen($realisasi_fisik_perkategori / max(count($kategori->laporan), 1)) ?: '0',
           ];
+          $realisasi_fisik_keseluruhan += format_persen(
+            $realisasi_fisik_perkategori / max(count($kategori->laporan), 1),
+          );
         }
       }
     }
 
     // Baris total rupiah keseluruhan
+    $kategori_count = $this->skpd_anggaran->kategori_laporan
+      ->filter(function ($kategori) {
+        return $kategori->laporan && $kategori->laporan->count() > 0;
+      })->count();
     $rows[] = [
       'TOTAL RUPIAH',
       '',
@@ -192,7 +196,7 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
       $this->skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung') ?: '0',
       $total_realisasi_keseluruhan ?: '0',
       format_persen($total_realisasi_keseluruhan / max($this->skpd_anggaran->laporan->sum('pagu'), 1)) ?: '0',
-      format_persen($realisasi_fisik_keseluruhan / max(count($kategori->laporan), 1)) ?: '0'
+      format_persen($realisasi_fisik_keseluruhan / max($kategori_count, 1)) ?: '0'
     ];
 
     return $rows;
@@ -418,6 +422,7 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
       }
 
       // Terapkan styling untuk baris kategori (background & bold)
+      $sheet->mergeCells("B{$currentRow}:C{$currentRow}");
       $sheet->getStyle("B{$currentRow}")->getFont()->setBold(true);
       $sheet->getStyle("A{$currentRow}:{$length_column}$currentRow")->applyFromArray([
         'fill' => [

@@ -14,7 +14,7 @@ class SKPDAnggaranSeeder extends Seeder
   public function run(): void
   {
     $data = [[
-      'skpd_id'         => 20,
+      'skpd_id'         => 1,
       'bulan_anggaran'  => 8,
       'tahun_anggaran'  => 2025,
       'jenis_pengadaan' => 'KONSTRUKSI, KONSULTANSI, BARANG DAN JASA LAINNYA'

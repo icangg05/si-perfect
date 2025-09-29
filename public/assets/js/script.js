@@ -90,33 +90,35 @@ $(function () {
     const lastRow = $("#formRows .form-row").last();
     const newRow = lastRow.clone(); // clone block terakhir
 
-    // newRow
-    //   .find("input[type=radio]")
-    //   .attr("name", "temp_radio_" + new Date().getTime());
-    // newRow
-    //   .find("input")
-    //   .not("[type=radio]")
-    //   .each(function () {
-    //     $(this).val("");
-    //   });
-    // newRow
-    //   .find("input[type=radio]")
-    //   .prop("checked", false)
-    //   .first()
-    //   .prop("checked", true);
+    resetFormRow(newRow);
 
     $("#formRows").append(newRow);
 
     // reindex setelah append — reindex akan memberikan nama yang benar dan berurutan
     reindexRows();
 
-      $("html, body").animate(
-        {
-          scrollTop: $(document).scrollTop() + 290,
-        },
-        0
-      );
+    $("html, body").animate(
+      {
+        scrollTop: $(document).scrollTop() + 290,
+      },
+      0
+    );
   });
+
+  function resetFormRow(row) {
+    // reset input text, number, textarea
+    row.find("input[type=text], input[type=number], textarea").val("");
+
+    // reset select (balik ke option pertama)
+    row.find("select").prop("selectedIndex", 0);
+
+    // reset date
+    row.find("input[type=date]").val("");
+    row.find("input[type=text][onfocus*='date']").val(""); // yg masih text tapi dipakai buat date
+
+    // reset checkbox & radio
+    row.find("input[type=checkbox], input[type=radio]").prop("checked", false);
+  }
 
   // hapus row
   $(document).on("click", ".removeRow", function () {
