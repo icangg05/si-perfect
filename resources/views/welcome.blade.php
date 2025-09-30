@@ -158,7 +158,7 @@
 							<div class="col-span-2 lg:col-span-1" data-aos="fade-up" data-aos-delay="200">
 								<div class="flex gap-3">
 									<img class="size-8 lg:size-12" src="{{ asset('img/solusi-2.png') }}" alt="icon">
-									<p class="font-medium text-sm lg:text-base">Laporan langsung tersimpan dan terdokukmentasi</p>
+									<p class="font-medium text-sm lg:text-base">Laporan langsung tersimpan dan terdokumentasi</p>
 								</div>
 							</div>
 							<div class="col-span-2 lg:col-span-1" data-aos="fade-up" data-aos-delay="300">

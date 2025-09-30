@@ -5,8 +5,8 @@
 				<div class="page-description-content flex-grow-1">
 					<h1><i class="material-icons h3">dashboard</i> Dashboard</h1>
 				</div>
-				<div class="page-description-actions d-flex align-items-center gap-1">
-					<form class="d-flex flex-md-row flex-column gap-1" action="{{ url()->current() }}" method="get" id="filterForm">
+				<div class="page-description-actions d-flex flex-md-row flex-column align-items-start align-items-md-center gap-1">
+					<form class="mt-4 mt-md-0 d-flex flex-md-row flex-column gap-1" action="{{ url()->current() }}" method="get" id="filterForm">
 						@can('admin')
 							<select name="skpd" id="skpdSelect" class="form-select">
 								<option value="">-- Semua SKPD --</option>
@@ -156,9 +156,13 @@
 			<div class="col-xl-12">
 				<div class="card widget widget-list">
 					<div class="card-header">
-						<h5 class="card-title">
-							<span class="text-muted">Jenis Paket</span>
-							<span id="total-jenis-paket" class="badge badge-primary badge-style-light" style="font-size: 1.3rem"></span>
+						<h5 class="card-title d-flex flex-column flex-md-row justify-content-between">
+							<div class="d-flex gap-1 flex-row flex-md-column" style="font-size: 14px; font-weight: 400; line-height: 18px">
+								<span class="text-muted">Total</span>
+								<span class="text-muted">Realisasi</span>
+							</div>
+							<span id="total-jenis-paket" class="mt-2 mt-md-0 badge badge-primary badge-style-light"
+								style="font-size: 1.4rem"></span>
 						</h5>
 					</div>
 					<div class="card-body">
@@ -175,7 +179,8 @@
 								<span class="widget-list-item-icon"><i class="material-icons-outlined">person_search</i></span>
 								<span class="widget-list-item-description">
 									<a href="#" class="widget-list-item-description-title">Penunjukkan Langsung</a>
-									<span id="penunjukkan-langsung" style="opacity: .95" class="text-dark widget-list-item-description-subtitle"></span>
+									<span id="penunjukkan-langsung" style="opacity: .95"
+										class="text-dark widget-list-item-description-subtitle"></span>
 								</span>
 							</li>
 
@@ -199,7 +204,8 @@
 								<span class="widget-list-item-icon"><i class="material-icons-outlined">assignment</i></span>
 								<span class="widget-list-item-description">
 									<a href="#" class="widget-list-item-description-title">Pengadaan Langsung</a>
-									<span id="pengadaan-langsung" style="opacity: .95" class="text-dark widget-list-item-description-subtitle"></span>
+									<span id="pengadaan-langsung" style="opacity: .95"
+										class="text-dark widget-list-item-description-subtitle"></span>
 								</span>
 							</li>
 						</ul>

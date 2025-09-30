@@ -383,7 +383,8 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
           'startColor' => ['argb' => $argbColor],
         ],
       ]);
-
+      // panggil helper auto-height
+      $this->autoHeightForMerged($sheet, 'B', 'C', $currentRow);
 
       // Hitung jumlah laporan dalam kategori ini
       $jumlahLaporan = count($kategori->laporan);
@@ -409,8 +410,50 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
     $sheet->mergeCells("A{$length_row}:B{$length_row}");
     $sheet->getRowDimension($length_row)->setRowHeight(25);
 
+    $sheet->setSelectedCell('A1');
 
     return [];
+  }
+
+
+  /**
+   * AUTO HEGITH FOR MERGED
+   */
+  protected function autoHeightForMerged(Worksheet $sheet, string $startCol, string $endCol, int $row, int $lineHeightPt = 14): void
+  {
+    // Ambil semua kolom dalam range merge
+    $mergedCols = range($startCol, $endCol);
+
+    // Hitung total lebar kolom (approx)
+    $totalWidth = 0;
+    foreach ($mergedCols as $col) {
+      $totalWidth += (float) $sheet->getColumnDimension($col)->getWidth();
+    }
+
+    // Ambil teks cell (hanya top-left cell yang dianggap)
+    $cellText = (string) $sheet->getCell("{$startCol}{$row}")->getValue();
+    $cellText = trim($cellText);
+
+    // Estimasi jumlah karakter per baris
+    $charsPerLine = max(1, (int) round($totalWidth * 1.0)); // faktor bisa diubah
+
+    // Hitung jumlah baris hasil wordwrap
+    $lines = 0;
+    foreach (explode("\n", $cellText) as $part) {
+      $part = trim($part);
+      if ($part === '') {
+        $lines += 1;
+        continue;
+      }
+      $wrapped = wordwrap($part, $charsPerLine, "\n", true);
+      $lines += max(1, substr_count($wrapped, "\n") + 1);
+    }
+
+    // Minimal 1 baris
+    $lines = max(1, $lines);
+
+    // Atur tinggi row
+    $sheet->getRowDimension($row)->setRowHeight($lines * $lineHeightPt);
   }
 
 
