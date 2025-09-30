@@ -16,7 +16,7 @@
 	<!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
 	<meta property="og:title" content="SI-PERFECT - Sistem Informasi Pelaporan Efektif, Cepat, dan Tepat">
 	<meta property="og:description" content="Solusi praktis pelaporan modern berbasis web untuk Pemerintah Kota Kendari.">
-	<meta property="og:image" content="{{ asset('img/hero-right.png') }}">
+	<meta property="og:image" content="{{ asset('img/hero-right.webp') }}">
 	<meta property="og:url" content="{{ url()->current() }}">
 	<meta property="og:type" content="website">
 
@@ -25,7 +25,7 @@
 	<meta name="twitter:title" content="SI-PERFECT - Sistem Informasi Pelaporan">
 	<meta name="twitter:description"
 		content="Sistem Informasi Pelaporan Efektif, Cepat, dan Tepat untuk mendukung digitalisasi proses pelaporan.">
-	<meta name="twitter:image" content="{{ asset('img/hero-right.png') }}">
+	<meta name="twitter:image" content="{{ asset('img/hero-right.webp') }}">
 
 	<title>{{ config('app.name') }}</title>
 
@@ -59,7 +59,7 @@
 
 	<!-- Hero Section -->
 	<section class="relative bg-gray-200">
-		<img src="{{ asset('img/bg-hero.png') }}" alt="Background"
+		<img src="{{ asset('img/bg-hero.webp') }}" alt="Background"
 			class="absolute inset-0 w-full h-full object-cover opacity-90">
 		<div class="relative container py-10 lg:py-30 flex flex-col md:flex-row items-center">
 			<div class="flex-1 space-y-6" data-aos="fade-right" data-aos-duration="1000">
@@ -73,7 +73,7 @@
 				</div>
 			</div>
 			<div class="flex-1 mt-10 md:mt-0 flex justify-center" data-aos="zoom-in" data-aos-duration="1000">
-				<img src="{{ asset('img/hero-right.png') }}" alt="Dashboard" class="w-[85%]">
+				<img src="{{ asset('img/hero-right.webp') }}" alt="Dashboard" class="w-[85%]">
 			</div>
 		</div>
 	</section>
@@ -120,7 +120,7 @@
 			</div>
 			<div class="hidden lg:block relative col-span-2 lg:col-span-1" data-aos="zoom-in" data-aos-duration="1000">
 				<div class="absolute bottom-0">
-					<img src="{{ asset('img/walikota.png') }}" alt="Wakil Kota Kendari" class="w-full">
+					<img src="{{ asset('img/walikota.webp') }}" alt="Wakil Kota Kendari" class="w-full">
 				</div>
 				<div class="absolute flex items-center gap-4 bottom-2.5 -translate-x-1/2 left-1/2">
 					<button class="btn-warning text-center leading-4.5" data-aos="flip-up" data-aos-delay="200">
@@ -139,7 +139,7 @@
 	<!-- Solusi Input -->
 	<section id="fitur" class="bg-gray-50">
 		<div class="container">
-			<div class="py-10 lg:py-0 grid grid-cols-2 gap-10 items-center">
+			<div class="py-10 lg:py-13 grid grid-cols-2 gap-10 items-center">
 				<div class="col-span-2 lg:col-span-1" data-aos="fade-right" data-aos-duration="1000">
 					<h2 class="text-2xl lg:text-3xl">
 						Solusi penginputan laporan yang <span class="text-primary font-semibold">Efektif, Cepat, dan Tepat</span>
@@ -177,21 +177,25 @@
 					</div>
 				</div>
 				<div class="col-span-2 lg:col-span-1" data-aos="zoom-in" data-aos-duration="1000">
-					<img src="{{ asset('img/solusi.png') }}" alt="image">
+					<img src="{{ asset('img/solusi-right.webp') }}" alt="image">
 				</div>
 			</div>
 
 			<!-- Input dengan mudah -->
-			<div id="keunggulan" class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-3 lg:mt-12 mb-20">
+			<div id="keunggulan" class="scroll-m-10 grid grid-cols-1 md:grid-cols-2 gap-8 mt-3 lg:mt-4 mb-20">
 				<div class="bg-white p-8 shadow rounded text-center" data-aos="flip-left" data-aos-duration="1000">
 					<h3 class="font-bold text-lg lg:text-xl text-primary">Input dengan Mudah</h3>
 					<p class="mt-2 text-gray-600 text-sm lg:text-base">Form input sederhana dan user-friendly</p>
-					<div class="mt-6 bg-gray-200 h-70 rounded"></div>
+					<div class="mt-6">
+						<img src="{{ asset('img/img-solusi-1.webp') }}" alt="img" class="rounded-3xl">
+					</div>
 				</div>
 				<div class="bg-white p-8 shadow rounded text-center" data-aos="flip-right" data-aos-duration="1000">
 					<h3 class="font-bold text-lg lg:text-xl text-primary">Output Cepat dan Tepat</h3>
 					<p class="mt-2 text-gray-600 text-sm lg:text-base">Hasilkan output laporan dengan sekali klik</p>
-					<div class="mt-6 bg-gray-200 h-70 rounded"></div>
+					<div class="mt-6">
+						<img src="{{ asset('img/img-solusi-2.webp') }}" alt="img" class="rounded-3xl">
+					</div>
 				</div>
 			</div>
 		</div>
@@ -201,17 +205,17 @@
 	<section class="bg-primary text-white">
 		<div class="container">
 			<div class="grid grid-cols-2 gap-0 lg:gap-24 items-center">
-				<div class="col-span-2 lg:col-span-1" data-aos="zoom-in-left" data-aos-duration="1000">
-					<img src="{{ asset('img/hp.png') }}" alt="hp">
+				<div class="col-span-2 lg:col-span-1">
+					<img src="{{ asset('img/login-cta.webp') }}" alt="hp">
 					<div class="bg-secondary w-full h-1"></div>
 				</div>
-				<div class="py-10 lg:py-0 col-span-2 lg:col-span-1" data-aos="fade-left" data-aos-duration="1000">
+				<div class="py-10 lg:py-0 col-span-2 lg:col-span-1">
 					<h2 class="mb-3 text-3xl lg:text-5xl font-light leading-9 lg:leading-14">
 						Login ke <br>
 						<span class="text-secondary font-bold">SI-</span><span class="font-bold">PERFECT</span>
 					</h2>
 					<p class="mb-9 lg:mb-12 font-extralight">Sistem Informasi Pelaporan Efektif, Cepat, dan Tepat</p>
-					<a href="{{ route('login') }}"class="btn-warning" data-aos="zoom-in" data-aos-delay="300">
+					<a href="{{ route('login') }}"class="btn-warning">
 						Masuk ke Aplikasi
 					</a>
 				</div>
@@ -220,16 +224,16 @@
 	</section>
 
 	<!-- Footer -->
-	<footer class="bg-white border-t py-6 text-sm text-gray-600">
+	<footer class="bg-white border-t py-6 text-xs lg:text-sm text-gray-600">
 		<div class="container flex flex-col lg:flex-row items-center gap-6 lg:gap-24">
 			@include('app-logo')
 			<div>
-				<p class="text-xs lg:text-base">Alamat : Jl. Drs. H. Abdullah Silondae No.8 Lantai 9, Gedung Menara Balai Kota
+				<p>Alamat : Jl. Drs. H. Abdullah Silondae No.8 Lantai 9, Gedung Menara Balai Kota
 					Kendari Pondambea, Kec. Kadia,
 					Kota Kendari, Sulawesi Tenggara 93111</p>
 			</div>
 			<div>
-				<p class="text-xs lg:text-base">Copyright © 2025 All Rights Reserved</p>
+				<p>Copyright © 2025 All Rights Reserved</p>
 			</div>
 		</div>
 	</footer>

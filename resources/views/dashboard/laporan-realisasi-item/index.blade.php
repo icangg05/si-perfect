@@ -261,7 +261,7 @@
 																		</td>
 
 																		<!-- No kontrak -->
-																		<td class="view-mode {{ $rowError ? 'd-none' : '' }}">
+																		<td class="view-mode text-center {{ $rowError ? 'd-none' : '' }}">
 																			{{ $laporan->no_kontrak }}</td>
 																		<td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
 																			<input type="text" name="no_kontrak" value="{{ old('no_kontrak', $laporan->no_kontrak) }}"
@@ -269,7 +269,7 @@
 																		</td>
 
 																		<!-- Tgl mulai kontrak -->
-																		<td class="view-mode text-nowrap {{ $rowError ? 'd-none' : '' }}">
+																		<td class="view-mode text-center text-nowrap {{ $rowError ? 'd-none' : '' }}">
 																			{{ $laporan->tgl_mulai_kontrak ? Carbon\Carbon::create($laporan->tgl_mulai_kontrak)->translatedFormat('d-m-Y') : null }}
 																		</td>
 																		<td class="edit-mode {{ $rowError ? '' : 'd-none' }}">
@@ -278,7 +278,7 @@
 																		</td>
 
 																		<!-- Tgl berakhir kontrak -->
-																		<td class="view-mode text-nowrap {{ $rowError ? 'd-none' : '' }}">
+																		<td class="view-mode text-center text-nowrap {{ $rowError ? 'd-none' : '' }}">
 																			{{ $laporan->tgl_berakhir_kontrak ? Carbon\Carbon::create($laporan->tgl_berakhir_kontrak)->translatedFormat('d-m-Y') : null }}
 																		</td>
 																		<td class="edit-mode {{ $rowError ? '' : 'd-none' }}">

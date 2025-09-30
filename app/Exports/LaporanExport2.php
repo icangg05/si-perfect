@@ -34,7 +34,6 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
   protected $golongan    = null;
   protected $nip         = null;
 
-
   public function __construct($skpd_anggaran)
   {
     $this->skpd_anggaran = $skpd_anggaran;
@@ -52,31 +51,80 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
     $this->nip         = $skpd_anggaran->skpd->nip_pimpinan;
   }
 
-
   public function array(): array
   {
     $rows = [];
 
-    // Simpan index subtotal kategori untuk dipakai di TOTAL RUPIAH
-    $subtotalRows = [];
+    // Inisialisasi variabel baris total rupiah
+    $total_realisasi_keseluruhan = 0;
+    $realisasi_fisik_keseluruhan = 0;
 
     // Loop item anggaran
     foreach ($this->skpd_anggaran->kategori_laporan as $kategori) {
       $rows[] = ['', $kategori->nama];
 
-      // Sebelum loop laporan
-      $startRow = count($rows) + 11; // data mulai baris 11 + 1 header + 1 kategori
+      // Inisialisasi variabel total perkategori
+      $total_pagu_perkategori                           = 0;
+      $total_nilai_tender_perkategori                   = 0;
+      $total_realisasi_tender_perkategori               = 0;
+      $total_nilai_penunjukkan_langsung_perkategori     = 0;
+      $total_realisasi_penunjukkan_langsung_perkategori = 0;
+      $total_nilai_swakelola_perkategori                = 0;
+      $total_realisasi_swakelola_perkategori            = 0;
+      $total_nilai_epurchasing_perkategori              = 0;
+      $total_realisasi_epurchasing_perkategori          = 0;
+      $total_nilai_pengadaan_langsung_perkategori       = 0;
+      $total_realisasi_pengadaan_langsung_perkategori   = 0;
+
+      $total_realisasi_anggaran_perkategori = 0;
+      $realisasi_fisik_perkategori = 0;
 
       // Loop item anggaran perkategori
       foreach ($kategori->laporan as $i => $laporan) {
-        $rowIndex = count($rows) + 11; // 11 karena data dimulai di row 11
+        // Inisialisasi variabel item anggaran perbaris
+        $total_realisasi_anggaran_perbaris = 0;
+        $realisasi_keuangan_perbaris       = 0;
+
+        // Jumlah nilai untuk perbaris
+        $total_realisasi_anggaran_perbaris +=
+          // $laporan->nilai_kontrak_tender +
+          $laporan->realisasi_tender +
+          // $laporan->nilai_kontrak_penunjukkan_langsung +
+          $laporan->realisasi_penunjukkan_langsung +
+          // $laporan->nilai_kontrak_swakelola +
+          $laporan->realisasi_swakelola +
+          // $laporan->nilai_kontrak_epurchasing +
+          $laporan->realisasi_epurchasing +
+          // $laporan->nilai_kontrak_pengadaan_langsung +
+          $laporan->realisasi_pengadaan_langsung;
+        $realisasi_keuangan_perbaris = $total_realisasi_anggaran_perbaris / max($laporan->pagu, 1);
+
+        // Jumlah nilai untuk baris subtotal
+        $total_pagu_perkategori                           += $laporan->pagu;
+        $total_nilai_tender_perkategori                   += $laporan->nilai_kontrak_tender;
+        $total_realisasi_tender_perkategori               += $laporan->realisasi_tender;
+        $total_nilai_penunjukkan_langsung_perkategori     += $laporan->nilai_kontrak_penunjukkan_langsung;
+        $total_realisasi_penunjukkan_langsung_perkategori += $laporan->realisasi_penunjukkan_langsung;
+        $total_nilai_swakelola_perkategori                += $laporan->nilai_kontrak_swakelola;
+        $total_realisasi_swakelola_perkategori            += $laporan->realisasi_swakelola;
+        $total_nilai_epurchasing_perkategori              += $laporan->nilai_kontrak_epurchasing;
+        $total_realisasi_epurchasing_perkategori          += $laporan->realisasi_epurchasing;
+        $total_nilai_pengadaan_langsung_perkategori       += $laporan->nilai_kontrak_pengadaan_langsung;
+        $total_realisasi_pengadaan_langsung_perkategori   += $laporan->realisasi_pengadaan_langsung;
+
+        $total_realisasi_anggaran_perkategori += $total_realisasi_anggaran_perbaris;
+        $realisasi_fisik_perkategori          += format_persen($laporan->presentasi_realisasi_fisik);
+
+        // Jumlah nilai baris keseluruhan
+        $total_realisasi_keseluruhan += $total_realisasi_anggaran_perbaris;
+
         $rows[] = [
           $i + 1,
           $laporan->nama_pekerjaan,
           $laporan->pagu,
           $laporan->no_kontrak,
           $laporan->tgl_mulai_kontrak ? Carbon::create($laporan->tgl_mulai_kontrak)->translatedFormat('d-m-Y') : null,
-          $laporan->tgl_berakhir_kontrak ? Carbon::create($laporan->tgl_berakhir_kontrak)->translatedFormat('d-m-Y') : null,
+          $laporan->tgl_berakhir_kontrak ? Carbon::create($laporan->tgl_mulai_kontrak)->translatedFormat('d-m-Y') : null,
           $laporan->nilai_kontrak_tender,
           $laporan->realisasi_tender,
           $laporan->nilai_kontrak_penunjukkan_langsung,
@@ -87,69 +135,68 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
           $laporan->realisasi_epurchasing,
           $laporan->nilai_kontrak_pengadaan_langsung,
           $laporan->realisasi_pengadaan_langsung,
-          "=SUM(H{$rowIndex},J{$rowIndex},L{$rowIndex},N{$rowIndex},P{$rowIndex})",
-          "=IFERROR(Q{$rowIndex}/C{$rowIndex},0)",
+          $total_realisasi_anggaran_perbaris,
+          format_persen($realisasi_keuangan_perbaris) ?: '0',
           format_persen($laporan->presentasi_realisasi_fisik) ?: '0',
           $laporan->sumber_dana ?: '-',
           $laporan->keterangan ?: '-'
         ];
 
-        // Setelah loop laporan → baris subtotal
+        // Baris subtotal perkategori
         if ($i == count($kategori->laporan) - 1) {
-          $endRow = count($rows) + 10; // baris terakhir data laporan
           $rows[] = [
             'SUBTOTAL',
             '',
-            "=SUM(C{$startRow}:C{$endRow})",
+            $total_pagu_perkategori ?: '0',
             '',
             '',
             '',
-            "=SUM(G{$startRow}:G{$endRow})",
-            "=SUM(H{$startRow}:H{$endRow})",
-            "=SUM(I{$startRow}:I{$endRow})",
-            "=SUM(J{$startRow}:J{$endRow})",
-            "=SUM(K{$startRow}:K{$endRow})",
-            "=SUM(L{$startRow}:L{$endRow})",
-            "=SUM(M{$startRow}:M{$endRow})",
-            "=SUM(N{$startRow}:N{$endRow})",
-            "=SUM(O{$startRow}:O{$endRow})",
-            "=SUM(P{$startRow}:P{$endRow})",
-            "=SUM(Q{$startRow}:Q{$endRow})",
-            "=IFERROR(Q" . (count($rows) + 11) . "/C" . (count($rows) + 11) . ",0)",
-            "=AVERAGE(S{$startRow}:S{$endRow})",
+            $total_nilai_tender_perkategori ?: '0',
+            $total_realisasi_tender_perkategori ?: '0',
+            $total_nilai_penunjukkan_langsung_perkategori ?: '0',
+            $total_realisasi_penunjukkan_langsung_perkategori ?: '0',
+            $total_nilai_swakelola_perkategori ?: '0',
+            $total_realisasi_swakelola_perkategori ?: '0',
+            $total_nilai_epurchasing_perkategori ?: '0',
+            $total_realisasi_epurchasing_perkategori ?: '0',
+            $total_nilai_pengadaan_langsung_perkategori ?: '0',
+            $total_realisasi_pengadaan_langsung_perkategori ?: '0',
+            $total_realisasi_anggaran_perkategori ?: '0',
+            format_persen($total_realisasi_anggaran_perkategori / max($total_pagu_perkategori, 1)) ?: '0',
+            format_persen($realisasi_fisik_perkategori / max(count($kategori->laporan), 1)) ?: '0',
           ];
-
-          // Simpan index baris subtotal
-          $subtotalRows[] = count($rows) + 10;
+          $realisasi_fisik_keseluruhan += format_persen(
+            $realisasi_fisik_perkategori / max(count($kategori->laporan), 1),
+          );
         }
       }
     }
 
-    /**
-     * ====================
-     * Baris TOTAL RUPIAH
-     * ====================
-     */
+    // Baris total rupiah keseluruhan
+    $kategori_count = $this->skpd_anggaran->kategori_laporan
+      ->filter(function ($kategori) {
+        return $kategori->laporan && $kategori->laporan->count() > 0;
+      })->count();
     $rows[] = [
       'TOTAL RUPIAH',
       '',
-      "=SUM(" . implode(',', array_map(fn($r) => "C{$r}", $subtotalRows)) . ")",
+      $this->skpd_anggaran->laporan->sum('pagu') ?: '0',
       '',
       '',
       '',
-      "=SUM(" . implode(',', array_map(fn($r) => "G{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "H{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "I{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "J{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "K{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "L{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "M{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "N{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "O{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "P{$r}", $subtotalRows)) . ")",
-      "=SUM(" . implode(',', array_map(fn($r) => "Q{$r}", $subtotalRows)) . ")",
-      "=IFERROR(Q" . (count($rows) + 11) . "/C" . (count($rows) + 11) . ",0)",
-      "=AVERAGE(" . implode(',', array_map(fn($r) => "S{$r}", $subtotalRows)) . ")"
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_tender') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_tender') ?: '0',
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_penunjukkan_langsung') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_penunjukkan_langsung') ?: '0',
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_swakelola') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_swakelola') ?: '0',
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_epurchasing') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_epurchasing') ?: '0',
+      $this->skpd_anggaran->laporan->sum('nilai_kontrak_pengadaan_langsung') ?: '0',
+      $this->skpd_anggaran->laporan->sum('realisasi_pengadaan_langsung') ?: '0',
+      $total_realisasi_keseluruhan ?: '0',
+      format_persen($total_realisasi_keseluruhan / max($this->skpd_anggaran->laporan->sum('pagu'), 1)) ?: '0',
+      format_persen($realisasi_fisik_keseluruhan / max($kategori_count, 1)) ?: '0'
     ];
 
     return $rows;
@@ -322,7 +369,7 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, WithTitle
     ]);
 
     // Kolom yang harus center horizontal
-    foreach (['D', 'E', 'F', 'A', 'R', 'S', 'T', 'U'] as $col) {
+    foreach (['A', 'R', 'S', 'T', 'U'] as $col) {
       $sheet->getStyle("{$col}{$start_data_row}:{$col}{$length_row}")
         ->getAlignment()
         ->setHorizontal(Alignment::HORIZONTAL_CENTER);
