@@ -184,6 +184,7 @@ class LaporanRealisasiController extends Controller
 
     // Looping semua row item
     for ($i = 0; $i < count($request->kategori_laporan_id); $i++) {
+      // dd((int) str_replace('.', '', $request->pagu[$i]));
       Laporan::create([
         'kategori_laporan_id'                => $request->kategori_laporan_id[$i] ?? null,
         'nama_pekerjaan'                     => $request->nama_pekerjaan[$i] ?? null,
@@ -275,10 +276,9 @@ class LaporanRealisasiController extends Controller
       'tgl_berakhir_kontrak'       => ['nullable', 'date', 'after_or_equal:tgl_mulai_kontrak'],
       'sumber_dana'                => ['nullable', 'max:50'],
       'keterangan'                 => ['nullable', 'max:191'],
-      'pagu'                       => ['required', 'numeric', 'min:500'],
+      'pagu'                       => ['required'],
       'presentasi_realisasi_fisik' => ['required'],
     ], [
-      'pagu.min'                            => 'Pagu minimal Rp500.',
       'nama_pekerjaan.required'             => 'Nama pekerjaan wajib diisi.',
       'nama_pekerjaan.max'                  => 'Nama pekerjaan maksimal 255 karakter.',
       'tgl_mulai_kontrak.before_or_equal'   => 'Tanggal mulai kontrak harus sebelum atau sama dengan tanggal berakhir.',
@@ -288,13 +288,13 @@ class LaporanRealisasiController extends Controller
 
     $validator->after(function ($validator) use ($request) {
       if ((
-        $request->nilai_kontrak_tender + $request->realisasi_tender +
-        $request->nilai_kontrak_penunjukkan_langsung + $request->realisasi_penunjukkan_langsung +
-        $request->nilai_kontrak_swakelola + $request->realisasi_swakelola +
-        $request->nilai_kontrak_epuchasing + $request->realisasi_epuchasing +
-        $request->nilai_kontrak_pengadaan_langsung + $request->realisasi_pengadaan_langsung
-      ) > $request->pagu) {
-        $validator->errors()->add('pagu', 'Jumlah nilai kontrak dan realisasi tidak boleh melebihi pagu.');
+        (int) str_replace('.', '', $request->realisasi_tender) +
+        (int) str_replace('.', '', $request->realisasi_penunjukkan_langsung) +
+        (int) str_replace('.', '', $request->realisasi_swakelola) +
+        (int) str_replace('.', '', $request->realisasi_epurchasing) +
+        (int) str_replace('.', '', $request->realisasi_pengadaan_langsung)
+      ) > (int) str_replace('.', '', $request->pagu)) {
+        $validator->errors()->add('pagu', 'Jumlah nilai realisasi tidak boleh melebihi pagu.');
       }
     });
 

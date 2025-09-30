@@ -84,7 +84,7 @@
 											</div>
 											<div class="col-md-4">
 												<label class="form-label">Pagu Anggaran</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="pagu[]" placeholder="0" required>
 											</div>
 										</div>
@@ -120,56 +120,56 @@
 										<div class="row g-3">
 											<div class="col-md-6">
 												<label class="form-label">Nilai Kontrak Tender</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="nilai_kontrak_tender[]" placeholder="0">
 											</div>
 											<div class="col-md-6">
 												<label class="form-label">Realisasi Tender</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="realisasi_tender[]" placeholder="0">
 											</div>
 
 											<div class="col-md-6">
 												<label class="form-label">Nilai Kontrak Penunjukkan Langsung</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="nilai_kontrak_penunjukkan_langsung[]" placeholder="0">
 											</div>
 											<div class="col-md-6">
 												<label class="form-label">Realisasi Penunjukkan Langsung</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="realisasi_penunjukkan_langsung[]" placeholder="0">
 											</div>
 
 											<div class="col-md-6">
 												<label class="form-label">Nilai Kontrak Swakelola</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="nilai_kontrak_swakelola[]" placeholder="0">
 											</div>
 											<div class="col-md-6">
 												<label class="form-label">Realisasi Swakelola</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="realisasi_swakelola[]" placeholder="0">
 											</div>
 
 											<div class="col-md-6">
 												<label class="form-label">Nilai Kontrak e-Purchasing</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="nilai_kontrak_epurchasing[]" placeholder="0">
 											</div>
 											<div class="col-md-6">
 												<label class="form-label">Realisasi e-Purchasing</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="realisasi_epurchasing[]" placeholder="0">
 											</div>
 
 											<div class="col-md-6">
 												<label class="form-label">Nilai Kontrak Pengadaan Langsung</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="nilai_kontrak_pengadaan_langsung[]" placeholder="0">
 											</div>
 											<div class="col-md-6">
 												<label class="form-label">Realisasi Pengadaan Langsung</label>
-												<input type="number" class="form-control form-control-sm"
+												<input type="text" class="form-control form-control-sm rupiah"
 													name="realisasi_pengadaan_langsung[]" placeholder="0">
 											</div>
 										</div>
@@ -226,4 +226,5 @@
 			</form>
 		</div>
 	</div>
+
 </x-layouts.dashboard>

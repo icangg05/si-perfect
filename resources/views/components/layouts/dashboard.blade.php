@@ -49,7 +49,7 @@
 				<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 				<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 				<![endif]-->
-  @stack('head')
+	@stack('head')
 </head>
 
 <body>
@@ -131,9 +131,7 @@
 							<ul class="navbar-nav">
 								<li class="nav-item hidden-on-mobile">
 									<a class="nav-link active" href="#">
-										{{ Auth::user()->role == 'admin'
-										    ? Auth::user()->name
-										    : Auth::user()->skpd->nama }}
+										{{ Auth::user()->role == 'admin' ? Auth::user()->name : Auth::user()->skpd->nama }}
 									</a>
 								</li>
 								{{-- <li class="nav-item hidden-on-mobile">
@@ -301,8 +299,17 @@
 
 	<script src="{{ asset('') }}/assets/plugins/highlight/highlight.pack.js"></script>
 
-	<script type="module" src="https://cdn.jsdelivr.net/gh/lekoala/formidable-elements@master/dist/count-up.min.js">
+	<script>
+		$(document).on('input', '.rupiah', function() {
+			let value = $(this).val().replace(/\D/g, ''); // ambil hanya angka
+			if (value) {
+				// format ke ribuan dengan titik
+				value = new Intl.NumberFormat('id-ID').format(value);
+			}
+			$(this).val(value);
+		});
 	</script>
+
 	@stack('script')
 </body>
 

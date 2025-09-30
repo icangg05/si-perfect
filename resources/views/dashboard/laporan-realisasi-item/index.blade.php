@@ -256,7 +256,7 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->pagu) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="pagu" value="{{ old('pagu', $laporan->pagu) }}" min="500"
+																			<input type="text" name="pagu" value="{{ old('pagu', number_format($laporan->pagu ?? 0, 0, ',', '.')) }}" min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -291,8 +291,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->nilai_kontrak_tender) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="nilai_kontrak_tender"
-																				value="{{ old('nilai_kontrak_tender', $laporan->nilai_kontrak_tender) }}" min="500"
+																			<input type="text" name="nilai_kontrak_tender"
+																				value="{{ old('nilai_kontrak_tender', number_format($laporan->nilai_kontrak_tender ?? 0, 0, ',', '.')) }}" min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -300,8 +300,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->realisasi_tender) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="realisasi_tender"
-																				value="{{ old('realisasi_tender', $laporan->realisasi_tender) }}" min="500"
+																			<input type="text" name="realisasi_tender"
+																				value="{{ old('realisasi_tender', number_format($laporan->realisasi_tender ?? 0, 0, ',', '.')) }}" min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -309,8 +309,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->nilai_kontrak_penunjukkan_langsung) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="nilai_kontrak_penunjukkan_langsung"
-																				value="{{ old('nilai_kontrak_penunjukkan_langsung', $laporan->nilai_kontrak_penunjukkan_langsung) }}"
+																			<input type="text" name="nilai_kontrak_penunjukkan_langsung"
+																				value="{{ old('nilai_kontrak_penunjukkan_langsung', number_format($laporan->nilai_kontrak_penunjukkan_langsung ?? 0, 0, ',', '.')) }}"
 																				min="500" class="forms-input rupiah text-end">
 																		</td>
 
@@ -318,8 +318,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->realisasi_penunjukkan_langsung) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="realisasi_penunjukkan_langsung"
-																				value="{{ old('realisasi_penunjukkan_langsung', $laporan->realisasi_penunjukkan_langsung) }}"
+																			<input type="text" name="realisasi_penunjukkan_langsung"
+																				value="{{ old('realisasi_penunjukkan_langsung', number_format($laporan->realisasi_penunjukkan_langsung ?? 0, 0, ',', '.')) }}"
 																				min="500" class="forms-input rupiah text-end">
 																		</td>
 
@@ -327,8 +327,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->nilai_kontrak_swakelola) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="nilai_kontrak_swakelola"
-																				value="{{ old('nilai_kontrak_swakelola', $laporan->nilai_kontrak_swakelola) }}" min="500"
+																			<input type="text" name="nilai_kontrak_swakelola"
+																				value="{{ old('nilai_kontrak_swakelola', number_format($laporan->nilai_kontrak_swakelola ?? 0, 0, ',', '.')) }}" min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -336,8 +336,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->realisasi_swakelola) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="realisasi_swakelola"
-																				value="{{ old('realisasi_swakelola', $laporan->realisasi_swakelola) }}" min="500"
+																			<input type="text" name="realisasi_swakelola"
+																				value="{{ old('realisasi_swakelola', number_format($laporan->realisasi_swakelola ?? 0, 0, ',', '.')) }}" min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -345,8 +345,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->nilai_kontrak_epurchasing) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="nilai_kontrak_epurchasing"
-																				value="{{ old('nilai_kontrak_epurchasing', $laporan->nilai_kontrak_epurchasing) }}"
+																			<input type="text" name="nilai_kontrak_epurchasing"
+																				value="{{ old('nilai_kontrak_epurchasing', number_format($laporan->nilai_kontrak_epurchasing ?? 0, 0, ',', '.')) }}"
 																				min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
@@ -355,8 +355,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->realisasi_epurchasing) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="realisasi_epurchasing"
-																				value="{{ old('realisasi_epurchasing', $laporan->realisasi_epurchasing) }}" min="500"
+																			<input type="text" name="realisasi_epurchasing"
+																				value="{{ old('realisasi_epurchasing', number_format($laporan->realisasi_epurchasing ?? 0, 0, ',', '.')) }}" min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -364,8 +364,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->nilai_kontrak_pengadaan_langsung) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="nilai_kontrak_pengadaan_langsung"
-																				value="{{ old('nilai_kontrak_pengadaan_langsung', $laporan->nilai_kontrak_pengadaan_langsung) }}"
+																			<input type="text" name="nilai_kontrak_pengadaan_langsung"
+																				value="{{ old('nilai_kontrak_pengadaan_langsung', number_format($laporan->nilai_kontrak_pengadaan_langsung ?? 0, 0, ',', '.')) }}"
 																				min="500" class="forms-input rupiah text-end">
 																		</td>
 
@@ -373,8 +373,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->realisasi_pengadaan_langsung) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="number" name="realisasi_pengadaan_langsung"
-																				value="{{ old('realisasi_pengadaan_langsung', $laporan->realisasi_pengadaan_langsung) }}"
+																			<input type="text" name="realisasi_pengadaan_langsung"
+																				value="{{ old('realisasi_pengadaan_langsung', number_format($laporan->realisasi_pengadaan_langsung ?? 0, 0, ',', '.')) }}"
 																				min="500" class="forms-input rupiah text-end">
 																		</td>
 

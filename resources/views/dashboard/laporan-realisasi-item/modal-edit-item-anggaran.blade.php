@@ -23,7 +23,10 @@
 						<select class="form-select" id="kategori_laporan_id" name="kategori_laporan_id" required>
 							<option value="">-- Pilih Kategori --</option>
 							@foreach ($skpd_anggaran->kategori_laporan as $kategori)
-								<option value="{{ $kategori->id }}">{{ $kategori->nama }}</option>
+								<option value="{{ $kategori->id }}">
+									{{-- {{ $kategori->nama }} --}}
+									{!! str_repeat('—', ($kategori->level - 1) * 2) !!} {{ $kategori->nama }}
+								</option>
 							@endforeach
 						</select>
 					</div>
@@ -41,4 +44,3 @@
 		</div>
 	</div>
 </div>
-

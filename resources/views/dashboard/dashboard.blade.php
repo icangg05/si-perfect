@@ -45,9 +45,7 @@
 							<div class="widget-info-navigation-container">
 								<div class="widget-info-navigation-content">
 									<span class="text-muted">Total Pagu</span><br>
-									<span class="text-primary fw-bolder fs-3">
-										Rp <count-up>{{ $total_pagu ?? 0 }}</count-up>
-									</span>
+									<span id="total-pagu" class="text-primary fw-bolder fs-3"></span>
 								</div>
 								<div class="widget-info-navigation-action">
 									<a href="#" class="btn btn-light btn-rounded"><i class="material-icons no-m">account_balance</i></a>
@@ -64,10 +62,7 @@
 								<div class="widget-info-navigation-content">
 									<span class="text-muted">Realisasi Fisik</span><br>
 									<span class="text-primary fw-bolder fs-3">
-										<count-up>
-											{{ round($realisasi_fisik ?? 0, 3) * 100 }}
-										</count-up>
-										%
+										<span id="realisasi-fisik"></span>
 									</span>
 								</div>
 								<div class="widget-info-navigation-action">
@@ -163,9 +158,7 @@
 					<div class="card-header">
 						<h5 class="card-title">
 							<span class="text-muted">Jenis Paket</span>
-							<span class="badge badge-primary badge-style-light" style="font-size: 1.3rem">
-								Rp <count-up>{{ $total_jenis_paket ?? 0 }}</count-up>
-							</span>
+							<span id="total-jenis-paket" class="badge badge-primary badge-style-light" style="font-size: 1.3rem"></span>
 						</h5>
 					</div>
 					<div class="card-body">
@@ -174,9 +167,7 @@
 								<span class="widget-list-item-icon"><i class="material-icons-outlined">gavel</i></span>
 								<span class="widget-list-item-description">
 									<a href="#" class="widget-list-item-description-title">Tender</a>
-									<span style="opacity: .95" class="text-dark widget-list-item-description-subtitle">
-										Rp <count-up>{{ $tender ?? 0 }}</count-up>
-									</span>
+									<span id="tender" style="opacity: .95" class="text-dark widget-list-item-description-subtitle"></span>
 								</span>
 							</li>
 
@@ -184,9 +175,7 @@
 								<span class="widget-list-item-icon"><i class="material-icons-outlined">person_search</i></span>
 								<span class="widget-list-item-description">
 									<a href="#" class="widget-list-item-description-title">Penunjukkan Langsung</a>
-									<span style="opacity: .95" class="text-dark widget-list-item-description-subtitle">
-										Rp <count-up>{{ $penunjukkan_langsung ?? 0 }}</count-up>
-									</span>
+									<span id="penunjukkan-langsung" style="opacity: .95" class="text-dark widget-list-item-description-subtitle"></span>
 								</span>
 							</li>
 
@@ -194,9 +183,7 @@
 								<span class="widget-list-item-icon"><i class="material-icons-outlined">handyman</i></span>
 								<span class="widget-list-item-description">
 									<a href="#" class="widget-list-item-description-title">Swakelola</a>
-									<span style="opacity: .95" class="text-dark widget-list-item-description-subtitle">
-										Rp <count-up>{{ $swakelola ?? 0 }}</count-up>
-									</span>
+									<span id="swakelola" style="opacity: .95" class="text-dark widget-list-item-description-subtitle"></span>
 								</span>
 							</li>
 
@@ -204,9 +191,7 @@
 								<span class="widget-list-item-icon"><i class="material-icons-outlined">shopping_cart</i></span>
 								<span class="widget-list-item-description">
 									<a href="#" class="widget-list-item-description-title">e-Purchasing</a>
-									<span style="opacity: .95" class="text-dark widget-list-item-description-subtitle">
-										Rp <count-up>{{ $epurchasing ?? 0 }}</count-up>
-									</span>
+									<span id="epurchasing" style="opacity: .95" class="text-dark widget-list-item-description-subtitle"></span>
 								</span>
 							</li>
 
@@ -214,18 +199,16 @@
 								<span class="widget-list-item-icon"><i class="material-icons-outlined">assignment</i></span>
 								<span class="widget-list-item-description">
 									<a href="#" class="widget-list-item-description-title">Pengadaan Langsung</a>
-									<span style="opacity: .95" class="text-dark widget-list-item-description-subtitle">
-										Rp <count-up>{{ $pengadaan_langsung ?? 0 }}</count-up>
-									</span>
+									<span id="pengadaan-langsung" style="opacity: .95" class="text-dark widget-list-item-description-subtitle"></span>
 								</span>
 							</li>
 						</ul>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
+
 
 	@push('script')
 		<script>
@@ -245,5 +228,107 @@
 				});
 			});
 		</script>
+
+
+		<script>
+			function countUp(selector, endVal, options = {}) {
+				const settings = $.extend({
+					startVal: 0,
+					duration: 2000, // ms
+					decimalPlaces: 0,
+					separator: '.',
+					decimal: ',',
+					prefix: '',
+					suffix: '',
+					easing: true
+				}, options);
+
+				const $el = $(selector);
+				const startTime = performance.now();
+
+				function formatNumber(num) {
+					let strNum = num.toFixed(settings.decimalPlaces);
+
+					// Hilangkan trailing zero desimal dinamis
+					if (settings.decimalPlaces > 0) {
+						strNum = parseFloat(strNum).toString();
+					}
+
+					let parts = strNum.split('.');
+					let intPart = parts[0];
+					let decPart = parts.length > 1 ? settings.decimal + parts[1] : '';
+
+					// Tambah separator ribuan
+					intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, settings.separator);
+
+					return settings.prefix + intPart + decPart + settings.suffix;
+				}
+
+				function easeOutCubic(t) {
+					return 1 - Math.pow(1 - t, 3);
+				}
+
+				function animate(now) {
+					let progress = Math.min((now - startTime) / settings.duration, 1);
+					if (settings.easing) {
+						progress = easeOutCubic(progress);
+					}
+					const current = settings.startVal + (endVal - settings.startVal) * progress;
+					$el.text(formatNumber(current));
+
+					if (progress < 1) {
+						requestAnimationFrame(animate);
+					}
+				}
+
+				requestAnimationFrame(animate);
+			}
+
+			// Contoh penggunaan
+			$(function() {
+				countUp('#realisasi-fisik', {{ $realisasi_fisik }}, {
+					decimalPlaces: 1,
+					suffix: '%',
+					duration: 2000,
+				});
+				countUp('#total-pagu', {{ $total_pagu }}, {
+					decimalPlaces: 0,
+					prefix: 'Rp ',
+					duration: 2000,
+				});
+				countUp('#total-jenis-paket', {{ $total_jenis_paket }}, {
+					decimalPlaces: 0,
+					prefix: 'Rp ',
+					duration: 2000,
+				});
+
+				countUp('#tender', {{ $tender }}, {
+					decimalPlaces: 0,
+					prefix: 'Rp ',
+					duration: 2000,
+				});
+				countUp('#penunjukkan-langsung', {{ $penunjukkan_langsung }}, {
+					decimalPlaces: 0,
+					prefix: 'Rp ',
+					duration: 2000,
+				});
+				countUp('#swakelola', {{ $swakelola }}, {
+					decimalPlaces: 0,
+					prefix: 'Rp ',
+					duration: 2000,
+				});
+				countUp('#epurchasing', {{ $epurchasing }}, {
+					decimalPlaces: 0,
+					prefix: 'Rp ',
+					duration: 2000,
+				});
+				countUp('#pengadaan-langsung', {{ $pengadaan_langsung }}, {
+					decimalPlaces: 0,
+					prefix: 'Rp ',
+					duration: 2000,
+				});
+			});
+		</script>
 	@endpush
+
 </x-layouts.dashboard>
