@@ -55,12 +55,14 @@
 			<div class="page-description page-description-tabbed">
 				<div class="d-flex align-items-start justify-content-between flex-column flex-md-row">
 					<h1><i class="material-icons h3">corporate_fare</i> Data SKPD</h1>
-					<div class="page-description-actions">
-						<button class="btn btn-danger btn-style-light" data-bs-toggle="modal" href="#modalDelete" role="button">
-							<i class="material-icons-outlined">delete</i> Hapus</button>
-						<span class="mx-2 border-start"></span> {{-- pembatas --}}
-						<a href="{{ url()->current() }}" class="btn btn-info btn-style-light">
-							<i class="material-icons-outlined">refresh</i> Refresh</a>
+					<div
+						class="page-description-actions d-flex align-items-md-start align-items-md-center gap-0 gap-md-3 flex-column flex-md-row">
+						<div>
+							<button class="mt-4 mt-md-0 me-2 btn btn-danger btn-style-light" data-bs-toggle="modal" href="#modalDelete" role="button">
+								<i class="material-icons-outlined">delete</i> Hapus</button>
+							<a href="{{ url()->current() }}" class="btn btn-info btn-style-light">
+								<i class="material-icons-outlined">refresh</i> Refresh</a>
+						</div>
 						<a href="{{ route('dashboard.skpd') }}" class="btn btn-warning btn-style-light">
 							<i class="material-icons">keyboard_backspace</i> Kembali
 						</a>
@@ -217,7 +219,8 @@
 										@method('PATCH')
 										<div class="row m-t-lg">
 											<div class="col">
-												<button type="submit" class="btn btn-danger m-t-sm" onclick="return confirm('Lanjutkan untuk reset password?')">
+												<button type="submit" class="btn btn-danger m-t-sm"
+													onclick="return confirm('Lanjutkan untuk reset password?')">
 													<i class="material-icons">lock_reset</i> Ya, Reset Password
 												</button>
 											</div>

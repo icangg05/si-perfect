@@ -163,7 +163,7 @@
 					<span>Halaman ini menampilkan daftar semua Satuan Kerja Perangkat Daerah (SKPD).</span>
 				</div>
 				<div class="page-description-actions">
-					<a href="{{ url()->current() }}" class="btn btn-info btn-style-light">
+					<a href="{{ url()->current() }}" class="me-2 btn btn-info btn-style-light">
 						<i class="material-icons-outlined">refresh</i> Refresh</a>
 					<a href="#" class="btn btn-warning btn-style-light" data-bs-toggle="modal"
 						data-bs-target="#modalCreate"><i class="material-icons">add</i>Buat</a>
@@ -184,7 +184,7 @@
 						</span>
 					</h5>
 
-					<form action="{{ url()->current() }}" method="GET" class="d-flex flex-md-nowrap flex-wrap"
+					<form action="{{ url()->current() }}" method="GET" class="mt-2 mt-md-0 d-flex flex-md-nowrap"
 						style="gap: .5rem">
 						{{-- Input pencarian --}}
 						<input type="text" name="search" class="form-control" placeholder="Cari data..."

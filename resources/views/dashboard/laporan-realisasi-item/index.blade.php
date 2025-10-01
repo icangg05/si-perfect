@@ -19,13 +19,14 @@
 						<strong>{{ $skpd_anggaran->tahun_anggaran }}</strong>.
 					</span>
 				</div>
-				<div class="page-description-actions">
-					<button class="btn btn-danger btn-style-light" data-bs-toggle="modal" href="#modalDeleteLaporan"
-						role="button">
-						<i class="material-icons-outlined">delete</i> Hapus</button>
-					<span class="mx-2 border-start"></span>
-					<a href="{{ url()->current() }}" class="btn btn-info btn-style-light">
-						<i class="material-icons-outlined">refresh</i> Refresh</a>
+				<div class="page-description-actions d-flex align-items-md-start align-items-md-center gap-0 gap-md-3 flex-column flex-md-row">
+          <div>
+            <button class="mt-4 mt-md-0 me-2 btn btn-danger btn-style-light" data-bs-toggle="modal" href="#modalDeleteLaporan"
+              role="button">
+              <i class="material-icons-outlined">delete</i> Hapus</button>
+            <a href="{{ url()->current() }}" class="btn btn-info btn-style-light">
+              <i class="material-icons-outlined">refresh</i> Refresh</a>
+          </div>
 					<a href="{{ route('dashboard.laporan-realisasi') }}" class="btn btn-warning btn-style-light">
 						<i class="material-icons">keyboard_backspace</i> Kembali
 					</a>
@@ -33,6 +34,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="row">
 		@if ($errors->any())
 			<div class="col-md-12">

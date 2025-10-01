@@ -13,13 +13,13 @@
 					<div class="modal-body">
 						<div class="mb-3">
 							@php
-								$users = App\Models\User::with('skpd')->where('role', 'skpd')->get();
+								$skpd = App\Models\SKPD::orderBy('nama')->get();
 							@endphp
 							<label for="skpd_id" class="form-label">SKPD</label>
 							<select class="form-select" id="skpd_id" name="skpd_id" required @disabled(auth()->user()->role == 'skpd')>
 								<option value=""></option>
-								@foreach ($users as $u)
-									<option @selected($u->skpd->nama == auth()->user()->skpd?->nama) value="{{ $u->skpd->id }}">{{ $u->skpd->singkatan }}</option>
+								@foreach ($skpd as $u)
+									<option @selected($u->nama == auth()->user()->skpd?->nama) value="{{ $u->id }}">{{ $u->singkatan }}</option>
 								@endforeach
 							</select>
 
@@ -88,7 +88,7 @@
 					<span>Halaman ini menampilkan data laporan realisasi anggaran berdasarkan SKPD, bulan, dan tahun anggaran.</span>
 				</div>
 				<div class="page-description-actions">
-					<a href="{{ url()->current() }}" class="btn btn-info btn-style-light">
+					<a href="{{ url()->current() }}" class="me-2 btn btn-info btn-style-light">
 						<i class="material-icons-outlined">refresh</i> Refresh</a>
 					<a href="#" class="btn btn-warning btn-style-light" data-bs-toggle="modal"
 						data-bs-target="#modalCreate"><i class="material-icons">add</i>Buat</a>
@@ -105,27 +105,27 @@
 						Laporan Realisasi
 						<span style="color: rgb(155, 155, 155);">—</span>
 						<span style="font-weight: 400; font-size: .9rem">
-							{{ auth()->user()->role == 'admin'
-							    ? auth()->user()->name
-							    : auth()->user()->skpd->nama }}
+							{{ auth()->user()->role == 'admin' ? auth()->user()->name : auth()->user()->skpd->nama }}
 						</span>
 					</h5>
 
-					<form action="{{ url()->current() }}" method="GET" class="d-flex flex-md-nowrap flex-wrap"
+					<form action="{{ url()->current() }}" method="GET" class="mt-2 mt-md-0 d-flex flex-md-nowrap"
 						style="gap: .5rem">
-						{{-- Input pencarian --}}
-						<input type="text" name="search" class="form-control" placeholder="Cari data..."
-							value="{{ request('search') }}" @if (request('search')) autofocus @endif>
+            <div class="d-flex flex-column flex-md-row gap-2">
+              {{-- Input pencarian --}}
+              <input type="text" name="search" class="form-control" placeholder="Cari data..."
+                value="{{ request('search') }}" @if (request('search')) autofocus @endif>
 
-						{{-- Filter bulan --}}
-						<select name="bulan" id="bulanFilter" class="form-select">
-							<option value="">-- Semua Bulan --</option>
-							@foreach (range(1, 12) as $i)
-								<option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
-									{{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
-								</option>
-							@endforeach
-						</select>
+              {{-- Filter bulan --}}
+              <select name="bulan" id="bulanFilter" class="form-select">
+                <option value="">-- Semua Bulan --</option>
+                @foreach (range(1, 12) as $i)
+                  <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
+                    {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                  </option>
+                @endforeach
+              </select>
+            </div>
 
 						<button type="submit"
 							class="btn btn-sm btn-primary d-flex align-items-center justify-content-center">
