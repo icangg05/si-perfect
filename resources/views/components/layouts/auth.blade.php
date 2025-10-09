@@ -65,6 +65,7 @@
 	<script src="{{ asset('') }}/assets/plugins/pace/pace.min.js"></script>
 	<script src="{{ asset('') }}/assets/js/main.min.js"></script>
 	<script src="{{ asset('') }}/assets/js/custom.js"></script>
+  @stack('script')
 </body>
 
 </html>

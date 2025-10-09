@@ -14,8 +14,13 @@
 			@enderror
 
 			<label for="password" class="form-label">Password</label>
-			<input type="password" class="form-control" id="password" aria-describedby="password"
-				placeholder="Password" name="password">
+			<div class="position-relative">
+				<input type="password" class="form-control pe-5" id="password" aria-describedby="password"
+					placeholder="Password" name="password" autocomplete="off">
+				<span id="togglePassword"
+					class="material-icons position-absolute end-0 top-50 translate-middle-y me-3"
+					style="cursor: pointer; color: #6c757d; font-size: 1.5rem">visibility_off</span>
+			</div>
 			@error('password')
 				<p class="text-danger" style="margin-top: 8px; font-size: .85rem">{{ $message }}</p>
 			@enderror
@@ -33,4 +38,20 @@
 			<p class="auth-description text-center">2025 © Bagian Administrasi Pembangunan Setda Kota Kendari</p>
 		</div>
 	</form>
+
+	@push('script')
+		<script>
+			$(document).ready(function() {
+				$('#togglePassword').on('click', function() {
+					const passwordField = $('#password');
+					const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+					passwordField.attr('type', type);
+
+					// Ganti ikon
+					const icon = $(this);
+					icon.text(type === 'password' ? 'visibility_off' : 'visibility');
+				});
+			});
+		</script>
+	@endpush
 </x-layouts.auth>

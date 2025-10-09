@@ -147,8 +147,14 @@
 								<div class="row m-t-xxl">
 									<div class="col-md-6">
 										<label for="current_password" class="form-label">Password Lama</label>
-										<input type="password" class="form-control" aria-describedby="current_password"
-											placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="current_password">
+										<div class="position-relative">
+											<input id="current_password" type="password" class="form-control" aria-describedby="current_password"
+												placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="current_password"
+												autocomplete="off">
+											<span id="toggle_current_password"
+												class="material-icons position-absolute end-0 top-50 translate-middle-y me-3"
+												style="cursor: pointer; color: #6c757d; font-size: 1.5rem">visibility_off</span>
+										</div>
 										<div id="current_password" class="form-text">Jangan membagikan kata sandi kepada siapa pun.</div>
 										@error('current_password')
 											<div class="form-text text-danger">{{ $message }}</div>
@@ -158,8 +164,14 @@
 								<div class="row m-t-xxl">
 									<div class="col-md-6">
 										<label for="new_password" class="form-label">Password Baru</label>
-										<input type="password" class="form-control" aria-describedby="new_password"
-											placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="new_password">
+										<div class="position-relative">
+											<input id="new_password" type="password" class="form-control" aria-describedby="new_password"
+												placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="new_password"
+												autocomplete="off">
+											<span id="toggle_new_password"
+												class="material-icons position-absolute end-0 top-50 translate-middle-y me-3"
+												style="cursor: pointer; color: #6c757d; font-size: 1.5rem">visibility_off</span>
+										</div>
 										@error('new_password')
 											<div class="form-text text-danger">{{ $message }}</div>
 										@enderror
@@ -168,8 +180,14 @@
 								<div class="row m-t-xxl">
 									<div class="col-md-6">
 										<label for="new_password_confirmation" class="form-label">Konfirmasi Password</label>
-										<input type="password" class="form-control" aria-describedby="new_password_confirmation"
-											placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="new_password_confirmation">
+										<div class="position-relative">
+											<input id="new_password_confirmation" type="password" class="form-control" aria-describedby="new_password_confirmation"
+												placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="new_password_confirmation"
+												autocomplete="off">
+											<span id="toggle_new_password_confirmation"
+												class="material-icons position-absolute end-0 top-50 translate-middle-y me-3"
+												style="cursor: pointer; color: #6c757d; font-size: 1.5rem">visibility_off</span>
+										</div>
 										@error('new_password_confirmation')
 											<div class="form-text text-danger">{{ $message }}</div>
 										@enderror
@@ -189,21 +207,42 @@
 		</div>
 	</div>
 
-	{{-- @if (!session('success'))
-		<script>
-			// Simpan posisi scroll sebelum unload
-			window.addEventListener("beforeunload", function() {
-				localStorage.setItem("scrollPosition", window.scrollY);
-			});
 
-			// Restore posisi scroll setelah load
-			window.addEventListener("load", function() {
-				const scrollPosition = localStorage.getItem("scrollPosition");
-				if (scrollPosition) {
-					window.scrollTo(0, parseInt(scrollPosition));
-					localStorage.removeItem("scrollPosition"); // opsional, biar tidak tersimpan terus
-				}
+	@push('script')
+		<script>
+			$(document).ready(function() {
+				$('#toggle_current_password').on('click', function() {
+					const passwordField = $('#current_password');
+					const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+					passwordField.attr('type', type);
+
+					// Ganti ikon
+					const icon = $(this);
+					icon.text(type === 'password' ? 'visibility_off' : 'visibility');
+				});
+
+
+        $('#toggle_new_password').on('click', function() {
+					const passwordField = $('#new_password');
+					const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+					passwordField.attr('type', type);
+
+					// Ganti ikon
+					const icon = $(this);
+					icon.text(type === 'password' ? 'visibility_off' : 'visibility');
+				});
+
+
+        $('#toggle_new_password_confirmation').on('click', function() {
+					const passwordField = $('#new_password_confirmation');
+					const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+					passwordField.attr('type', type);
+
+					// Ganti ikon
+					const icon = $(this);
+					icon.text(type === 'password' ? 'visibility_off' : 'visibility');
+				});
 			});
 		</script>
-	@endif --}}
+	@endpush
 </x-layouts.dashboard>
