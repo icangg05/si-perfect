@@ -22,7 +22,7 @@ class SKPDController extends Controller
       $query = $query->where('nama', 'like', "%{$request->search}%")
         ->orWhere('singkatan', 'like', "%{$request->search}%");
 
-    $skpd = $query->paginate(10);
+    $skpd = $query->paginate(15);
 
     return view('dashboard.skpd', compact('skpd'));
   }

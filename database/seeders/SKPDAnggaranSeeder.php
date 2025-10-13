@@ -13,12 +13,32 @@ class SKPDAnggaranSeeder extends Seeder
    */
   public function run(): void
   {
-    $data = [[
-      'skpd_id'         => 1,
-      'bulan_anggaran'  => 8,
-      'tahun_anggaran'  => 2025,
-      'jenis_pengadaan' => 'KONSTRUKSI, KONSULTANSI, BARANG DAN JASA LAINNYA'
-    ]];
+    $data = [
+      [
+        'skpd_id'         => 1,
+        'bulan_anggaran'  => 8,
+        'tahun_anggaran'  => 2025,
+        'jenis_pengadaan' => 'KONSTRUKSI, KONSULTANSI, BARANG DAN JASA LAINNYA'
+      ],
+      [
+        'skpd_id'         => 2,
+        'bulan_anggaran'  => 8,
+        'tahun_anggaran'  => 2025,
+        'jenis_pengadaan' => 'KONSTRUKSI, KONSULTANSI, BARANG DAN JASA LAINNYA'
+      ],
+      [
+        'skpd_id'         => 3,
+        'bulan_anggaran'  => 6,
+        'tahun_anggaran'  => 2025,
+        'jenis_pengadaan' => 'BARANG DAN JASA LAINNYA'
+      ],
+      [
+        'skpd_id'         => 44,
+        'bulan_anggaran'  => 8,
+        'tahun_anggaran'  => 2025,
+        'jenis_pengadaan' => 'KONSTRUKSI, KONSULTANSI, BARANG DAN JASA LAINNYA'
+      ],
+    ];
 
     foreach ($data as $item) {
       SKPDAnggaran::create($item);

@@ -50,7 +50,7 @@ class LaporanRealisasiController extends Controller
     }
 
     // Pagination dengan query string supaya filter tidak hilang
-    $skpd_anggaran = $query->paginate(10)->withQueryString();
+    $skpd_anggaran = $query->paginate(15)->withQueryString();
 
     return view('dashboard.laporan-realisasi', compact('skpd_anggaran'));
   }
