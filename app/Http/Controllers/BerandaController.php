@@ -40,6 +40,8 @@ class BerandaController extends Controller
     $tahun_anggaran  = $skpd_anggaran->tahun_anggaran;
 
     $file_name = strtoupper("LAP REALISASI {$jenis_pengadaan} {$bulan_anggaran} {$skpd_singkatan} {$tahun_anggaran}.xlsx");
+    // Hilangkan karakter yang tidak valid untuk nama file
+    $file_name = preg_replace('/[\/\\\\]/', '-', $file_name);
 
     return Excel::download(new LaporanExport($skpd_anggaran), $file_name);
   }
