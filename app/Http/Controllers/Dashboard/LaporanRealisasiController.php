@@ -120,8 +120,60 @@ class LaporanRealisasiController extends Controller
     $text  = "Hapus item anggaran?";
     confirmDelete($title, $text);
 
-    return view('dashboard.laporan-realisasi-item.index', compact('skpd_anggaran', 'kategoriTree'));
+    // SKPD Anggaran untuk pilih struktur anggaran
+    $skpd_anggaran_list = SKPDAnggaran::where('skpd_id', $skpd_anggaran->skpd_id)
+      ->where('id', '!=', $skpd_anggaran->id)
+      ->whereHas('kategori_laporan')
+      ->orderBy('bulan_anggaran', 'asc')
+      ->orderBy('tahun_anggaran', 'asc')
+      ->get();
+
+    return view('dashboard.laporan-realisasi-item.index', compact(
+      'skpd_anggaran',
+      'kategoriTree',
+      'skpd_anggaran_list'
+    ));
   }
+
+
+  /**
+   * Handle salin struktur anggaran
+   */
+  public function salinStrukturAnggaran(Request $request)
+  {
+    $kategoriLama = KategoriLaporan::where('skpd_anggaran_id', $request->skpd_anggaran_id_template)
+      ->orderBy('level')
+      ->orderBy('urutan')
+      ->get();
+
+    // mapping: id_lama => id_baru
+    $idMapping = [];
+
+    foreach ($kategoriLama as $item) {
+
+      // Tentukan parent baru (mapping dari parent lama)
+      $parentBaru = $item->parent ? ($idMapping[$item->parent] ?? null) : null;
+
+      // Buat data baru
+      $baru = KategoriLaporan::create([
+        'skpd_anggaran_id' => $request->skpd_anggaran_id,
+        'nama'             => $item->nama,
+        'parent'           => $parentBaru,
+        'level'            => $item->level,
+        'urutan'           => $item->urutan,
+      ]);
+
+      // Simpan mapping ID lama → baru
+      $idMapping[$item->id] = $baru->id;
+    }
+
+
+    alert()->success('Sukses!', 'Struktur anggaran berhasil disalin.')
+      ->showConfirmButton('Ok', '#1D3D62');
+
+    return redirect()->back()->with('active_tab', 'struktur-anggaran');
+  }
+
 
 
   /**

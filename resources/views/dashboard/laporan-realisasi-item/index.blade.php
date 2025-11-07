@@ -2,6 +2,7 @@
 	@include('dashboard.laporan-realisasi-item.modal-create-kategori')
 	@include('dashboard.laporan-realisasi-item.modal-edit-kategori')
 	@include('dashboard.laporan-realisasi-item.modal-delete-kategori')
+	@include('dashboard.laporan-realisasi-item.modal-pilih-struktur-anggaran')
 
 	@include('dashboard.laporan-realisasi-item.modal-delete-laporan')
 	@include('dashboard.laporan-realisasi-item.modal-edit-item-anggaran')
@@ -19,14 +20,15 @@
 						<strong>{{ $skpd_anggaran->tahun_anggaran }}</strong>.
 					</span>
 				</div>
-				<div class="page-description-actions d-flex align-items-md-start align-items-md-center gap-0 gap-md-3 flex-column flex-md-row">
-          <div>
-            <button class="mt-4 mt-md-0 me-2 btn btn-danger btn-style-light" data-bs-toggle="modal" href="#modalDeleteLaporan"
-              role="button">
-              <i class="material-icons-outlined">delete</i> Hapus</button>
-            <a href="{{ url()->current() }}" class="btn btn-info btn-style-light">
-              <i class="material-icons-outlined">refresh</i> Refresh</a>
-          </div>
+				<div
+					class="page-description-actions d-flex align-items-md-start align-items-md-center gap-0 gap-md-3 flex-column flex-md-row">
+					<div>
+						<button class="mt-4 mt-md-0 me-2 btn btn-danger btn-style-light" data-bs-toggle="modal" href="#modalDeleteLaporan"
+							role="button">
+							<i class="material-icons-outlined">delete</i> Hapus</button>
+						<a href="{{ url()->current() }}" class="btn btn-info btn-style-light">
+							<i class="material-icons-outlined">refresh</i> Refresh</a>
+					</div>
 					<a href="{{ route('dashboard.laporan-realisasi') }}" class="btn btn-warning btn-style-light">
 						<i class="material-icons">keyboard_backspace</i> Kembali
 					</a>
@@ -181,20 +183,20 @@
 
 														<!-- Total perkategori -->
 														@php
-															$total_pagu_perkategori                           = 0;
-															$total_nilai_tender_perkategori                   = 0;
-															$total_realisasi_tender_perkategori               = 0;
-															$total_nilai_penunjukkan_langsung_perkategori     = 0;
+															$total_pagu_perkategori = 0;
+															$total_nilai_tender_perkategori = 0;
+															$total_realisasi_tender_perkategori = 0;
+															$total_nilai_penunjukkan_langsung_perkategori = 0;
 															$total_realisasi_penunjukkan_langsung_perkategori = 0;
-															$total_nilai_swakelola_perkategori                = 0;
-															$total_realisasi_swakelola_perkategori            = 0;
-															$total_nilai_epurchasing_perkategori              = 0;
-															$total_realisasi_epurchasing_perkategori          = 0;
-															$total_nilai_pengadaan_langsung_perkategori       = 0;
-															$total_realisasi_pengadaan_langsung_perkategori   = 0;
+															$total_nilai_swakelola_perkategori = 0;
+															$total_realisasi_swakelola_perkategori = 0;
+															$total_nilai_epurchasing_perkategori = 0;
+															$total_realisasi_epurchasing_perkategori = 0;
+															$total_nilai_pengadaan_langsung_perkategori = 0;
+															$total_realisasi_pengadaan_langsung_perkategori = 0;
 
 															$total_realisasi_anggaran_perkategori = 0;
-															$realisasi_fisik_perkategori          = 0;
+															$realisasi_fisik_perkategori = 0;
 														@endphp
 
 														<!-- Baris item anggaran -->
@@ -207,33 +209,33 @@
 
 																	// Jumlah nilai untuk perbaris
 																	$total_realisasi_anggaran_perbaris +=
-                                    // $laporan->nilai_kontrak_tender +
-                                    $laporan->realisasi_tender +
-                                    // $laporan->nilai_kontrak_penunjukkan_langsung +
-                                    $laporan->realisasi_penunjukkan_langsung +
-                                    // $laporan->nilai_kontrak_swakelola +
-                                    $laporan->realisasi_swakelola +
-                                    // $laporan->nilai_kontrak_epurchasing +
-                                    $laporan->realisasi_epurchasing +
-                                    // $laporan->nilai_kontrak_pengadaan_langsung +
-                                    $laporan->realisasi_pengadaan_langsung;
+																	    // $laporan->nilai_kontrak_tender +
+																	    $laporan->realisasi_tender +
+																	    // $laporan->nilai_kontrak_penunjukkan_langsung +
+																	    $laporan->realisasi_penunjukkan_langsung +
+																	    // $laporan->nilai_kontrak_swakelola +
+																	    $laporan->realisasi_swakelola +
+																	    // $laporan->nilai_kontrak_epurchasing +
+																	    $laporan->realisasi_epurchasing +
+																	    // $laporan->nilai_kontrak_pengadaan_langsung +
+																	    $laporan->realisasi_pengadaan_langsung;
 																	$realisasi_keuangan_perbaris = $total_realisasi_anggaran_perbaris / max($laporan->pagu, 1);
 
 																	// Jumlah nilai untuk baris subtotal
-																	$total_pagu_perkategori                           += $laporan->pagu;
-																	$total_nilai_tender_perkategori                   += $laporan->nilai_kontrak_tender;
-																	$total_realisasi_tender_perkategori               += $laporan->realisasi_tender;
-																	$total_nilai_penunjukkan_langsung_perkategori     += $laporan->nilai_kontrak_penunjukkan_langsung;
+																	$total_pagu_perkategori += $laporan->pagu;
+																	$total_nilai_tender_perkategori += $laporan->nilai_kontrak_tender;
+																	$total_realisasi_tender_perkategori += $laporan->realisasi_tender;
+																	$total_nilai_penunjukkan_langsung_perkategori += $laporan->nilai_kontrak_penunjukkan_langsung;
 																	$total_realisasi_penunjukkan_langsung_perkategori += $laporan->realisasi_penunjukkan_langsung;
-																	$total_nilai_swakelola_perkategori                += $laporan->nilai_kontrak_swakelola;
-																	$total_realisasi_swakelola_perkategori            += $laporan->realisasi_swakelola;
-																	$total_nilai_epurchasing_perkategori              += $laporan->nilai_kontrak_epurchasing;
-																	$total_realisasi_epurchasing_perkategori          += $laporan->realisasi_epurchasing;
-																	$total_nilai_pengadaan_langsung_perkategori       += $laporan->nilai_kontrak_pengadaan_langsung;
-																	$total_realisasi_pengadaan_langsung_perkategori   += $laporan->realisasi_pengadaan_langsung;
+																	$total_nilai_swakelola_perkategori += $laporan->nilai_kontrak_swakelola;
+																	$total_realisasi_swakelola_perkategori += $laporan->realisasi_swakelola;
+																	$total_nilai_epurchasing_perkategori += $laporan->nilai_kontrak_epurchasing;
+																	$total_realisasi_epurchasing_perkategori += $laporan->realisasi_epurchasing;
+																	$total_nilai_pengadaan_langsung_perkategori += $laporan->nilai_kontrak_pengadaan_langsung;
+																	$total_realisasi_pengadaan_langsung_perkategori += $laporan->realisasi_pengadaan_langsung;
 
 																	$total_realisasi_anggaran_perkategori += $total_realisasi_anggaran_perbaris;
-																	$realisasi_fisik_perkategori          += format_persen($laporan->presentasi_realisasi_fisik);
+																	$realisasi_fisik_perkategori += format_persen($laporan->presentasi_realisasi_fisik);
 
 																	// Jumlah nilai baris keseluruhan
 																	$total_realisasi_keseluruhan += $total_realisasi_anggaran_perbaris;
@@ -258,7 +260,8 @@
 																		<td class="view-mode text-end {{ $rowError ? 'd-none' : '' }}">
 																			{{ format_ribuan($laporan->pagu) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
-																			<input type="text" name="pagu" value="{{ old('pagu', number_format($laporan->pagu ?? 0, 0, ',', '.')) }}" min="500"
+																			<input type="text" name="pagu"
+																				value="{{ old('pagu', number_format($laporan->pagu ?? 0, 0, ',', '.')) }}" min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -294,7 +297,8 @@
 																			{{ format_ribuan($laporan->nilai_kontrak_tender) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																			<input type="text" name="nilai_kontrak_tender"
-																				value="{{ old('nilai_kontrak_tender', number_format($laporan->nilai_kontrak_tender ?? 0, 0, ',', '.')) }}" min="500"
+																				value="{{ old('nilai_kontrak_tender', number_format($laporan->nilai_kontrak_tender ?? 0, 0, ',', '.')) }}"
+																				min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -303,7 +307,8 @@
 																			{{ format_ribuan($laporan->realisasi_tender) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																			<input type="text" name="realisasi_tender"
-																				value="{{ old('realisasi_tender', number_format($laporan->realisasi_tender ?? 0, 0, ',', '.')) }}" min="500"
+																				value="{{ old('realisasi_tender', number_format($laporan->realisasi_tender ?? 0, 0, ',', '.')) }}"
+																				min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -330,7 +335,8 @@
 																			{{ format_ribuan($laporan->nilai_kontrak_swakelola) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																			<input type="text" name="nilai_kontrak_swakelola"
-																				value="{{ old('nilai_kontrak_swakelola', number_format($laporan->nilai_kontrak_swakelola ?? 0, 0, ',', '.')) }}" min="500"
+																				value="{{ old('nilai_kontrak_swakelola', number_format($laporan->nilai_kontrak_swakelola ?? 0, 0, ',', '.')) }}"
+																				min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -339,7 +345,8 @@
 																			{{ format_ribuan($laporan->realisasi_swakelola) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																			<input type="text" name="realisasi_swakelola"
-																				value="{{ old('realisasi_swakelola', number_format($laporan->realisasi_swakelola ?? 0, 0, ',', '.')) }}" min="500"
+																				value="{{ old('realisasi_swakelola', number_format($laporan->realisasi_swakelola ?? 0, 0, ',', '.')) }}"
+																				min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -358,7 +365,8 @@
 																			{{ format_ribuan($laporan->realisasi_epurchasing) }}</td>
 																		<td class="edit-mode text-end {{ $rowError ? '' : 'd-none' }}">
 																			<input type="text" name="realisasi_epurchasing"
-																				value="{{ old('realisasi_epurchasing', number_format($laporan->realisasi_epurchasing ?? 0, 0, ',', '.')) }}" min="500"
+																				value="{{ old('realisasi_epurchasing', number_format($laporan->realisasi_epurchasing ?? 0, 0, ',', '.')) }}"
+																				min="500"
 																				class="forms-input rupiah text-end">
 																		</td>
 
@@ -562,7 +570,7 @@
 										<hr>
 										<div class="row">
 											<div class="col-md-10">
-                        <!-- kode asli -->
+												<!-- kode asli -->
 												<div class="dd" id="nestable" style="width: 100%">
 													<ol class="dd-list">
 														<!-- Loop hanya untuk item level pertama (root) -->
@@ -570,7 +578,14 @@
 															<!-- Panggil partial view untuk setiap item -->
 															@include('components.kategori_item', ['item' => $item])
 														@empty
-															<p class="text-muted text-center">Belum ada data. Klik tambah untuk membuat kategori baru.</p>
+															<p class="text-muted text-center">Belum ada data. Klik tambah untuk membuat kategori baru, atau salin
+																format laporan dari periode lainnya.</p>
+															<div class="text-center">
+																<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+																	data-bs-target="#modalPilihStrukturAnggaran">
+																	<i class="material-icons">schema</i> Pilih Struktur Anggaran
+																</button>
+															</div>
 														@endforelse
 													</ol>
 												</div>

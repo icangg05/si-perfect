@@ -1,5 +1,5 @@
 <li class="dd-item" data-id="{{ $item->id }}">
-	<div class="dd-handle" style="cursor: default">
+	<div class="dd-handle" style="padding-right: 75px; height: auto; line-height: 1.4rem; white-space: normal; word-break: break-word">
 		<span>{{ $item->nama }}</span>
 	</div>
 

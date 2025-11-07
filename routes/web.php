@@ -48,6 +48,9 @@ Route::middleware('auth')->group(function () {
   Route::patch('/kategori/{id}/update', [NestableController::class, 'updateKategori'])->name('dashboard.update-kategori');
   Route::delete('/kategori/{id}/destroy', [NestableController::class, 'destroyKategori'])->name('dashboard.destroy-kategori');
 
+  // Salin struktur anggaran
+  Route::post('/salin-struktur-anggaran', [LaporanRealisasiController::class, 'salinStrukturAnggaran'])->name('dashboard.salin-struktur-anggaran');
+
   // Master data
   Route::middleware(['can:admin'])->group(function () {
     Route::get('/skpd', [SKPDController::class, 'index'])->name('dashboard.skpd');
